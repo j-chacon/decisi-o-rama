@@ -12,6 +12,7 @@ import matplotlib
 plt.style.use('seaborn-dark')
 
 import inspyred
+import utils
 
 from os.path import join
 import sys
@@ -130,23 +131,23 @@ if __name__ == '__main__':
     #%% Get the solutions in the pareto front
 
 
-    def calc_fronts(M, minimize=True):
-        '''function to calculate the pareto fronts'''
-        if minimize is True:
-            i_dominates_j = np.all(M[:,None] <= M, axis=-1) & np.any(M[:,None] < M, axis=-1)
-        else:
-            i_dominates_j = np.all(M[:,None] >= M, axis=-1) & np.any(M[:,None] > M, axis=-1)
-        remaining = np.arange(len(M))
-        fronts = np.empty(len(M), int)
-        frontier_index = 0
-        while remaining.size > 0:
-            dominated = np.any(i_dominates_j[remaining[:,None], remaining], axis=0)
-            fronts[remaining[~dominated]] = frontier_index
+    # def calc_fronts(M, minimize=True):
+    #     '''function to calculate the pareto fronts'''
+    #     if minimize is True:
+    #         i_dominates_j = np.all(M[:,None] <= M, axis=-1) & np.any(M[:,None] < M, axis=-1)
+    #     else:
+    #         i_dominates_j = np.all(M[:,None] >= M, axis=-1) & np.any(M[:,None] > M, axis=-1)
+    #     remaining = np.arange(len(M))
+    #     fronts = np.empty(len(M), int)
+    #     frontier_index = 0
+    #     while remaining.size > 0:
+    #         dominated = np.any(i_dominates_j[remaining[:,None], remaining], axis=0)
+    #         fronts[remaining[~dominated]] = frontier_index
     
-            remaining = remaining[dominated]
-            frontier_index += 1
-        return fronts
-    fronts = calc_fronts(res)
+    #         remaining = remaining[dominated]
+    #         frontier_index += 1
+    #     return fronts
+    fronts = utils.pareto_fronts(res, minimize=True)
     # xx = np.where(fronts == np.max(fronts))
     xx = np.where(fronts == 0)[0]  # Dominating set
     #%%
