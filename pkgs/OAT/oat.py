@@ -10,7 +10,6 @@ import numpy as np
 def _sample_problem(x):
     '''This is the Binh and Korn function'''
     
-    
     # adding constraint 1
     if (x[0] - 5.0)**2 + x[1]**2 > 25.0:
         f1,f2 = np.nan, np.nan
@@ -122,8 +121,11 @@ def local_sensitivity(func, pars, vicinity=0.05, n_pert=10):
     # Create the perturbations aroun the vicinity
     perts = np.zeros([pars.size, n_pert])
     
+    if type(vicinity) is float:
+        vicinity = np.ones(pars.size) * vicinity
+    
     for i in range(pars.size):
-        pert_width = pars[i]*vicinity
+        pert_width = pars[i]*vicinity[i]
         perts[i, :] = np.linspace(pars[i] - pert_width, 
                                   pars[i] + pert_width, 
                                   n_pert)
