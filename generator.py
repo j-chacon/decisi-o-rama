@@ -9,6 +9,36 @@ from numpy.random import beta, normal, lognormal, uniform
 from scipy.stats import truncnorm
 
 
+obj_limits = np.array([
+        [0.0, 100.0],  #rehab - max
+        [0.0, 100.0],  #adapt - max
+        [0.0, 180.0],  #gwhh - min
+        [0.0, 2.000],  #econs - min
+        [0.0, 365.0],  #vol_dw - min - 5
+        [0.0, 365.0],  #vol_hw - min
+        [500.0, 3600.0],  #vol_ffw - max
+        [0.0, 0.25],  #reliab_dw - min
+        [0.0, 0.25],  #reliab_hw - min
+        [0.0, 0.25],  #reliab_ffw - min - 10
+        [0.0, 365.0],  #aes_dw - min
+        [0.0, 365.0],  #aes_hw - min
+        [0.0, 365.0],  #faecal_dw - min
+        [0.0, 365.0],  #faecal_hw - min
+        [0.0, 2.0],  #cells_dw - min - 15
+        [0.0, 2.0],  #cells_hw - min
+        [0.0, 20.0],  #no3_dw - min
+        [0.0, 0.02],  #pest - min
+        [0.0, 150.0],  #bta_dw - min
+        [20.0, 95.0],  #efqm - max - 20
+        [0.0, 100.0],  #voice - max
+        [0.0, 100.0],  #auton - max
+        [0.0, 10.0],  #time - min
+        [0.0, 10.0],  #area - min
+        [1.0, 6.0],  #collab - max - 25
+        [0.01, 5.0],  #costcap - min
+        [0.0, 5.0],  #costchange - min
+            ])
+
 # DEfine the generator of the tuncated normal distributions
 def tn(mu, sigma, lower=-np.inf, upper=np.inf, size=None):
     out = truncnorm((lower - mu) / sigma, 
@@ -16,335 +46,6 @@ def tn(mu, sigma, lower=-np.inf, upper=np.inf, size=None):
                     loc=mu, 
                     scale=sigma)
     return out.rvs(size=size)
-
-# def status_quo(n=None):
-#     status_quo = [[ # rehab
-#         beta(9.0375, 4.0951),
-#         beta(9.0375, 4.0951),
-#         beta(19.0754,8.9788),
-#         uniform(0,0),
-#         uniform(0,0),
-#         uniform(0,0),
-#         beta(19.0754, 8.9788),
-#         uniform(0,0),
-#         normal(0.0438, 0.0162),
-#         normal(0.0438, 0.0162),
-#         uniform(0,0)
-#               ],[ # adapt
-#         normal(35.0, 7.65),
-#         normal(40.0, 10.2),
-#         normal(20.0, 10.2),
-#         normal(85.0, 7.65),
-#         normal(62.5, 6.38),
-#         normal(62.5, 6.38),
-#         normal(55.0, 7.65),
-#         normal(65.0, 7.65),
-#         normal(35.0, 7.65),
-#         normal(35.0, 7.65),
-#         normal(30.0, 10.2),
-#           ],[ # gwhh
-#         normal(6.45, 1.08),
-#         normal(6.45, 1.08),
-#         normal(6.45, 1.08),
-#         normal(5.32, 0.89),
-#         normal(6.45, 1.08),
-#         normal(11.0, 1.84),
-#         normal(8.49, 1.42),
-#         normal(6.45, 1.08),
-#         normal(6.45, 1.08),
-#         normal(6.45, 1.08),
-#         normal(6.45, 1.08),
-#             ], [ # econs
-#         normal(0.713, 0.1783),
-#         normal(0.713, 0.1783),
-#         normal(0.713, 0.1783),
-#         normal(0.0777, 0.0194),
-#         normal(0.4, 0.1),
-#         normal(0.3649, 0.0912),
-#         normal(0.55, 0.1375),
-#         normal(0.185, 0.0462),
-#         normal(0.67, 0.1675),
-#         normal(0.67, 0.1675),
-#         normal(0.67, 0.1675),
-#             ], [# vol_dw
-#         uniform(0,0),
-#         uniform(0,0),
-#         uniform(0,0),
-#         uniform(0,0),
-#         uniform(0,0),
-#         uniform(0,0),
-#         uniform(0,0),
-#         uniform(0,0),
-#         uniform(0,0),
-#         uniform(0,0),
-#         uniform(0,0),
-#             ], [  #vol_hw
-#         uniform(0,0),
-#         uniform(0,0),
-#         uniform(0,0),
-#         uniform(0,0),
-#         uniform(0,0),
-#         uniform(0,0),
-#         uniform(0,0),
-#         uniform(0,0),
-#         uniform(0,0),
-#         uniform(0,0),
-#         uniform(0,0),
-#             ], [ # vol_ffw
-#         normal(1766.968, 442),
-#         normal(1766.968, 442),
-#         normal(1310.211, 328.0),
-#         normal(1726.288, 432.0),
-#         normal(1766.968, 442.0),
-#         normal(1838.676, 460.0),
-#         normal(1310.211, 328.0),
-#         normal(1838.676, 460.0),
-#         normal(1766.968, 442.0),
-#         normal(1766.968, 442.0),
-#         normal(1310.211, 328.0),
-#             ], [ #reliab_dw
-#         lognormal(-5.2162, 0.2991),
-#         lognormal(-5.2162, 0.2991),
-#         lognormal(-5.1793, 0.3056),
-#         uniform(0.98,1.0),
-#         normal(0.0827, 0.0161),
-#         normal(0.175, 0.0375),
-#         lognormal(-5.1793, 0.3056),
-#         normal(0.065, 0.0175),
-#         lognormal(-4.2198, 0.3378),
-#         lognormal(-4.2198, 0.3378),
-#         lognormal(-4.0617, 0.3748),
-#             ], [ # relihab_hw
-#         lognormal(-5.2162, 0.2991),
-#         lognormal(-5.2162, 0.2991),
-#         lognormal(-5.1793, 0.3056),
-#         normal(0.65, 0.0175),
-#         lognormal(-4.0617, 0.3748),
-#         normal(0.175, 0.0375),
-#         lognormal(-5.1793, 0.3056),
-#         normal(0.065, 0.0175),
-#         lognormal(-4.2198, 0.3378),
-#         lognormal(-4.2198, 0.3378),
-#         lognormal(-4.0617, 0.3748),
-#             ],[ #reliab_ffw
-#         lognormal(-5.2162, 0.2991),
-#         lognormal(-5.2162, 0.2991),
-#         lognormal(-5.1793, 0.3056),
-#         normal(0.65, 0.0175),
-#         lognormal(-4.0617, 0.3748),
-#         normal(0.175, 0.0375),
-#         lognormal(-5.1793, 0.3056),
-#         normal(0.065, 0.0175),
-#         lognormal(-4.2198, 0.3378),
-#         lognormal(-4.2198, 0.3378),
-#         lognormal(-4.0617, 0.3748),
-#             ], [ # aes_dw
-#         normal(5.0, 2.55),
-#         normal(5.0, 2.55),
-#         normal(5.0, 2.55),
-#         normal(1.0, 0.51),
-#         normal(1.0, 0.51),
-#         normal(20.0, 5.1),
-#         normal(5.0, 2.55),
-#         normal(27.5, 11.48),
-#         normal(5.0, 2.55),
-#         normal(5.0, 2.55),
-#         normal(10.0, 5.1),
-#             ],[  # aes_hw
-#         normal(5.0, 2.55),
-#         normal(5.0, 2.55),
-#         normal(5.0, 2.55),
-#         normal(55.0, 22.96),
-#         normal(75.0, 12.76),
-#         normal(20.0, 5.1),
-#         normal(10.0, 5.1),
-#         normal(27.5, 11.48),
-#         normal(5.0, 2.55),
-#         normal(5.0, 2.55),
-#         normal(10.0, 5.1),            
-#             ], [  # faecal_dw
-#         normal(2.5, 1.28),
-#         normal(2.5, 1.28),
-#         normal(2.5, 1.28),
-#         uniform(0,0),
-#         uniform(0,0),
-#         normal(1.0, 0.51),
-#         uniform(0,0),
-#         uniform(0,0),
-#         normal(2.5, 1.28),
-#         normal(2.5, 1.28),
-#         normal(5.0, 2.55),
-#             ], [ # faecal_hw
-#         normal(2.5, 1.28),
-#         normal(2.5, 1.28),
-#         normal(2.5, 1.28),
-#         uniform(0,0),
-#         normal(20.0, 5.1),
-#         normal(1.0, 0.51),
-#         normal(5.0, 2.55),
-#         uniform(0,0),
-#         normal(2.5, 1.28),
-#         normal(2.5, 1.28),
-#         normal(5, 2.55),    
-#             ], [  # cells_dw
-#         uniform(0,0),
-#         uniform(0,0),
-#         uniform(0,0),
-#         normal(0.15, 0.08),
-#         normal(-0.5, 0.26),
-#         normal(-1.5, 0.26),
-#         normal(0.14, 0.07),
-#         normal(0.34, 0.07),
-#         normal(0.1, 0.05),
-#         normal(0.1, 0.05),
-#         normal(0.15, 0.08),
-#             ], [ # cells_hw
-#         uniform(0,0),
-#         uniform(0,0),
-#         normal(0.1, 0.05),
-#         normal(0.39, 0.05),
-#         normal(0.35, 0.18),
-#         normal(-1.5, 0.26),
-#         normal(0.24, 0.03),
-#         normal(0.34, 0.07),
-#         normal(0.1, 0.05),
-#         normal(0.1, 0.05),
-#         normal(0.15, 0.08),
-#             ], [ #no3
-#         uniform(0.0, 20.0),
-#         uniform(0.0, 20.0),
-#         uniform(0.0, 20.0),
-#         uniform(0.0, 20.0),
-#         uniform(0.0, 20.0),
-#         uniform(0.0, 20.0),
-#         uniform(0.0, 20.0),
-#         uniform(0.0, 20.0),
-#         uniform(0.0, 20.0),
-#         uniform(0.0, 20.0),
-#         uniform(0.0, 20.0),
-#             ], [  # pest
-#         uniform(0.0, 0.02),
-#         uniform(0.0, 0.02),
-#         uniform(0.0, 0.02),
-#         uniform(0.0, 0.02),
-#         uniform(0.0, 0.02),
-#         uniform(0.0, 0.02),
-#         uniform(0.0, 0.02),
-#         uniform(0.0, 0.02),
-#         uniform(0.0, 0.02),
-#         uniform(0.0, 0.02),
-#         uniform(0.0, 0.02),
-#             ], [  # bta_dw
-#         uniform(0.0, 150.0),
-#         uniform(0.0, 150.0),
-#         uniform(0.0, 150.0),
-#         uniform(0.0, 150.0),
-#         uniform(0.0, 150.0),
-#         uniform(0.0, 150.0),
-#         uniform(0.0, 150.0),
-#         uniform(0.0, 150.0),
-#         uniform(0.0, 150.0),
-#         uniform(0.0, 150.0),
-#         uniform(0.0, 150.0),
-#             ], [ # eqfm
-#         normal(68.0, 6.63),
-#         normal(72.0, 6.63),
-#         normal(69.0, 4.59),
-#         normal(37.0, 5.61),
-#         normal(39.0, 7.65),
-#         normal(33.0, 5.61),
-#         normal(65.0, 2.55),
-#         normal(62.0, 5.1),
-#         normal(63.0, 2.55),
-#         normal(63.0, 2.55),
-#         normal(46.0, 8.16),
-#             ],[  # voice
-#         normal(20.0, 10.2),
-#         normal(40.0, 10.2),
-#         normal(50.0, 4.51),
-#         normal(80.0, 10.2),
-#         normal(70.0, 15.31),
-#         normal(80.0, 10.2),
-#         normal(60.0, 10.2),
-#         normal(75.0, 12.76),
-#         normal(70.0, 10.2),
-#         normal(70.0, 10.2),
-#         normal(80.0, 10.2),
-#             ], [ #auton
-#         uniform(55.1981, 55.1981),
-#         uniform(55.2, 55.2),
-#         uniform(55.2, 55.2),
-#         uniform(80.32, 80.32),
-#         uniform(55.46, 55.46),
-#         uniform(100.0, 100.0),
-#         uniform(90.0, 90.0),
-#         uniform(89.33, 89.33),
-#         uniform(55.46, 55.46),
-#         uniform(55.4571, 55.4571),
-#         uniform(55.46, 55.46),
-#             ], [  # time
-#         uniform(0,0),
-#         uniform(0,0),
-#         uniform(0.36, 0.36),
-#         uniform(1.69, 1.69),
-#         uniform(5.0, 5.0),
-#         uniform(8.04, 8.04),
-#         uniform(0.36, 0.36),
-#         uniform(1.69, 1.69),
-#         uniform(0,0),
-#         uniform(0,0),
-#         uniform(0,0),
-#             ], [# area
-#         uniform(0.0, 0.0),
-#         uniform(0.0, 0.0),
-#         uniform(0.0, 0.0),
-#         uniform(7.35, 7.35),
-#         uniform(0.25, 0.25),
-#         uniform(5.63, 5.63),
-#         uniform(6.78, 6.78),
-#         uniform(7.09, 7.09),
-#         uniform(0.0, 0.0),
-#         uniform(0.0, 0.0),
-#         uniform(0.0, 0.0),
-#             ], [ # collab
-#         uniform(6.0, 6.0),
-#         uniform(6.0, 6.0),
-#         uniform(6.0, 6.0),
-#         uniform(1.0, 1.0),
-#         uniform(1.0, 1.0),
-#         uniform(2.0, 2.0),
-#         uniform(6.0, 6.0),
-#         uniform(6.0, 6.0),
-#         uniform(2.0, 2.0),
-#         uniform(2.0, 2.0),
-#         uniform(1.0, 1.0),
-#             ], [ # costcap
-#         lognormal(-5.1776, 0.1232),
-#         lognormal(-5.1776, 0.1232),
-#         tn(0.0039, 0.0006, 0.002, 0.007),
-#         lognormal(-4.2529, 0.2835),
-#         lognormal(-5.6495, 0.1676),
-#         lognormal(-5.0688, 0.3677),
-#         tn(0.0039, 0.0006, 0.002, 0.006),
-#         lognormal(-4.7923, 0.2947),
-#         lognormal(-5.5707, 0.1603),
-#         lognormal(-5.5707, 0.1603),
-#         beta(25.88, 8599.462),
-#             ], [  # costchange
-#         normal(0.0062, 0.0003,),
-#         normal(0.0062, 0.0003),
-#         normal(0.0043, 0.0002),
-#         normal(0.0043, 0.0002),
-#         normal(0.0038, 0.0002),
-#         normal(0.0074, 0.0004),
-#         normal(0.0043, 0.0002),
-#         normal(0.0094, 0.0005),
-#         normal(0.0042, 0.0002),
-#         normal(0.0042, 0.0002),
-#         normal(0.0032, 0.0001),
-#             ]]
-#     return status_quo
-
 
 def status_quo(n=None):
     status_quo = [[ # rehab
@@ -420,8 +121,8 @@ def status_quo(n=None):
         uniform(0,0, size=n),
         uniform(0,0, size=n),
             ], [ # vol_ffw
-        normal(1766.968, 442, size=n),
-        normal(1766.968, 442, size=n),
+        normal(1766.968, 442.0, size=n),
+        normal(1766.968, 442.0, size=n),
         normal(1310.211, 328.0, size=n),
         normal(1726.288, 432.0, size=n),
         normal(1766.968, 442.0, size=n),

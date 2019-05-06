@@ -8,52 +8,26 @@ Created on Wed May  1 08:57:15 2019
 
 import numpy as np
 import matplotlib.pyplot as plt
-from numpy.random import beta, normal, lognormal, uniform
-from scipy.stats import truncnorm
+import pandas as pd
+# from numpy.random import beta, normal, lognormal, uniform
+# from scipy.stats import truncnorm
 import itertools
 import utils
-
+import seaborn as sns
 import generator
 
-
-# objectives
-objectives = [
-        [0.0, 100.0],  #rehab - max
-        [0.0, 100.0],  #adapt - max
-        [0.0, 180.0],  #gwhh - min
-        [0.0, 2.000],  #econs - min
-        [0.0, 365.0],  #vol_dw - min - 5
-        [0.0, 365.0],  #vol_hw - min
-        [500.0, 3600.0],  #vol_ffw - max
-        [0.0, 0.25],  #reliab_dw - min
-        [0.0, 0.25],  #reliab_hw - min
-        [0.0, 0.25],  #reliab_ffw - min - 10
-        [0.0, 365.0],  #aes_dw - min
-        [0.0, 365.0],  #aes_hw - min
-        [0.0, 365.0],  #faecal_dw - min
-        [0.0, 365.0],  #faecal_hw - min
-        [0.0, 2.0],  #cells_dw - min - 15
-        [0.0, 2.0],  #cells_hw - min
-        [0.0, 20.0],  #no3_dw - min
-        [0.0, 0.02],  #pest - min
-        [0.0, 150.0],  #bta_dw - min
-        [20.0, 95.0],  #efqm - max - 20
-        [0.0, 100.0],  #voice - max
-        [0.0, 100.0],  #auton - max
-        [0.0, 10.0],  #time - min
-        [0.0, 10.0],  #area - min
-        [1.0, 6.0],  #collab - max - 25
-        [0.01, 5.0],  #costcap - min
-        [0.0, 5.0],  #costchange - min
-            ]
+# action labels
+act_labels = ['A1a','A1b','A2','A3','A4','A5','A6','A7','A8a','A8b','A9']
+obj_labels = ['rehab', 'adapt', 'gwhh', 'econs', 'vol_dw', 'vol_hw', 'vol_ffw',
+              'reliab_dw', 'reliab_hw', 'reliab_ffw', 'aes_dw', 'aes_hw', 
+              'faecal_dw', 'faecal_hw', 'cells_dw', 'cells_hw', 'no3_dw',
+              'pest', 'bta_dw', 'efqm', 'voice', 'auton', 'time', 'area',
+              'collab', 'cost_cap', 'cost_change',]
 
 # always 27 objectives
-obj_maximise = [True, True, False, False, False, 
-                False, True, False, False, False,
-                False, False, False, False, False,
-                False, False, False, False, True,
-                True, True, False, False, True,
-                False, False]
+obj_maximise = [True, True, False, False, False, False, True, False, False, 
+                False, False, False, False, False, False, False, False, False, 
+                False, True, True, True, False, False, True, False, False]
 
 n = 1000
 sq_sols = np.array(generator.status_quo(n=n))
@@ -62,6 +36,12 @@ def sol_gen(x):
     out = np.zeros([sq_sols.shape[0], n])
     for i in range(sq_sols.shape[2]):
         out[:, i] = np.dot(sq_sols[:,:,i], np.array(x))
+    
+    for i in range(out.shape[0]):
+        out[i, :] = np.clip(out[i, :], 
+           generator.obj_limits[i,0], 
+           generator.obj_limits[i,1])
+        
     return out
     
 x =  np.ones(11)
@@ -78,7 +58,32 @@ for i, max_true in enumerate(obj_maximise):
     if max_true:
         sorted_solutions[:, i, :] = sorted_solutions[:,i,:]*-1
 
+#%%
+# analyse the results for the mean
 # Get the pareto fronts in the mean values
-mean_pf = utils.pareto_fronts(np.mean(sorted_solutions, axis=1), minimize=True)
+mean_pf = np.mean(sorted_solutions, axis=2)
+mean_pf0 = utils.pareto_front_i(mean_pf, minimize=True, i=0)
+core_idx = utils.core_index(inps, mean_pf0)
         
-        
+#%%
+plt.figure()
+plt.bar(range(len(core_idx)), core_idx)
+plt.xticks(range(len(core_idx)), act_labels)
+plt.ylabel('Core index')
+plt.grid()
+plt.show()
+
+
+#%% make pairplots
+
+# get vector with domination
+dominance_vec = np.array([0, ]*sorted_solutions.shape[0])
+dominance_vec[mean_pf0] = 1
+
+mean_sols = np.mean(sols, axis=2)
+df_sols = pd.DataFrame(mean_sols)
+df_sols.columns = obj_labels
+
+df_sols['dominance'] = dominance_vec
+
+sns.pairplot(df_sols, hue='dominance', diag_kind='hist')
