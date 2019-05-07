@@ -15,19 +15,8 @@ import itertools
 import utils
 import seaborn as sns
 import generator
+from sklearn.preprocessing import MinMaxScaler
 
-# action labels
-act_labels = ['A1a','A1b','A2','A3','A4','A5','A6','A7','A8a','A8b','A9']
-obj_labels = ['rehab', 'adapt', 'gwhh', 'econs', 'vol_dw', 'vol_hw', 'vol_ffw',
-              'reliab_dw', 'reliab_hw', 'reliab_ffw', 'aes_dw', 'aes_hw', 
-              'faecal_dw', 'faecal_hw', 'cells_dw', 'cells_hw', 'no3_dw',
-              'pest', 'bta_dw', 'efqm', 'voice', 'auton', 'time', 'area',
-              'collab', 'cost_cap', 'cost_change',]
-
-# always 27 objectives
-obj_maximise = [True, True, False, False, False, False, True, False, False, 
-                False, False, False, False, False, False, False, False, False, 
-                False, True, True, True, False, False, True, False, False]
 
 n = 1000
 sq_sols = np.array(generator.status_quo(n=n))
@@ -47,16 +36,47 @@ def sol_gen(x):
 x =  np.ones(11)
 y = sol_gen(x)
 
+# Generate all the solutions
 inp_comb = itertools.product([0, 1], repeat=len(x))
 inps = np.array([i for i in inp_comb])
 sols = np.array([sol_gen(inp) for inp in inps])
 
-
+#%%
 sorted_solutions = sols[:]
 # Turn the problem into a minimisation problem
-for i, max_true in enumerate(obj_maximise):
+for i, max_true in enumerate(generator.obj_maximise):
     if max_true:
         sorted_solutions[:, i, :] = sorted_solutions[:,i,:]*-1
+
+#%%        
+scaled_sols = np.zeros_like(sols)        
+# range_scale the sorted solutions
+for i in range(sols.shape[1]):
+    scaled_sols[:,i,:] = ((sols[:,i,:] - generator.obj_limits[i, 0]) / 
+               (generator.obj_limits[i, 1] - generator.obj_limits[i, 0]))
+
+#%%        
+#turn into utility
+curvature = generator.curvature(n=sols.shape)
+util_vals = utils.util_exponential(scaled_sols, curvature)
+
+#%%
+# aggregate the utilities ( in the shape of the solutions)
+alpha = generator.alpha(n)
+w = generator.weights(n)
+add_model = np.zeros([sols.shape[0], sols.shape[2]])
+cd_model = np.zeros([sols.shape[0], sols.shape[2]])
+# joint_model = np.zeros([sols.shape[0], sols.shape[2]])
+for i in range(sols.shape[2]):
+    add_model[:,i] = utils.pref_additive(util_vals[:,:,i], w[:, i], w_norm=True)
+    cd_model[:,i] = utils.pref_cobb_douglas(util_vals[:,:,i], w[:, i], w_norm=True)
+
+joint_model = alpha * add_model + (1.0 - alpha)*cd_model
+
+#%%
+
+
+
 
 #%%
 # analyse the results for the mean
@@ -68,7 +88,7 @@ core_idx = utils.core_index(inps, mean_pf0)
 #%%
 plt.figure()
 plt.bar(range(len(core_idx)), core_idx)
-plt.xticks(range(len(core_idx)), act_labels)
+plt.xticks(range(len(core_idx)), generator.act_labels)
 plt.ylabel('Core index')
 plt.grid()
 plt.show()
@@ -82,8 +102,8 @@ dominance_vec[mean_pf0] = 1
 
 mean_sols = np.mean(sols, axis=2)
 df_sols = pd.DataFrame(mean_sols)
-df_sols.columns = obj_labels
+df_sols.columns = generator.obj_labels
 
 df_sols['dominance'] = dominance_vec
 
-sns.pairplot(df_sols, hue='dominance', diag_kind='hist')
+# sns.pairplot(df_sols, hue='dominance', diag_kind='hist')

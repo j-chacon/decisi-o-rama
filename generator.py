@@ -9,6 +9,35 @@ from numpy.random import beta, normal, lognormal, uniform
 from scipy.stats import truncnorm
 
 
+
+# DEfine the generator of the tuncated normal distributions
+def tn(mu, sigma, lower=-np.inf, upper=np.inf, size=None):
+    out = truncnorm((lower - mu) / sigma, 
+                    (upper - mu) / sigma, 
+                    loc=mu, 
+                    scale=sigma)
+    return out.rvs(size=size)
+
+# for the aggregation model
+def alpha(n=None): 
+    return uniform(0,1, size=n)
+
+def curvature(n=None):
+    return uniform(-1, 1, size=n)
+
+# action labels
+act_labels = ['A1a','A1b','A2','A3','A4','A5','A6','A7','A8a','A8b','A9']
+obj_labels = ['rehab', 'adapt', 'gwhh', 'econs', 'vol_dw', 'vol_hw', 'vol_ffw',
+              'reliab_dw', 'reliab_hw', 'reliab_ffw', 'aes_dw', 'aes_hw', 
+              'faecal_dw', 'faecal_hw', 'cells_dw', 'cells_hw', 'no3_dw',
+              'pest', 'bta_dw', 'efqm', 'voice', 'auton', 'time', 'area',
+              'collab', 'cost_cap', 'cost_change',]
+
+# always 27 objectives
+obj_maximise = [True, True, False, False, False, False, True, False, False, 
+                False, False, False, False, False, False, False, False, False, 
+                False, True, True, True, False, False, True, False, False]
+
 obj_limits = np.array([
         [0.0, 100.0],  #rehab - max
         [0.0, 100.0],  #adapt - max
@@ -39,13 +68,46 @@ obj_limits = np.array([
         [0.0, 5.0],  #costchange - min
             ])
 
-# DEfine the generator of the tuncated normal distributions
-def tn(mu, sigma, lower=-np.inf, upper=np.inf, size=None):
-    out = truncnorm((lower - mu) / sigma, 
-                    (upper - mu) / sigma, 
-                    loc=mu, 
-                    scale=sigma)
-    return out.rvs(size=size)
+# min, mean, max
+_wg_vals = [[0, 0.52, 0.83],	  # rehab
+            [0, 0.38, 0.77],  # adapt
+            [0.38, 0.73, 1.0],  # gwhh
+            [0.0, 0.28,0.63],  # econs
+            [0.0, 0.22, 0.36], # vol_dw
+            [0.14, 0.28, 0.48], # vol_hw
+            [0.0, 0.34, 0.50], # vol_ffw
+            [0.15, 0.33, 0.48], # reliab_dw
+            [0.26, 0.42, 0.59], # reliab_hw
+            [0.0, 0.56, 0.83], # reliab_ffw
+            [0.07, 0.3, 0.45], # aes_dw
+            [0.19, 0.41, 0.83], # aes_hw
+            [0.5, 0.68, 1.0], # faecal_dw  == dw_hygiene
+            [0.5, 0.68, 1.0], # faecal_hw  == hw hygiene
+            [0.0, 0.33, 0.50], # cells_dw  = microbial regrowth
+            [0.0, 0.32, 0.50], # cells_hw
+            [0.0, 0.27, 1.0], # no3_dw  == inorganics
+            [0.0, 0.34, 1.0], # pest  = pest_dw
+            [0.0, 0.42, 1.0], # bta_dw  = micropollutants
+            [0.0, 0.25, 0.83], # efqm  = operational management
+            [0.0, 0.11, 0.29], # voice == codetermination
+            [0.0, 0.11, 0.33], # auton
+            [0.0, 0.1, 0.28], # time
+            [0.0, 0.09, 0.28], # area
+            [0.0, 0.14, 0.33], # collab  = unnecesary disturbance
+            [0.23, 0.54, 1.0], # costcap
+            [0.29, 0.33, 0.38], # costchange
+            ]
+
+
+def weights(n=None):
+    # get weights
+    out = []
+    for wg in _wg_vals:
+        out.append(tn(wg[1], (wg[2] - wg[0])/3.9, 0.0, 1.0, n))
+    return np.array(out)
+
+
+
 
 def status_quo(n=None):
     status_quo = [[ # rehab

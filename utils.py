@@ -53,10 +53,7 @@ def pref_cobb_douglas(sols, w, w_norm=False):
 
 def util_exponential(v, r):
     '''calculate exponential utility'''
-    if r == 0.0:
-        out = v
-    else:
-        out = (1.0 - np.exp(-r*v)) / (1.0 - np.exp(-r))
+    out = (1.0 - np.exp(-r*v)) / (1.0 - np.exp(-r))
     return out
 
 def agg_hierarchical(sols, w, alpha):
