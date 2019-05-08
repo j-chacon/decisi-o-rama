@@ -33,79 +33,124 @@ obj_labels = ['rehab', 'adapt', 'gwhh', 'econs', 'vol_dw', 'vol_hw', 'vol_ffw',
               'pest', 'bta_dw', 'efqm', 'voice', 'auton', 'time', 'area',
               'collab', 'cost_cap', 'cost_change',]
 
+_keys = ['rehab', 'adapt', 'gwhh', 'econs', 'vol_dw', 'vol_hw', 'vol_ffw', 
+         'reliab_dw', 'reliab_hw', 'reliab_ffw', 'aes_dw', 'aes_hw', 
+         'faecal_dw', 'faecal_hw', 'cells_dw', 'cells_hw', 'no3_dw', 
+         'pest', 'bta_dw', 'efqm', 'voice', 'auton', 'time', 'area', 'collab', 
+         'costcap', 'costchange', 'intergen', 'res_gw_prot', 'water_supply', 
+         'soc_accept', 'costs', 'dw_supply', 'hw_supply', 'ffw_supply', 
+         'dw_quality', 'hw_quality', 'dw_micro_hyg', 'dw_phys_chem', 
+         'hw_micro_hyg', 'hw_phys_chem', 'water supply IS']
+
+_primary_keys = ['rehab', 'adapt', 'gwhh', 'econs', 'vol_dw', 'vol_hw', 
+                 'vol_ffw', 'reliab_dw', 'reliab_hw', 'reliab_ffw', 'aes_dw', 
+                 'aes_hw', 'faecal_dw', 'faecal_hw', 'cells_dw', 'cells_hw', 
+                 'no3_dw', 'pest', 'bta_dw', 'efqm', 'voice', 'auton', 'time', 
+                 'area', 'collab', 'costcap', 'costchange']
+# class objective():
+#     def __init__(self, childs=None, weights=None, label=None, sols )
+
+
+
 # always 27 objectives
 obj_maximise = [True, True, False, False, False, False, True, False, False, 
                 False, False, False, False, False, False, False, False, False, 
                 False, True, True, True, False, False, True, False, False]
 
 obj_limits = np.array([
-        [0.0, 100.0],  #rehab - max
-        [0.0, 100.0],  #adapt - max
-        [0.0, 180.0],  #gwhh - min
-        [0.0, 2.000],  #econs - min
-        [0.0, 365.0],  #vol_dw - min - 5
-        [0.0, 365.0],  #vol_hw - min
-        [500.0, 3600.0],  #vol_ffw - max
-        [0.0, 0.25],  #reliab_dw - min
-        [0.0, 0.25],  #reliab_hw - min
-        [0.0, 0.25],  #reliab_ffw - min - 10
-        [0.0, 365.0],  #aes_dw - min
-        [0.0, 365.0],  #aes_hw - min
-        [0.0, 365.0],  #faecal_dw - min
-        [0.0, 365.0],  #faecal_hw - min
-        [0.0, 2.0],  #cells_dw - min - 15
-        [0.0, 2.0],  #cells_hw - min
-        [0.0, 20.0],  #no3_dw - min
-        [0.0, 0.02],  #pest - min
-        [0.0, 150.0],  #bta_dw - min
-        [20.0, 95.0],  #efqm - max - 20
-        [0.0, 100.0],  #voice - max
-        [0.0, 100.0],  #auton - max
-        [0.0, 10.0],  #time - min
-        [0.0, 10.0],  #area - min
-        [1.0, 6.0],  #collab - max - 25
-        [0.01, 5.0],  #costcap - min
-        [0.0, 5.0],  #costchange - min
+        [0.0, 100.0],  #rehab - max  - 0
+        [0.0, 100.0],  #adapt - max  - 1
+        [0.0, 180.0],  #gwhh - min  - 2
+        [0.0, 2.000],  #econs - min  - 3
+        [0.0, 365.0],  #vol_dw - min - 4
+        [0.0, 365.0],  #vol_hw - min  - 5
+        [500.0, 3600.0],  #vol_ffw - max  - 6
+        [0.0, 0.25],  #reliab_dw - min  - 7
+        [0.0, 0.25],  #reliab_hw - min  - 8
+        [0.0, 0.25],  #reliab_ffw - min - 9
+        [0.0, 365.0],  #aes_dw - min  - 10
+        [0.0, 365.0],  #aes_hw - min  - 11
+        [0.0, 365.0],  #faecal_dw - min  - 12
+        [0.0, 365.0],  #faecal_hw - min  - 13
+        [0.0, 2.0],  #cells_dw - min - 14
+        [0.0, 2.0],  #cells_hw - min  - 15
+        [0.0, 20.0],  #no3_dw - min  - 16
+        [0.0, 0.02],  #pest - min  - 17
+        [0.0, 150.0],  #bta_dw - min  - 18
+        [20.0, 95.0],  #efqm - max - 19
+        [0.0, 100.0],  #voice - max  - 20
+        [0.0, 100.0],  #auton - max  - 21
+        [0.0, 10.0],  #time - min  - 22
+        [0.0, 10.0],  #area - min  - 23
+        [1.0, 6.0],  #collab - max - 24
+        [0.01, 5.0],  #costcap - min  - 25
+        [0.0, 5.0],  #costchange - min  - 26
             ])
 
 # min, mean, max
-_wg_vals = [[0, 0.52, 0.83],	  # rehab
-            [0, 0.38, 0.77],  # adapt
-            [0.38, 0.73, 1.0],  # gwhh
-            [0.0, 0.28,0.63],  # econs
-            [0.0, 0.22, 0.36], # vol_dw
-            [0.14, 0.28, 0.48], # vol_hw
-            [0.0, 0.34, 0.50], # vol_ffw
-            [0.15, 0.33, 0.48], # reliab_dw
-            [0.26, 0.42, 0.59], # reliab_hw
-            [0.0, 0.56, 0.83], # reliab_ffw
-            [0.07, 0.3, 0.45], # aes_dw
-            [0.19, 0.41, 0.83], # aes_hw
-            [0.5, 0.68, 1.0], # faecal_dw  == dw_hygiene
-            [0.5, 0.68, 1.0], # faecal_hw  == hw hygiene
-            [0.0, 0.33, 0.50], # cells_dw  = microbial regrowth
-            [0.0, 0.32, 0.50], # cells_hw
-            [0.0, 0.27, 1.0], # no3_dw  == inorganics
-            [0.0, 0.34, 1.0], # pest  = pest_dw
-            [0.0, 0.42, 1.0], # bta_dw  = micropollutants
-            [0.0, 0.25, 0.83], # efqm  = operational management
-            [0.0, 0.11, 0.29], # voice == codetermination
-            [0.0, 0.11, 0.33], # auton
-            [0.0, 0.1, 0.28], # time
-            [0.0, 0.09, 0.28], # area
-            [0.0, 0.14, 0.33], # collab  = unnecesary disturbance
-            [0.23, 0.54, 1.0], # costcap
-            [0.29, 0.33, 0.38], # costchange
-            ]
+_wg_vals = dict(rehab =[0, 0.52, 0.83],	  # rehab
+                adapt = [0, 0.38, 0.77],  # adapt
+                gwhh = [0.38, 0.73, 1.0],  # gwhh
+                econs = [0.0, 0.28,0.63],  # econs
+                vol_dw = [0.0, 0.22, 0.36], # vol_dw
+                vol_hw = [0.14, 0.28, 0.48], # vol_hw
+                vol_ffw = [0.0, 0.34, 0.50], # vol_ffw
+                reliab_dw = [0.15, 0.33, 0.48], # reliab_dw
+                reliab_hw = [0.26, 0.42, 0.59], # reliab_hw
+                reliab_ffw = [0.0, 0.56, 0.83], # reliab_ffw
+                aes_dw = [0.07, 0.3, 0.45], # aes_dw
+                aes_hw = [0.19, 0.41, 0.83], # aes_hw
+                faecal_dw = [0.5, 0.68, 1.0], # faecal_dw  == dw_hygiene
+                faecal_hw = [0.5, 0.68, 1.0], # faecal_hw  == hw hygiene
+                cells_dw = [0.0, 0.33, 0.50], # cells_dw  = microbial regrowth
+                cells_hw = [0.0, 0.32, 0.50], # cells_hw
+                no3_dw = [0.0, 0.27, 1.0], # no3_dw  == inorganics
+                pest = [0.0, 0.34, 1.0], # pest  = pest_dw
+                bta_dw = [0.0, 0.42, 1.0], # bta_dw  = micropollutants
+                efqm = [0.0, 0.25, 0.83], # efqm  = operational management
+                voice = [0.0, 0.11, 0.29], # voice == codetermination
+                auton = [0.0, 0.11, 0.33], # auton
+                time = [0.0, 0.1, 0.28], # time
+                area = [0.0, 0.09, 0.28], # area
+                collab = [0.0, 0.14, 0.33], # collab  = unnecesary disturbance
+                costcap = [0.23, 0.54, 1.0], # costcap
+                costchange = [0.29, 0.33, 0.38], # costchange
+                
+                # from this point on are the higher level weights
+                # First_level
+                intergen = [0.0, 0.19, 0.34],
+                res_gw_prot = [0.06, 0.24, 0.48],
+                water_supply = [0.23, 0.33, 0.43],
+                soc_accept = [0.0, 0.08, 0.23],
+                costs = [0.07, 0.18, 0.23],
+                
+                # second_level
+                dw_supply = [0.28, 0.48, 0.83],
+                hw_supply = [0.07, 0.29, 0.43],
+                ffw_supply = [0.0, 0.24, 0.43],
+                
+                # Third level
+                dw_quality = [0.30, 0.45, 0.83],
+                hw_quality = [0.05, 0.31, 0.54],
+                
+                # fourth level
+                dw_micro_hyg = [0.33, 0.44, 0.71],
+                dw_phys_chem = [0.05, 0.26, 0.36],
+                hw_micro_hyg = [0.07, 0.44, 0.67],
+                hw_phys_chem = [0.0, 0.15, 0.36],
+            )
 
 
 def weights(n=None):
     # get weights
-    out = []
-    for wg in _wg_vals:
-        out.append(tn(wg[1], (wg[2] - wg[0])/3.9, 0.0, 1.0, n))
-    return np.array(out)
+    out = {}
+    for wg in _wg_vals.keys():
+        out[wg] = tn(_wg_vals[wg][1], 
+           (_wg_vals[wg][2] - _wg_vals[wg][0])/3.9, 
+           0.0, 1.0, n)
+    return out
 
+weights(2)
 
 
 
