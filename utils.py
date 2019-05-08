@@ -7,6 +7,8 @@ Created on Mon Apr 29 12:42:31 2019
 
 import numpy as np
 
+UTILITY_THRESHOLD = 0.00001
+
 def pareto_fronts(M, minimize=True):
     '''function to calculate the pareto fronts'''
     if minimize is True:
@@ -38,22 +40,32 @@ def pref_additive(sols, w, w_norm=False):
     if np.sum(w) != 1.0 and w_norm is False:
         raise ValueError('weights have to be normalised to 1')
     elif w_norm:
-        w = w / np.sum(w)
+        w = w / np.sum(w, axis=0)
+    
+    out = np.zeros([sols.shape[1], sols.shape[2]])
+    for i in range(sols.shape[1]):
+        out[i,:] = np.sum(sols[:,i,:]*w, axis=0)
         
-    return np.dot(sols, w)
+    return out
 
 def pref_cobb_douglas(sols, w, w_norm=False):
     '''model preferences using cobb-douglas method. takes two vectors'''
+    # Test this function
     if np.sum(w) != 1.0 and w_norm is False:
         raise ValueError('weights have to be normalised to 1')
     elif w_norm:
-        w = w / np.sum(w)
+        w = w / np.sum(w, axis=0)
     
-    return np.prod(sols**w)
+    out = np.zeros([sols.shape[1], sols.shape[2]])
+    for i in range(sols.shape[1]):
+        out[i,:] = np.prod(sols[:,i,:]**w, axis=0)
+        
+    return out
 
 def util_exponential(v, r):
     '''calculate exponential utility'''
     out = (1.0 - np.exp(-r*v)) / (1.0 - np.exp(-r))
+    out[r < UTILITY_THRESHOLD] = 0
     return out
 
 def agg_hierarchical(sols, w, alpha):

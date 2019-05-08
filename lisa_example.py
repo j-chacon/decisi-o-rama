@@ -18,7 +18,8 @@ import generator
 from sklearn.preprocessing import MinMaxScaler
 
 
-n = 1000
+
+n = 10
 sq_sols = np.array(generator.status_quo(n=n))
 #%%
 
@@ -98,11 +99,18 @@ def fun_agg(candidates, node_out):
     cd_model = np.zeros([sols.shape[0], sols.shape[2]])
     # joint_model = np.zeros([sols.shape[0], sols.shape[2]])
     
-    for i in range(_agg_members.shape[0]):
-        add_model[:,i] = utils.pref_additive(_agg_members[i,:,:], _w[i, :], w_norm=True)
-        cd_model[:,i] = utils.pref_cobb_douglas(_agg_members[i,:,:], _w[i, :], w_norm=True)
+    
+    add_model = utils.pref_additive(_agg_members, _w, w_norm=True)
+    cd_model = utils.pref_cobb_douglas(_agg_members, _w, w_norm=True)
+#    for i in range(_agg_members.shape[0]):
+#        add_model[:, i] = utils.pref_additive(_agg_members[i,:,:], _w[i, :], w_norm=True)
+#        cd_model[:, i] = utils.pref_cobb_douglas(_agg_members[i,:,:], _w[i, :], w_norm=True)
+#        if np.any(cd_model == np.inf):
+#            print('we got the infinity stone')
     
     util_vals_dict[node_out] = alpha * add_model + (1.0 - alpha)*cd_model
+    if np.any(np.isnan(util_vals_dict[node_out])):
+        print('we got a nan')
     return 
 
 w = generator.weights(n)
@@ -117,6 +125,8 @@ _keys = ['rehab', 'adapt', 'gwhh', 'econs', 'vol_dw', 'vol_hw', 'vol_ffw',
          'soc_accept', 'costs', 'dw_supply', 'hw_supply', 'ffw_supply', 
          'dw_quality', 'hw_quality', 'dw_micro_hyg', 'dw_phys_chem', 
          'hw_micro_hyg', 'hw_phys_chem', 'water supply IS']
+
+fun_agg(['reliab_ffw', 'vol_ffw'], 'ffw_supply')
 
 # w1
 fun_agg(['rehab', 'adapt'], 'intergen')
@@ -151,97 +161,104 @@ fun_agg(['intergen','res_gw_prot','water_supply','soc_accept','costs'], 'water s
 
 res = util_vals_dict['water supply IS']
 
-
-
+#%%rank the solutions 
+rank = np.zeros_like(res)
+for i in range(n):
+    rank[:, i] = np.argsort(res[:, i])[::-1]  # reversed list of sorted indexes
 
 #%%
-def fun_agg(agg_members, w):
-    alpha = generator.alpha(n)
-    # w = generator.weights(n)[agg_sols]
-    # agg_members = util_vals[:,agg_sols,:]
+plt.plot(rank)
+
+#%%
+
+# #%%
+# def fun_agg(agg_members, w):
+#     alpha = generator.alpha(n)
+#     # w = generator.weights(n)[agg_sols]
+#     # agg_members = util_vals[:,agg_sols,:]
     
-    add_model = np.zeros([sols.shape[0], sols.shape[2]])
-    cd_model = np.zeros([sols.shape[0], sols.shape[2]])
-    # joint_model = np.zeros([sols.shape[0], sols.shape[2]])
+#     add_model = np.zeros([sols.shape[0], sols.shape[2]])
+#     cd_model = np.zeros([sols.shape[0], sols.shape[2]])
+#     # joint_model = np.zeros([sols.shape[0], sols.shape[2]])
     
-    for i in range(sols.shape[2]):
-        add_model[:,i] = utils.pref_additive(agg_members[:,:,i], w[:, i], w_norm=True)
-        cd_model[:,i] = utils.pref_cobb_douglas(agg_members[:,:,i], w[:, i], w_norm=True)
+#     for i in range(sols.shape[2]):
+#         add_model[:,i] = utils.pref_additive(agg_members[:,:,i], w[:, i], w_norm=True)
+#         cd_model[:,i] = utils.pref_cobb_douglas(agg_members[:,:,i], w[:, i], w_norm=True)
     
-    out = alpha * add_model + (1.0 - alpha)*cd_model
-    return out
+#     out = alpha * add_model + (1.0 - alpha)*cd_model
+#     return out
 
-w = generator.weights(n)
+# w = generator.weights(n)
 
-# w1
-_w = np.array([w['rehab'], w['adapt']])
-gg = np.array([util_vals_dict['rehab'], util_vals_dict['adapt']])
-intergen_equ = fun_agg(gg, _w)
+# # w1
+# _w = np.array([w['rehab'], w['adapt']])
+# gg = np.array([util_vals_dict['rehab'], util_vals_dict['adapt']])
+# intergen_equ = fun_agg(gg, _w)
 
-# w2
-_w = np.array([w['gwhh'], w['econs']])
-res_gw_prot = fun_agg(util_vals[:, [2, 3], :], _w)
+# # w2
+# _w = np.array([w['gwhh'], w['econs']])
+# res_gw_prot = fun_agg(util_vals[:, [2, 3], :], _w)
 
-# w3
-_w = np.array([w['gwhh'], w['econs']])
-dw_micro_hyg = fun_agg(util_vals[:, [12, 14], :], )
-
-
-dw_phys_chem = fun_agg(util_vals[:, [16, 17, 18], :], w[[16, 17, 18]])
+# # w3
+# _w = np.array([w['gwhh'], w['econs']])
+# dw_micro_hyg = fun_agg(util_vals[:, [12, 14], :], )
 
 
-hw_micro_hyg = fun_agg(util_vals[:, [13, 15], :], w[[13, 15]])
+# dw_phys_chem = fun_agg(util_vals[:, [16, 17, 18], :], w[[16, 17, 18]])
 
 
-hw_phys_chem = fun_agg(util_vals[:, [16, 17, 18], :], w[[16, 17, 18]])
+# hw_micro_hyg = fun_agg(util_vals[:, [13, 15], :], w[[13, 15]])
 
 
-ffw_supply = fun_agg(util_vals[:, [9, 6], :], w[[9, 6]])
+# hw_phys_chem = fun_agg(util_vals[:, [16, 17, 18], :], w[[16, 17, 18]])
 
 
-social_accp = fun_agg(util_vals[:, [19,20,21,22,23,24], :], w[[19,20,21,22,23,24]])
+# ffw_supply = fun_agg(util_vals[:, [9, 6], :], w[[9, 6]])
 
 
-costs = fun_agg(util_vals[:, [25, 26], :], w[[25, 26]])
+# social_accp = fun_agg(util_vals[:, [19,20,21,22,23,24], :], w[[19,20,21,22,23,24]])
 
-w_dw_supply = 
+
+# costs = fun_agg(util_vals[:, [25, 26], :], w[[25, 26]])
+
+# w_dw_supply = 
 
 #%%
 
 
 
 #%%rank the solutions by the mean
-rank = np.argsort(np.average(joint_model, axis=1))[::-1]  # reversed list of sorted indexes
+# rank = np.argsort(np.average(joint_model, axis=1))[::-1]  # reversed list of sorted indexes
 
 
 
 
 #%%
 # analyse the results for the mean
-# Get the pareto fronts in the mean values
-mean_pf = np.mean(sorted_solutions, axis=2)
-mean_pf0 = utils.pareto_front_i(mean_pf, minimize=True, i=0)
-core_idx = utils.core_index(inps, mean_pf0)
+# # Get the pareto fronts in the mean values
+# mean_pf = np.mean(sorted_solutions, axis=2)
+# mean_pf0 = utils.pareto_front_i(mean_pf, minimize=True, i=0)
+# core_idx = utils.core_index(inps, mean_pf0)
         
-#%%
-plt.figure()
-plt.bar(range(len(core_idx)), core_idx)
-plt.xticks(range(len(core_idx)), generator.act_labels)
-plt.ylabel('Core index')
-plt.grid()
-plt.show()
+# #%%
+# plt.figure()
+# plt.bar(range(len(core_idx)), core_idx)
+# plt.xticks(range(len(core_idx)), generator.act_labels)
+# plt.ylabel('Core index')
+# plt.grid()
+# plt.show()
 
 
-#%% make pairplots
+# #%% make pairplots
 
-# get vector with domination
-dominance_vec = np.array([0, ]*sorted_solutions.shape[0])
-dominance_vec[mean_pf0] = 1
+# # get vector with domination
+# dominance_vec = np.array([0, ]*sorted_solutions.shape[0])
+# dominance_vec[mean_pf0] = 1
 
-mean_sols = np.mean(sols, axis=2)
-df_sols = pd.DataFrame(mean_sols)
-df_sols.columns = generator.obj_labels
+# mean_sols = np.mean(sols, axis=2)
+# df_sols = pd.DataFrame(mean_sols)
+# df_sols.columns = generator.obj_labels
 
-df_sols['dominance'] = dominance_vec
+# df_sols['dominance'] = dominance_vec
 
 # sns.pairplot(df_sols, hue='dominance', diag_kind='hist')
