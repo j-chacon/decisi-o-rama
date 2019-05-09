@@ -10,7 +10,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 # from numpy.random import beta, normal, lognormal, uniform
-# from scipy.stats import truncnorm
+from scipy.stats import rankdata
 import itertools
 import utils
 import seaborn as sns
@@ -19,10 +19,9 @@ from sklearn.preprocessing import MinMaxScaler
 
 
 
-n = 10
+n = 10000
 sq_sols = np.array(generator.status_quo(n=n))
 #%%
-
 # primary solutions
 def sol_gen(x):    
     out = np.zeros([sq_sols.shape[0], n])
@@ -52,18 +51,24 @@ for i, key in enumerate(generator._primary_keys):
 # weights = generator.weights(n)
 
 #%%
-# sorted_solutions = sols[:]
-# # Turn the problem into a minimisation problem
-# for i, max_true in enumerate(generator.obj_maximise):
-#     if max_true:
-#         sorted_solutions[:, i, :] = sorted_solutions[:,i,:]*-1
+sorted_solutions = np.copy(sols)
+# Turn the problem into a minimisation problem
+for i, max_true in enumerate(generator.obj_maximise):
+    if max_true:
+        sorted_solutions[:, i, :] *= -1
+
 
 #%%        
-scaled_sols = np.zeros_like(sols)        
+scaled_sols = np.zeros_like(sorted_solutions)
 # range_scale the sorted solutions
 for i in range(sols.shape[1]):
-    scaled_sols[:,i,:] = ((sols[:,i,:] - generator.obj_limits[i, 0]) / 
-                          (generator.obj_limits[i, 1] - generator.obj_limits[i, 0]))
+    if generator.obj_maximise[i]:  # direction
+        
+        scaled_sols[:,i,:] = ((sols[:,i,:] - generator.obj_limits[i, 0]) / 
+                              (generator.obj_limits[i, 1] - generator.obj_limits[i, 0]))
+    else:
+        scaled_sols[:,i,:] = 1.0 -1.0*((sols[:,i,:] - generator.obj_limits[i, 0]) / 
+                              (generator.obj_limits[i, 1] - generator.obj_limits[i, 0]))
 
 #%%        
 #turn into utility
@@ -166,9 +171,32 @@ rank = np.zeros_like(res)
 for i in range(n):
     rank[:, i] = np.argsort(res[:, i])[::-1]  # reversed list of sorted indexes
 
-#%%
 plt.plot(rank)
 
+#%% Sort by median
+med_rank = np.median(res, axis=1)  # Maximise median utility
+iqr = np.quantile(res, 0.75, axis=1) - np.quantile(res, 0.25, axis=1)  # Minimise interquantile
+
+# make the vectors a decision problem - maximisation
+dp = np.vstack([med_rank, -iqr]).T
+
+# get dominating solutions
+pf = utils.pareto_front_i(dp, minimize=False)
+
+
+#%%
+# Visualise the alternatives
+# calculate core index
+ci = utils.core_index(inps, pf)
+plt.bar(range(len(ci)), ci)
+plt.xticks(range(len(ci)), generator.act_labels)
+#%%
+med_rank_idx = np.argsort(med_rank)[::-1]
+
+# build ranked solutions
+ranked_sols = inps[med_rank_idx]
+
+plt.plot(ranked_sols)
 #%%
 
 # #%%
