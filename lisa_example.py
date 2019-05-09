@@ -19,11 +19,12 @@ import generator
 #
 
 
-n = 1000
+n = 100
 sq_sols = np.array(generator.status_quo(n=n))
 #%%
 # primary solutions
 def sol_gen(x):    
+    # calculate value function and then sum over that
     out = np.zeros([sq_sols.shape[0], n])
     for i in range(sq_sols.shape[2]):
         out[:, i] = np.dot(sq_sols[:,:,i], np.array(x))
@@ -48,18 +49,9 @@ sols_dict = {}
 for i, key in enumerate(generator._primary_keys):
     sols_dict[key] = sols[:, i, :]
 
-# weights = generator.weights(n)
-
-#%%
-sorted_solutions = np.copy(sols)
-# Turn the problem into a minimisation problem
-for i, max_true in enumerate(generator.obj_maximise):
-    if max_true:
-        sorted_solutions[:, i, :] *= -1
-
 
 #%%        
-scaled_sols = np.zeros_like(sorted_solutions)
+scaled_sols = np.zeros_like(sols)
 # range_scale the sorted solutions
 for i in range(sols.shape[1]):
     if generator.obj_maximise[i]:  # direction
@@ -70,19 +62,22 @@ for i in range(sols.shape[1]):
         scaled_sols[:,i,:] = 1.0 -1.0*((sols[:,i,:] - generator.obj_limits[i, 0]) / 
                               (generator.obj_limits[i, 1] - generator.obj_limits[i, 0]))
 
+print(np.min(scaled_sols))
+print(np.max(scaled_sols))
+
 #%%        
 #turn into utility
-curvature = generator.curvature(n=sols.shape)
-util_vals = utils.util_exponential(scaled_sols, curvature)
+curvature = generator.curvature(n=sols.shape[1])
+util_vals = np.zeros_like(sols)
+for i in range(sols.shape[1]):
+    util_vals[:,i,:] = utils.util_exponential(scaled_sols[:,i,:], curvature[i])
 
 util_vals_dict = {}
 for i, key in enumerate(generator._primary_keys):
-    util_vals_dict[key] = sols[:, i, :]
+    util_vals_dict[key] = util_vals[:, i, :]
 
 #%%
 #aggregate the first two utilities (in the shape of the solutions)
-# agg_sols = [0,1] # rehab
-
 
 def fun_agg(candidates, node_out):
     ''''''
@@ -97,13 +92,9 @@ def fun_agg(candidates, node_out):
     _w = np.array([w[c] for c in candidates])
     _agg_members = np.array([util_vals_dict[c] for c in candidates])
     alpha = generator.alpha(n)
-    # w = generator.weights(n)[agg_sols]
-    # agg_members = util_vals[:,agg_sols,:]
     
     add_model = np.zeros([sols.shape[0], sols.shape[2]])
     cd_model = np.zeros([sols.shape[0], sols.shape[2]])
-    # joint_model = np.zeros([sols.shape[0], sols.shape[2]])
-    
     
     add_model = utils.pref_additive(_agg_members, _w, w_norm=True)
     cd_model = utils.pref_cobb_douglas(_agg_members, _w, w_norm=True)   
@@ -112,18 +103,8 @@ def fun_agg(candidates, node_out):
         print('we got a nan')
     return 
 
+# Make random weights for the objectives and goals
 w = generator.weights(n)
-
-_keys = ['rehab', 'adapt', 'gwhh', 'econs', 'vol_dw', 'vol_hw', 'vol_ffw', 
-         'reliab_dw', 'reliab_hw', 'reliab_ffw', 'aes_dw', 'aes_hw', 
-         'faecal_dw', 'faecal_hw', 'cells_dw', 'cells_hw', 'no3_dw', 
-         'pest', 'bta_dw', 'efqm', 'voice', 'auton', 'time', 'area', 'collab', 
-         'costcap', 'costchange', 'intergen', 'res_gw_prot', 'water_supply', 
-         'soc_accept', 'costs', 'dw_supply', 'hw_supply', 'ffw_supply', 
-         'dw_quality', 'hw_quality', 'dw_micro_hyg', 'dw_phys_chem', 
-         'hw_micro_hyg', 'hw_phys_chem', 'water supply IS']
-
-fun_agg(['reliab_ffw', 'vol_ffw'], 'ffw_supply')
 
 # w1
 fun_agg(['rehab', 'adapt'], 'intergen')
@@ -159,11 +140,11 @@ fun_agg(['intergen','res_gw_prot','water_supply','soc_accept','costs'], 'water s
 res = util_vals_dict['water supply IS']
 
 #%%rank the solutions 
-rank = np.zeros_like(res)
-for i in range(n):
-    rank[:, i] = np.argsort(res[:, i])[::-1]  # reversed list of sorted indexes
-
-plt.plot(rank)
+#rank = np.zeros_like(res)
+#for i in range(n):
+#    rank[:, i] = np.argsort(res[:, i])[::-1]  # reversed list of sorted indexes
+#
+#plt.plot(rank)
 
 #%% Sort by median
 med_rank = np.median(res, axis=1)  # Maximise median utility
@@ -175,15 +156,28 @@ dp = np.vstack([med_rank, -iqr]).T
 # get dominating solutions
 pf = utils.pareto_front_i(dp, minimize=False)
 
+#%%
+plt.figure()
+plt.plot(dp[:, 0], dp[:, 1], '.', label='solutions')
+plt.plot(dp[pf, 0], dp[pf, 1], 'o', label='pareto')
+plt.xlabel('Median utility')
+plt.ylabel('IQR')
+plt.grid()
+plt.legend()
+plt.show()
+
 
 #%%
 # Visualise the alternatives
 # calculate core index
 ci = utils.core_index(inps, pf)
+
+plt.figure()
 plt.bar(range(len(ci)), ci)
 plt.xticks(range(len(ci)), generator.act_labels)
 plt.ylabel('Core Index [-]')
 plt.grid()
+plt.show()
 
 #%%
 med_rank_idx = np.argsort(med_rank)[::-1]
