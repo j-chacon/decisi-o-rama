@@ -8,18 +8,18 @@ Created on Wed May  1 08:57:15 2019
 
 import numpy as np
 import matplotlib.pyplot as plt
-import pandas as pd
+#import pandas as pd
 # from numpy.random import beta, normal, lognormal, uniform
-from scipy.stats import rankdata
+#from scipy.stats import rankdata
 import itertools
 import utils
-import seaborn as sns
+#import seaborn as sns
 import generator
-from sklearn.preprocessing import MinMaxScaler
+#from sklearn.preprocessing import MinMaxScaler
+#
 
 
-
-n = 10000
+n = 1000
 sq_sols = np.array(generator.status_quo(n=n))
 #%%
 # primary solutions
@@ -106,21 +106,13 @@ def fun_agg(candidates, node_out):
     
     
     add_model = utils.pref_additive(_agg_members, _w, w_norm=True)
-    cd_model = utils.pref_cobb_douglas(_agg_members, _w, w_norm=True)
-#    for i in range(_agg_members.shape[0]):
-#        add_model[:, i] = utils.pref_additive(_agg_members[i,:,:], _w[i, :], w_norm=True)
-#        cd_model[:, i] = utils.pref_cobb_douglas(_agg_members[i,:,:], _w[i, :], w_norm=True)
-#        if np.any(cd_model == np.inf):
-#            print('we got the infinity stone')
-    
+    cd_model = utils.pref_cobb_douglas(_agg_members, _w, w_norm=True)   
     util_vals_dict[node_out] = alpha * add_model + (1.0 - alpha)*cd_model
     if np.any(np.isnan(util_vals_dict[node_out])):
         print('we got a nan')
     return 
 
 w = generator.weights(n)
-
-
 
 _keys = ['rehab', 'adapt', 'gwhh', 'econs', 'vol_dw', 'vol_hw', 'vol_ffw', 
          'reliab_dw', 'reliab_hw', 'reliab_ffw', 'aes_dw', 'aes_hw', 
@@ -190,13 +182,16 @@ pf = utils.pareto_front_i(dp, minimize=False)
 ci = utils.core_index(inps, pf)
 plt.bar(range(len(ci)), ci)
 plt.xticks(range(len(ci)), generator.act_labels)
+plt.ylabel('Core Index [-]')
+plt.grid()
+
 #%%
 med_rank_idx = np.argsort(med_rank)[::-1]
 
 # build ranked solutions
 ranked_sols = inps[med_rank_idx]
 
-plt.plot(ranked_sols)
+#plt.plot(ranked_sols)
 #%%
 
 # #%%
