@@ -152,7 +152,11 @@ def weights(n=None):
 
 weights(2)
 
+def sq_rehab():
+    return status_quo()[0]
 
+def sq_adapt():
+    return status_quo()[1]
 
 def status_quo(n=None):
     status_quo = [[ # rehab
@@ -480,4 +484,4 @@ def status_quo(n=None):
         normal(0.0042, 0.0002, size=n),
         normal(0.0032, 0.0001, size=n),
             ]]
-    return status_quo
+    return np.array(status_quo)

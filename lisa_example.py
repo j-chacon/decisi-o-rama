@@ -15,28 +15,56 @@ import itertools
 import utils
 #import seaborn as sns
 import generator
+import utility
 #from sklearn.preprocessing import MinMaxScaler
 #
 
 
 n = 100
 sq_sols = np.array(generator.status_quo(n=n))
+curvature = generator.curvature([sq_sols.shape[0], n])
 #%%
 # primary solutions
 def sol_gen(x):    
     # calculate value function and then sum over that
     out = np.zeros([sq_sols.shape[0], n])
-    for i in range(sq_sols.shape[2]):
-        out[:, i] = np.dot(sq_sols[:,:,i], np.array(x))
+
+    for i in range(sq_sols.shape[2]): ## each solution
+        temp = np.multiply(sq_sols[:,:,i], np.array(x))
+        ut = np.zeros([sq_sols.shape[0], sq_sols.shape[1]])
+        # normalise variables in the interval
+        for j in range(temp.shape[0]):  # for each objective
+            temp[j,:] = np.clip(temp[j,:],
+               generator.obj_limits[j, 0], 
+               generator.obj_limits[j, 1])
+            
+            if not generator.obj_maximise[j]:  # direction
+                temp[j,:] = ((temp[j,:] - generator.obj_limits[j, 0]) / 
+                             (generator.obj_limits[j, 1] - generator.obj_limits[j, 0]))
+            else:
+                temp[j,:] = 1.0 -1.0*((temp[j,:] - generator.obj_limits[j, 0]) / 
+                                      (generator.obj_limits[j, 1] - generator.obj_limits[j, 0]))
+        
+            # add the utility model
+            ut[j, :] = utility.exponential(temp[j,:], curvature[j, i])
+            
+        # sum the utilities
+        out[:, i] = np.sum(ut, axis=1)
     
-    for i in range(out.shape[0]):
-        out[i, :] = np.clip(out[i, :], 
-           generator.obj_limits[i,0], 
-           generator.obj_limits[i,1])
+    
         # print(generator.obj_limits[i,0])
     return out
+#%%
+x = np.zeros(11)
+x[0] = 1    
+yy = sol_gen(x)
 
+#for i in range(sq_sols.shape[2]):
+#    yy = np.multiply(sq_sols[:,:,i], x)
 
+plt.bar(range(27), np.median(yy,axis=1))
+
+#%%
 x =  np.ones(11)
 y = sol_gen(x)
 
@@ -51,30 +79,30 @@ for i, key in enumerate(generator._primary_keys):
 
 
 #%%        
-scaled_sols = np.zeros_like(sols)
-# range_scale the sorted solutions
-for i in range(sols.shape[1]):
-    if generator.obj_maximise[i]:  # direction
-        
-        scaled_sols[:,i,:] = ((sols[:,i,:] - generator.obj_limits[i, 0]) / 
-                              (generator.obj_limits[i, 1] - generator.obj_limits[i, 0]))
-    else:
-        scaled_sols[:,i,:] = 1.0 -1.0*((sols[:,i,:] - generator.obj_limits[i, 0]) / 
-                              (generator.obj_limits[i, 1] - generator.obj_limits[i, 0]))
-
-print(np.min(scaled_sols))
-print(np.max(scaled_sols))
+#scaled_sols = np.zeros_like(sols)
+## range_scale the sorted solutions
+#for i in range(sols.shape[1]):
+#    if generator.obj_maximise[i]:  # direction
+#        
+#        scaled_sols[:,i,:] = ((sols[:,i,:] - generator.obj_limits[i, 0]) / 
+#                              (generator.obj_limits[i, 1] - generator.obj_limits[i, 0]))
+#    else:
+#        scaled_sols[:,i,:] = 1.0 -1.0*((sols[:,i,:] - generator.obj_limits[i, 0]) / 
+#                              (generator.obj_limits[i, 1] - generator.obj_limits[i, 0]))
+#
+#print(np.min(scaled_sols))
+#print(np.max(scaled_sols))
 
 #%%        
 #turn into utility
-curvature = generator.curvature(n=sols.shape[1])
-util_vals = np.zeros_like(sols)
-for i in range(sols.shape[1]):
-    util_vals[:,i,:] = utils.util_exponential(scaled_sols[:,i,:], curvature[i])
-
+#curvature = generator.curvature(n=sols.shape[1])
+#util_vals = np.zeros_like(sols)
+#for i in range(sols.shape[1]):
+#    util_vals[:,i,:] = utils.util_exponential(scaled_sols[:,i,:], curvature[i])
+#
 util_vals_dict = {}
 for i, key in enumerate(generator._primary_keys):
-    util_vals_dict[key] = util_vals[:, i, :]
+    util_vals_dict[key] = sols[:, i, :]
 
 #%%
 #aggregate the first two utilities (in the shape of the solutions)

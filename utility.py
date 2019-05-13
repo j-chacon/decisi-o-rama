@@ -6,14 +6,24 @@ Created on Thu May  9 11:47:00 2019
 """
 import numpy as np
 
-
+OFFSET_VAL = np.random.uniform(-0.00000000001, 0.00000000001)
 # This is the value module. Here all the value funcitons are created
-def exponential(v, r):
+def exponential(v, pars):
     '''calculate exponential utility'''
-    if r == 0.0:
-        out = v
+    r = pars[0]
+    if type(r) is float or type(r) is np.float64 or type(r) is np.float32:
+        if r == 0.0:
+            out = v
+        else:
+            out = (1.0 - np.exp(-r*v)) / (1.0 - np.exp(-r))
     else:
-        out = (1.0 - np.exp(-r*v)) / (1.0 - np.exp(-r))
+        out = []
+        for _r in r:
+            if _r == 0.0:
+                out.append(v)
+            else:
+                out.append((1.0 - np.exp(-_r*v)) / (1.0 - np.exp(-_r)))
+        out = np.array(out)
     return out
     
 if __name__ == '__main__':
