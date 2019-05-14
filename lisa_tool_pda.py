@@ -10,54 +10,93 @@ import pda_fun
 import generator
 import utility
 import aggregate
+import random_instance as ri
+import matplotlib.pyplot as plt
 
-n = 3
+n = 100
 
+sols = generator.status_quo()
+obj_lim = generator.obj_limits
+sq_rehab = [ # rehab
+        ri.beta(9.0375, 4.0951).get,
+        ri.beta(9.0375, 4.0951).get,
+        ri.beta(19.0754,8.9788).get,
+        ri.uniform(0,0).get,
+        ri.uniform(0,0).get,
+        ri.uniform(0,0).get,
+        ri.beta(19.0754, 8.9788).get,
+        ri.uniform(0,0).get,
+        ri.normal(0.0438, 0.0162).get,
+        ri.normal(0.0438, 0.0162).get,
+        ri.uniform(0, 0).get,
+        ]
+wgs = generator.weights()
+#rehab_w = ri.truncnormal(0.52, 0.83/3.6, 0).get
+
+sq_adapt = [ # adapt
+        ri.normal(35.0, 7.65).get,
+        ri.normal(40.0, 10.2).get,
+        ri.normal(20.0, 10.2).get,
+        ri.normal(85.0, 7.65).get,
+        ri.normal(62.5, 6.38).get,
+        ri.normal(62.5, 6.38).get,
+        ri.normal(55.0, 7.65).get,
+        ri.normal(65.0, 7.65).get,
+        ri.normal(35.0, 7.65).get,
+        ri.normal(35.0, 7.65).get,
+        ri.normal(30.0, 10.2).get,
+          ]
+
+adapt_w = ri.truncnormal(0.38, 0.77/3.6, 0).get
+
+#%%
 # Make the objectives for all the fundamental objectives
-rehab = pda_fun.objective(name='rehab', 
-                          label='Rehab', 
-                          obj_min=0.0, 
-                          obj_max=100.0, 
-                          w=generator.weights()['rehab'],
-                          results=generator.sq_rehab, 
+xx = 'rehab'
+rehab = pda_fun.objective(name=xx, 
+                          w=wgs[xx],
+                          results=sols[xx], 
+                          obj_min=obj_lim[xx][0], 
+                          obj_max=obj_lim[xx][1], 
                           n=n, 
                           utility_func=utility.exponential, 
                           utility_pars = [0.01,], 
                           aggregation_func=aggregate.mix_linear_cobb, 
                           aggregation_pars=[0.5,], # alpha
                           maximise=True)
+#res = rehab.get_value(np.ones(11))
+#plt.hist(res)
 
-adapt = pda_fun.objective(name='adapt', 
-                          label='Adapt', 
-                          obj_min=0.0, 
-                          obj_max=100.0, 
-                          w=generator.weights()['adapt'],
-                          results=generator.sq_adapt, 
+#%%
+xx = 'adapt'
+adapt = pda_fun.objective(name=xx, 
+                          w=wgs[xx],
+                          results=sols[xx], 
+                          obj_min=obj_lim[xx][0], 
+                          obj_max=obj_lim[xx][1], 
                           n=n, 
                           utility_func=utility.exponential, 
                           utility_pars = [0.01,], 
                           aggregation_func=aggregate.mix_linear_cobb, 
                           aggregation_pars=[0.5,], # alpha
                           maximise=True)
-
-
-#rehab.get_value(np.ones(11))
 #adapt.get_value(np.ones(11))
-
-intergen = pda_fun.objective(name='intergen', 
-                             label='Intergen', 
-                             obj_min=0.0, 
-                             obj_max=100.0, 
-                             w=generator.weights()['intergen'],
-                             results=None, 
-                             n=n, 
-                             utility_func=utility.exponential, 
-                             utility_pars = [0.01,], # 
-                             aggregation_func=aggregate.mix_linear_cobb, 
-                             aggregation_pars=[0.5,], # alpha mix
-                             maximise=True)
-
+#plt.hist(res)
+#%%
+xx = 'intergen'
+intergen = pda_fun.objective(name=xx, 
+                          w=wgs[xx],
+                          results=None, 
+                          n=n, 
+                          utility_func=utility.exponential, 
+                          utility_pars = [0.01,], 
+                          aggregation_func=aggregate.mix_linear_cobb, 
+                          aggregation_pars=[0.5,], # alpha
+                          maximise=True)
 intergen.add_children(rehab)
 intergen.add_children(adapt)
 
-intergen.get_value(np.ones(11))
+f = intergen.get_value(np.ones(11))
+plt.hist(f)
+
+
+

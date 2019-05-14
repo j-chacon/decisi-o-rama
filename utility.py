@@ -5,12 +5,19 @@ Created on Thu May  9 11:47:00 2019
 @author: jchaconhurtado
 """
 import numpy as np
+from random_instance import check_numeric
 
-OFFSET_VAL = np.random.uniform(-0.00000000001, 0.00000000001)
+#OFFSET_VAL = np.random.uniform(-0.00000000001, 0.00000000001)
 # This is the value module. Here all the value funcitons are created
 def exponential(v, pars):
     '''calculate exponential utility'''
-    r = pars[0]
+    
+    if check_numeric(pars[0]):
+        r = pars[0]
+    else:
+        r = pars[0]()
+        
+    
     if type(r) is float or type(r) is np.float64 or type(r) is np.float32:
         if r == 0.0:
             out = v

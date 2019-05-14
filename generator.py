@@ -7,23 +7,23 @@ Created on Thu May  2 14:22:05 2019
 import numpy as np
 from numpy.random import beta, normal, lognormal, uniform
 from scipy.stats import truncnorm
-
+import random_instance as ri
 
 
 # DEfine the generator of the tuncated normal distributions
-def tn(mu, sigma, lower=-np.inf, upper=np.inf, size=None):
-    out = truncnorm((lower - mu) / sigma, 
-                    (upper - mu) / sigma, 
-                    loc=mu, 
-                    scale=sigma)
-    return out.rvs(size=size)
+#def tn(mu, sigma, lower=-np.inf, upper=np.inf, size=None):
+#    out = truncnorm((lower - mu) / sigma, 
+#                    (upper - mu) / sigma, 
+#                    loc=mu, 
+#                    scale=sigma)
+#    return out.rvs(size=size)
 
 # for the aggregation model
-def alpha(n=None): 
-    return uniform(0,1, size=n)
-
-def curvature(n=None):
-    return uniform(-1, 1, size=n)
+#def alpha(n=None): 
+#    return uniform(0,1, size=n)
+#
+#def curvature(n=None):
+#    return uniform(-1, 1, size=n)
 
 # action labels
 act_labels = ['A1a','A1b','A2','A3','A4','A5','A6','A7','A8a','A8b','A9']
@@ -57,35 +57,65 @@ obj_maximise = [True, True, False, False, False, False, True, False, False,
                 False, False, False, False, False, False, False, False, False, 
                 False, True, True, True, False, False, True, False, False]
 
-obj_limits = np.array([
-        [0.0, 100.0],  #rehab - max  - 0
-        [0.0, 100.0],  #adapt - max  - 1
-        [0.0, 180.0],  #gwhh - min  - 2
-        [0.0, 2.000],  #econs - min  - 3
-        [0.0, 365.0],  #vol_dw - min - 4
-        [0.0, 365.0],  #vol_hw - min  - 5
-        [500.0, 3600.0],  #vol_ffw - max  - 6
-        [0.0, 0.25],  #reliab_dw - min  - 7
-        [0.0, 0.25],  #reliab_hw - min  - 8
-        [0.0, 0.25],  #reliab_ffw - min - 9
-        [0.0, 365.0],  #aes_dw - min  - 10
-        [0.0, 365.0],  #aes_hw - min  - 11
-        [0.0, 365.0],  #faecal_dw - min  - 12
-        [0.0, 365.0],  #faecal_hw - min  - 13
-        [0.0, 2.0],  #cells_dw - min - 14
-        [0.0, 2.0],  #cells_hw - min  - 15
-        [0.0, 20.0],  #no3_dw - min  - 16
-        [0.0, 0.02],  #pest - min  - 17
-        [0.0, 150.0],  #bta_dw - min  - 18
-        [20.0, 95.0],  #efqm - max - 19
-        [0.0, 100.0],  #voice - max  - 20
-        [0.0, 100.0],  #auton - max  - 21
-        [0.0, 10.0],  #time - min  - 22
-        [0.0, 10.0],  #area - min  - 23
-        [1.0, 6.0],  #collab - max - 24
-        [0.01, 5.0],  #costcap - min  - 25
-        [0.0, 5.0],  #costchange - min  - 26
-            ])
+#obj_limits = np.array([
+#        [0.0, 100.0],  #rehab - max  - 0
+#        [0.0, 100.0],  #adapt - max  - 1
+#        [0.0, 180.0],  #gwhh - min  - 2
+#        [0.0, 2.000],  #econs - min  - 3
+#        [0.0, 365.0],  #vol_dw - min - 4
+#        [0.0, 365.0],  #vol_hw - min  - 5
+#        [500.0, 3600.0],  #vol_ffw - max  - 6
+#        [0.0, 0.25],  #reliab_dw - min  - 7
+#        [0.0, 0.25],  #reliab_hw - min  - 8
+#        [0.0, 0.25],  #reliab_ffw - min - 9
+#        [0.0, 365.0],  #aes_dw - min  - 10
+#        [0.0, 365.0],  #aes_hw - min  - 11
+#        [0.0, 365.0],  #faecal_dw - min  - 12
+#        [0.0, 365.0],  #faecal_hw - min  - 13
+#        [0.0, 2.0],  #cells_dw - min - 14
+#        [0.0, 2.0],  #cells_hw - min  - 15
+#        [0.0, 20.0],  #no3_dw - min  - 16
+#        [0.0, 0.02],  #pest - min  - 17
+#        [0.0, 150.0],  #bta_dw - min  - 18
+#        [20.0, 95.0],  #efqm - max - 19
+#        [0.0, 100.0],  #voice - max  - 20
+#        [0.0, 100.0],  #auton - max  - 21
+#        [0.0, 10.0],  #time - min  - 22
+#        [0.0, 10.0],  #area - min  - 23
+#        [1.0, 6.0],  #collab - max - 24
+#        [0.01, 5.0],  #costcap - min  - 25
+#        [0.0, 5.0],  #costchange - min  - 26
+#            ])
+obj_limits = dict(
+        rehab = [  0., 100.],
+        adapt = [  0., 100.],
+        gwhh = [  0., 180.],
+        econs = [0., 2.],
+        vol_dw = [  0., 365.],
+        vol_hw = [  0., 365.],
+        vol_ffw = [ 500., 3600.],
+        reliab_dw = [0.  , 0.25],
+        reliab_hw = [0.  , 0.25],
+        reliab_ffw = [0.  , 0.25],
+        aes_dw = [  0., 365.],
+        aes_hw = [  0., 365.],
+        faecal_dw = [  0., 365.],
+        faecal_hw = [  0., 365.],
+        cells_dw = [0., 2.],
+        cells_hw = [0., 2.],
+        no3_dw = [ 0., 20.],
+        pest = [0.  , 0.02],
+        bta_dw = [  0., 150.],
+        efqm = [20., 95.],
+        voice = [  0., 100.],
+        auton = [  0., 100.],
+        time = [ 0., 10.],
+        area = [ 0., 10.],
+        collab = [1., 6.],
+        costcap = [0.01, 5.],
+        costchange = [0., 5.],
+        )
+
 
 # min, mean, max
 _wg_vals = dict(rehab =[0, 0.52, 0.83],	  # rehab
@@ -145,12 +175,12 @@ def weights(n=None):
     # get weights
     out = {}
     for wg in _wg_vals.keys():
-        out[wg] = tn(_wg_vals[wg][1], 
+        out[wg] = ri.truncnormal(_wg_vals[wg][1], 
            (_wg_vals[wg][2] - _wg_vals[wg][0])/3.9, 
-           0.0, 1.0, n)
+           0.0, 1.0, n).get
     return out
 
-weights(2)
+#weights(2)
 
 def sq_rehab():
     return status_quo()[0]
@@ -158,330 +188,330 @@ def sq_rehab():
 def sq_adapt():
     return status_quo()[1]
 
-def status_quo(n=None):
-    status_quo = [[ # rehab
-        beta(9.0375, 4.0951, size=n),
-        beta(9.0375, 4.0951, size=n),
-        beta(19.0754,8.9788, size=n),
-        uniform(0,0, size=n),
-        uniform(0,0, size=n),
-        uniform(0,0, size=n),
-        beta(19.0754, 8.9788, size=n),
-        uniform(0,0, size=n),
-        normal(0.0438, 0.0162, size=n),
-        normal(0.0438, 0.0162, size=n),
-        uniform(0,0, size=n),
-              ],[ # adapt
-        normal(35.0, 7.65, size=n),
-        normal(40.0, 10.2, size=n),
-        normal(20.0, 10.2, size=n),
-        normal(85.0, 7.65, size=n),
-        normal(62.5, 6.38, size=n),
-        normal(62.5, 6.38, size=n),
-        normal(55.0, 7.65, size=n),
-        normal(65.0, 7.65, size=n),
-        normal(35.0, 7.65, size=n),
-        normal(35.0, 7.65, size=n),
-        normal(30.0, 10.2, size=n),
-          ],[ # gwhh
-        normal(6.45, 1.08, size=n),
-        normal(6.45, 1.08, size=n),
-        normal(6.45, 1.08, size=n),
-        normal(5.32, 0.89, size=n),
-        normal(6.45, 1.08, size=n),
-        normal(11.0, 1.84, size=n),
-        normal(8.49, 1.42, size=n),
-        normal(6.45, 1.08, size=n),
-        normal(6.45, 1.08, size=n),
-        normal(6.45, 1.08, size=n),
-        normal(6.45, 1.08, size=n),
-            ], [ # econs
-        normal(0.713, 0.1783, size=n),
-        normal(0.713, 0.1783, size=n),
-        normal(0.713, 0.1783, size=n),
-        normal(0.0777, 0.0194, size=n),
-        normal(0.4, 0.1, size=n),
-        normal(0.3649, 0.0912, size=n),
-        normal(0.55, 0.1375, size=n),
-        normal(0.185, 0.0462, size=n),
-        normal(0.67, 0.1675, size=n),
-        normal(0.67, 0.1675, size=n),
-        normal(0.67, 0.1675, size=n),
-            ], [# vol_dw
-        uniform(0,0, size=n),
-        uniform(0,0, size=n),
-        uniform(0,0, size=n),
-        uniform(0,0, size=n),
-        uniform(0,0, size=n),
-        uniform(0,0, size=n),
-        uniform(0,0, size=n),
-        uniform(0,0, size=n),
-        uniform(0,0, size=n),
-        uniform(0,0, size=n),
-        uniform(0,0, size=n),
-            ], [  #vol_hw
-        uniform(0,0, size=n),
-        uniform(0,0, size=n),
-        uniform(0,0, size=n),
-        uniform(0,0, size=n),
-        uniform(0,0, size=n),
-        uniform(0,0, size=n),
-        uniform(0,0, size=n),
-        uniform(0,0, size=n),
-        uniform(0,0, size=n),
-        uniform(0,0, size=n),
-        uniform(0,0, size=n),
-            ], [ # vol_ffw
-        normal(1766.968, 442.0, size=n),
-        normal(1766.968, 442.0, size=n),
-        normal(1310.211, 328.0, size=n),
-        normal(1726.288, 432.0, size=n),
-        normal(1766.968, 442.0, size=n),
-        normal(1838.676, 460.0, size=n),
-        normal(1310.211, 328.0, size=n),
-        normal(1838.676, 460.0, size=n),
-        normal(1766.968, 442.0, size=n),
-        normal(1766.968, 442.0, size=n),
-        normal(1310.211, 328.0, size=n),
-            ], [ #reliab_dw
-        lognormal(-5.2162, 0.2991, size=n),
-        lognormal(-5.2162, 0.2991, size=n),
-        lognormal(-5.1793, 0.3056, size=n),
-        uniform(0.98,1.0, size=n),
-        normal(0.0827, 0.0161, size=n),
-        normal(0.175, 0.0375, size=n),
-        lognormal(-5.1793, 0.3056, size=n),
-        normal(0.065, 0.0175, size=n),
-        lognormal(-4.2198, 0.3378, size=n),
-        lognormal(-4.2198, 0.3378, size=n),
-        lognormal(-4.0617, 0.3748, size=n),
-            ], [ # relihab_hw
-        lognormal(-5.2162, 0.2991, size=n),
-        lognormal(-5.2162, 0.2991, size=n),
-        lognormal(-5.1793, 0.3056, size=n),
-        normal(0.65, 0.0175, size=n),
-        lognormal(-4.0617, 0.3748, size=n),
-        normal(0.175, 0.0375, size=n),
-        lognormal(-5.1793, 0.3056, size=n),
-        normal(0.065, 0.0175, size=n),
-        lognormal(-4.2198, 0.3378, size=n),
-        lognormal(-4.2198, 0.3378, size=n),
-        lognormal(-4.0617, 0.3748, size=n),
-            ],[ #reliab_ffw
-        lognormal(-5.2162, 0.2991, size=n),
-        lognormal(-5.2162, 0.2991, size=n),
-        lognormal(-5.1793, 0.3056, size=n),
-        normal(0.65, 0.0175, size=n),
-        lognormal(-4.0617, 0.3748, size=n),
-        normal(0.175, 0.0375, size=n),
-        lognormal(-5.1793, 0.3056, size=n),
-        normal(0.065, 0.0175, size=n),
-        lognormal(-4.2198, 0.3378, size=n),
-        lognormal(-4.2198, 0.3378, size=n),
-        lognormal(-4.0617, 0.3748, size=n),
-            ], [ # aes_dw
-        normal(5.0, 2.55, size=n),
-        normal(5.0, 2.55, size=n),
-        normal(5.0, 2.55, size=n),
-        normal(1.0, 0.51, size=n),
-        normal(1.0, 0.51, size=n),
-        normal(20.0, 5.1, size=n),
-        normal(5.0, 2.55, size=n),
-        normal(27.5, 11.48, size=n),
-        normal(5.0, 2.55, size=n),
-        normal(5.0, 2.55, size=n),
-        normal(10.0, 5.1, size=n),
-            ],[  # aes_hw
-        normal(5.0, 2.55, size=n),
-        normal(5.0, 2.55, size=n),
-        normal(5.0, 2.55, size=n),
-        normal(55.0, 22.96, size=n),
-        normal(75.0, 12.76, size=n),
-        normal(20.0, 5.1, size=n),
-        normal(10.0, 5.1, size=n),
-        normal(27.5, 11.48, size=n),
-        normal(5.0, 2.55, size=n),
-        normal(5.0, 2.55, size=n),
-        normal(10.0, 5.1, size=n),            
-            ], [  # faecal_dw
-        normal(2.5, 1.28, size=n),
-        normal(2.5, 1.28, size=n),
-        normal(2.5, 1.28, size=n),
-        uniform(0,0, size=n),
-        uniform(0,0, size=n),
-        normal(1.0, 0.51, size=n),
-        uniform(0,0, size=n),
-        uniform(0,0, size=n),
-        normal(2.5, 1.28, size=n),
-        normal(2.5, 1.28, size=n),
-        normal(5.0, 2.55, size=n),
-            ], [ # faecal_hw
-        normal(2.5, 1.28, size=n),
-        normal(2.5, 1.28, size=n),
-        normal(2.5, 1.28, size=n),
-        uniform(0,0, size=n),
-        normal(20.0, 5.1, size=n),
-        normal(1.0, 0.51, size=n),
-        normal(5.0, 2.55, size=n),
-        uniform(0,0, size=n),
-        normal(2.5, 1.28, size=n),
-        normal(2.5, 1.28, size=n),
-        normal(5, 2.55, size=n),    
-            ], [  # cells_dw
-        uniform(0,0, size=n),
-        uniform(0,0, size=n),
-        uniform(0,0, size=n),
-        normal(0.15, 0.08, size=n),
-        normal(-0.5, 0.26, size=n),
-        normal(-1.5, 0.26, size=n),
-        normal(0.14, 0.07, size=n),
-        normal(0.34, 0.07, size=n),
-        normal(0.1, 0.05, size=n),
-        normal(0.1, 0.05, size=n),
-        normal(0.15, 0.08, size=n),
-            ], [ # cells_hw
-        uniform(0,0, size=n),
-        uniform(0,0, size=n),
-        normal(0.1, 0.05, size=n),
-        normal(0.39, 0.05, size=n),
-        normal(0.35, 0.18, size=n),
-        normal(-1.5, 0.26, size=n),
-        normal(0.24, 0.03, size=n),
-        normal(0.34, 0.07, size=n),
-        normal(0.1, 0.05, size=n),
-        normal(0.1, 0.05, size=n),
-        normal(0.15, 0.08, size=n),
-            ], [ #no3
-        uniform(0.0, 20.0, size=n),
-        uniform(0.0, 20.0, size=n),
-        uniform(0.0, 20.0, size=n),
-        uniform(0.0, 20.0, size=n),
-        uniform(0.0, 20.0, size=n),
-        uniform(0.0, 20.0, size=n),
-        uniform(0.0, 20.0, size=n),
-        uniform(0.0, 20.0, size=n),
-        uniform(0.0, 20.0, size=n),
-        uniform(0.0, 20.0, size=n),
-        uniform(0.0, 20.0, size=n),
-            ], [  # pest
-        uniform(0.0, 0.02, size=n),
-        uniform(0.0, 0.02, size=n),
-        uniform(0.0, 0.02, size=n),
-        uniform(0.0, 0.02, size=n),
-        uniform(0.0, 0.02, size=n),
-        uniform(0.0, 0.02, size=n),
-        uniform(0.0, 0.02, size=n),
-        uniform(0.0, 0.02, size=n),
-        uniform(0.0, 0.02, size=n),
-        uniform(0.0, 0.02, size=n),
-        uniform(0.0, 0.02, size=n),
-            ], [  # bta_dw
-        uniform(0.0, 150.0, size=n),
-        uniform(0.0, 150.0, size=n),
-        uniform(0.0, 150.0, size=n),
-        uniform(0.0, 150.0, size=n),
-        uniform(0.0, 150.0, size=n),
-        uniform(0.0, 150.0, size=n),
-        uniform(0.0, 150.0, size=n),
-        uniform(0.0, 150.0, size=n),
-        uniform(0.0, 150.0, size=n),
-        uniform(0.0, 150.0, size=n),
-        uniform(0.0, 150.0, size=n),
-            ], [ # eqfm
-        normal(68.0, 6.63, size=n),
-        normal(72.0, 6.63, size=n),
-        normal(69.0, 4.59, size=n),
-        normal(37.0, 5.61, size=n),
-        normal(39.0, 7.65, size=n),
-        normal(33.0, 5.61, size=n),
-        normal(65.0, 2.55, size=n),
-        normal(62.0, 5.1, size=n),
-        normal(63.0, 2.55, size=n),
-        normal(63.0, 2.55, size=n),
-        normal(46.0, 8.16, size=n),
-            ],[  # voice
-        normal(20.0, 10.2, size=n),
-        normal(40.0, 10.2, size=n),
-        normal(50.0, 4.51, size=n),
-        normal(80.0, 10.2, size=n),
-        normal(70.0, 15.31, size=n),
-        normal(80.0, 10.2, size=n),
-        normal(60.0, 10.2, size=n),
-        normal(75.0, 12.76, size=n),
-        normal(70.0, 10.2, size=n),
-        normal(70.0, 10.2, size=n),
-        normal(80.0, 10.2, size=n),
-            ], [ #auton
-        uniform(55.1981, 55.1981, size=n),
-        uniform(55.2, 55.2, size=n),
-        uniform(55.2, 55.2, size=n),
-        uniform(80.32, 80.32, size=n),
-        uniform(55.46, 55.46, size=n),
-        uniform(100.0, 100.0, size=n),
-        uniform(90.0, 90.0, size=n),
-        uniform(89.33, 89.33, size=n),
-        uniform(55.46, 55.46, size=n),
-        uniform(55.4571, 55.4571, size=n),
-        uniform(55.46, 55.46, size=n),
-            ], [  # time
-        uniform(0,0, size=n),
-        uniform(0,0, size=n),
-        uniform(0.36, 0.36, size=n),
-        uniform(1.69, 1.69, size=n),
-        uniform(5.0, 5.0, size=n),
-        uniform(8.04, 8.04, size=n),
-        uniform(0.36, 0.36, size=n),
-        uniform(1.69, 1.69, size=n),
-        uniform(0,0, size=n),
-        uniform(0,0, size=n),
-        uniform(0,0, size=n),
-            ], [# area
-        uniform(0.0, 0.0, size=n),
-        uniform(0.0, 0.0, size=n),
-        uniform(0.0, 0.0, size=n),
-        uniform(7.35, 7.35, size=n),
-        uniform(0.25, 0.25, size=n),
-        uniform(5.63, 5.63, size=n),
-        uniform(6.78, 6.78, size=n),
-        uniform(7.09, 7.09, size=n),
-        uniform(0.0, 0.0, size=n),
-        uniform(0.0, 0.0, size=n),
-        uniform(0.0, 0.0, size=n),
-            ], [ # collab
-        uniform(6.0, 6.0, size=n),
-        uniform(6.0, 6.0, size=n),
-        uniform(6.0, 6.0, size=n),
-        uniform(1.0, 1.0, size=n),
-        uniform(1.0, 1.0, size=n),
-        uniform(2.0, 2.0, size=n),
-        uniform(6.0, 6.0, size=n),
-        uniform(6.0, 6.0, size=n),
-        uniform(2.0, 2.0, size=n),
-        uniform(2.0, 2.0, size=n),
-        uniform(1.0, 1.0, size=n),
-            ], [ # costcap
-        lognormal(-5.1776, 0.1232, size=n),
-        lognormal(-5.1776, 0.1232, size=n),
-        tn(0.0039, 0.0006, 0.002, 0.007, size=n),
-        lognormal(-4.2529, 0.2835, size=n),
-        lognormal(-5.6495, 0.1676, size=n),
-        lognormal(-5.0688, 0.3677, size=n),
-        tn(0.0039, 0.0006, 0.002, 0.006, size=n),
-        lognormal(-4.7923, 0.2947, size=n),
-        lognormal(-5.5707, 0.1603, size=n),
-        lognormal(-5.5707, 0.1603, size=n),
-        beta(25.88, 8599.462, size=n),
-            ], [  # costchange
-        normal(0.0062, 0.0003, size=n),
-        normal(0.0062, 0.0003, size=n),
-        normal(0.0043, 0.0002, size=n),
-        normal(0.0043, 0.0002, size=n),
-        normal(0.0038, 0.0002, size=n),
-        normal(0.0074, 0.0004, size=n),
-        normal(0.0043, 0.0002, size=n),
-        normal(0.0094, 0.0005, size=n),
-        normal(0.0042, 0.0002, size=n),
-        normal(0.0042, 0.0002, size=n),
-        normal(0.0032, 0.0001, size=n),
-            ]]
-    return np.array(status_quo)
+def status_quo():
+    status_quo = dict( rehab = [
+        ri.beta(9.0375, 4.0951).get,
+        ri.beta(9.0375, 4.0951).get,
+        ri.beta(19.0754,8.9788).get,
+        ri.uniform(0,0).get,
+        ri.uniform(0,0).get,
+        ri.uniform(0,0).get,
+        ri.beta(19.0754, 8.9788).get,
+        ri.uniform(0,0).get,
+        ri.normal(0.0438, 0.0162).get,
+        ri.normal(0.0438, 0.0162).get,
+        ri.uniform(0,0).get,
+              ], adapt=[
+        ri.normal(35.0, 7.65).get,
+        ri.normal(40.0, 10.2).get,
+        ri.normal(20.0, 10.2).get,
+        ri.normal(85.0, 7.65).get,
+        ri.normal(62.5, 6.38).get,
+        ri.normal(62.5, 6.38).get,
+        ri.normal(55.0, 7.65).get,
+        ri.normal(65.0, 7.65).get,
+        ri.normal(35.0, 7.65).get,
+        ri.normal(35.0, 7.65).get,
+        ri.normal(30.0, 10.2).get,
+          ], gwhh = [
+        ri.normal(6.45, 1.08).get,
+        ri.normal(6.45, 1.08).get,
+        ri.normal(6.45, 1.08).get,
+        ri.normal(5.32, 0.89).get,
+        ri.normal(6.45, 1.08).get,
+        ri.normal(11.0, 1.84).get,
+        ri.normal(8.49, 1.42).get,
+        ri.normal(6.45, 1.08).get,
+        ri.normal(6.45, 1.08).get,
+        ri.normal(6.45, 1.08).get,
+        ri.normal(6.45, 1.08).get,
+            ], econs =[
+        ri.normal(0.713, 0.1783).get,
+        ri.normal(0.713, 0.1783).get,
+        ri.normal(0.713, 0.1783).get,
+        ri.normal(0.0777, 0.0194).get,
+        ri.normal(0.4, 0.1).get,
+        ri.normal(0.3649, 0.0912).get,
+        ri.normal(0.55, 0.1375).get,
+        ri.normal(0.185, 0.0462).get,
+        ri.normal(0.67, 0.1675).get,
+        ri.normal(0.67, 0.1675).get,
+        ri.normal(0.67, 0.1675).get,
+            ], vol_dw=[
+        ri.uniform(0,0).get,
+        ri.uniform(0,0).get,
+        ri.uniform(0,0).get,
+        ri.uniform(0,0).get,
+        ri.uniform(0,0).get,
+        ri.uniform(0,0).get,
+        ri.uniform(0,0).get,
+        ri.uniform(0,0).get,
+        ri.uniform(0,0).get,
+        ri.uniform(0,0).get,
+        ri.uniform(0,0).get,
+            ], vol_hw =[
+        ri.uniform(0,0).get,
+        ri.uniform(0,0).get,
+        ri.uniform(0,0).get,
+        ri.uniform(0,0).get,
+        ri.uniform(0,0).get,
+        ri.uniform(0,0).get,
+        ri.uniform(0,0).get,
+        ri.uniform(0,0).get,
+        ri.uniform(0,0).get,
+        ri.uniform(0,0).get,
+        ri.uniform(0,0).get,
+            ], vol_ffw=[
+        ri.normal(1766.968, 442.0).get,
+        ri.normal(1766.968, 442.0).get,
+        ri.normal(1310.211, 328.0).get,
+        ri.normal(1726.288, 432.0).get,
+        ri.normal(1766.968, 442.0).get,
+        ri.normal(1838.676, 460.0).get,
+        ri.normal(1310.211, 328.0).get,
+        ri.normal(1838.676, 460.0).get,
+        ri.normal(1766.968, 442.0).get,
+        ri.normal(1766.968, 442.0).get,
+        ri.normal(1310.211, 328.0).get,
+            ], reliab_dw =[
+        ri.lognormal(-5.2162, 0.2991).get,
+        ri.lognormal(-5.2162, 0.2991).get,
+        ri.lognormal(-5.1793, 0.3056).get,
+        ri.uniform(0.98,1.0).get,
+        ri.normal(0.0827, 0.0161).get,
+        ri.normal(0.175, 0.0375).get,
+        ri.lognormal(-5.1793, 0.3056).get,
+        ri.normal(0.065, 0.0175).get,
+        ri.lognormal(-4.2198, 0.3378).get,
+        ri.lognormal(-4.2198, 0.3378).get,
+        ri.lognormal(-4.0617, 0.3748).get,
+            ], relihab_hw =[
+        ri.lognormal(-5.2162, 0.2991).get,
+        ri.lognormal(-5.2162, 0.2991).get,
+        ri.lognormal(-5.1793, 0.3056).get,
+        ri.normal(0.65, 0.0175).get,
+        ri.lognormal(-4.0617, 0.3748).get,
+        ri.normal(0.175, 0.0375).get,
+        ri.lognormal(-5.1793, 0.3056).get,
+        ri.normal(0.065, 0.0175).get,
+        ri.lognormal(-4.2198, 0.3378).get,
+        ri.lognormal(-4.2198, 0.3378).get,
+        ri.lognormal(-4.0617, 0.3748).get,
+            ],reliab_ffw =[
+        ri.lognormal(-5.2162, 0.2991).get,
+        ri.lognormal(-5.2162, 0.2991).get,
+        ri.lognormal(-5.1793, 0.3056).get,
+        ri.normal(0.65, 0.0175).get,
+        ri.lognormal(-4.0617, 0.3748).get,
+        ri.normal(0.175, 0.0375).get,
+        ri.lognormal(-5.1793, 0.3056).get,
+        ri.normal(0.065, 0.0175).get,
+        ri.lognormal(-4.2198, 0.3378).get,
+        ri.lognormal(-4.2198, 0.3378).get,
+        ri.lognormal(-4.0617, 0.3748).get,
+            ], aes_dw =[
+        ri.normal(5.0, 2.55).get,
+        ri.normal(5.0, 2.55).get,
+        ri.normal(5.0, 2.55).get,
+        ri.normal(1.0, 0.51).get,
+        ri.normal(1.0, 0.51).get,
+        ri.normal(20.0, 5.1).get,
+        ri.normal(5.0, 2.55).get,
+        ri.normal(27.5, 11.48).get,
+        ri.normal(5.0, 2.55).get,
+        ri.normal(5.0, 2.55).get,
+        ri.normal(10.0, 5.1).get,
+            ], aes_hw = [
+        ri.normal(5.0, 2.55).get,
+        ri.normal(5.0, 2.55).get,
+        ri.normal(5.0, 2.55).get,
+        ri.normal(55.0, 22.96).get,
+        ri.normal(75.0, 12.76).get,
+        ri.normal(20.0, 5.1).get,
+        ri.normal(10.0, 5.1).get,
+        ri.normal(27.5, 11.48).get,
+        ri.normal(5.0, 2.55).get,
+        ri.normal(5.0, 2.55).get,
+        ri.normal(10.0, 5.1).get,            
+            ], faecal_dw =[
+        ri.normal(2.5, 1.28).get,
+        ri.normal(2.5, 1.28).get,
+        ri.normal(2.5, 1.28).get,
+        ri.uniform(0,0).get,
+        ri.uniform(0,0).get,
+        ri.normal(1.0, 0.51).get,
+        ri.uniform(0,0).get,
+        ri.uniform(0,0).get,
+        ri.normal(2.5, 1.28).get,
+        ri.normal(2.5, 1.28).get,
+        ri.normal(5.0, 2.55).get,
+            ], faecal_hw =[
+        ri.normal(2.5, 1.28).get,
+        ri.normal(2.5, 1.28).get,
+        ri.normal(2.5, 1.28).get,
+        ri.uniform(0,0).get,
+        ri.normal(20.0, 5.1).get,
+        ri.normal(1.0, 0.51).get,
+        ri.normal(5.0, 2.55).get,
+        ri.uniform(0,0).get,
+        ri.normal(2.5, 1.28).get,
+        ri.normal(2.5, 1.28).get,
+        ri.normal(5, 2.55).get,    
+            ], cells_dw =[
+        ri.uniform(0,0).get,
+        ri.uniform(0,0).get,
+        ri.uniform(0,0).get,
+        ri.normal(0.15, 0.08).get,
+        ri.normal(-0.5, 0.26).get,
+        ri.normal(-1.5, 0.26).get,
+        ri.normal(0.14, 0.07).get,
+        ri.normal(0.34, 0.07).get,
+        ri.normal(0.1, 0.05).get,
+        ri.normal(0.1, 0.05).get,
+        ri.normal(0.15, 0.08).get,
+            ], cells_hw =[
+        ri.uniform(0,0).get,
+        ri.uniform(0,0).get,
+        ri.normal(0.1, 0.05).get,
+        ri.normal(0.39, 0.05).get,
+        ri.normal(0.35, 0.18).get,
+        ri.normal(-1.5, 0.26).get,
+        ri.normal(0.24, 0.03).get,
+        ri.normal(0.34, 0.07).get,
+        ri.normal(0.1, 0.05).get,
+        ri.normal(0.1, 0.05).get,
+        ri.normal(0.15, 0.08).get,
+            ], no3 =[
+        ri.uniform(0.0, 20.0).get,
+        ri.uniform(0.0, 20.0).get,
+        ri.uniform(0.0, 20.0).get,
+        ri.uniform(0.0, 20.0).get,
+        ri.uniform(0.0, 20.0).get,
+        ri.uniform(0.0, 20.0).get,
+        ri.uniform(0.0, 20.0).get,
+        ri.uniform(0.0, 20.0).get,
+        ri.uniform(0.0, 20.0).get,
+        ri.uniform(0.0, 20.0).get,
+        ri.uniform(0.0, 20.0).get,
+            ], pest =[
+        ri.uniform(0.0, 0.02).get,
+        ri.uniform(0.0, 0.02).get,
+        ri.uniform(0.0, 0.02).get,
+        ri.uniform(0.0, 0.02).get,
+        ri.uniform(0.0, 0.02).get,
+        ri.uniform(0.0, 0.02).get,
+        ri.uniform(0.0, 0.02).get,
+        ri.uniform(0.0, 0.02).get,
+        ri.uniform(0.0, 0.02).get,
+        ri.uniform(0.0, 0.02).get,
+        ri.uniform(0.0, 0.02).get,
+            ], bta_dw =[
+        ri.uniform(0.0, 150.0).get,
+        ri.uniform(0.0, 150.0).get,
+        ri.uniform(0.0, 150.0).get,
+        ri.uniform(0.0, 150.0).get,
+        ri.uniform(0.0, 150.0).get,
+        ri.uniform(0.0, 150.0).get,
+        ri.uniform(0.0, 150.0).get,
+        ri.uniform(0.0, 150.0).get,
+        ri.uniform(0.0, 150.0).get,
+        ri.uniform(0.0, 150.0).get,
+        ri.uniform(0.0, 150.0).get,
+            ], eqfm =[
+        ri.normal(68.0, 6.63).get,
+        ri.normal(72.0, 6.63).get,
+        ri.normal(69.0, 4.59).get,
+        ri.normal(37.0, 5.61).get,
+        ri.normal(39.0, 7.65).get,
+        ri.normal(33.0, 5.61).get,
+        ri.normal(65.0, 2.55).get,
+        ri.normal(62.0, 5.1).get,
+        ri.normal(63.0, 2.55).get,
+        ri.normal(63.0, 2.55).get,
+        ri.normal(46.0, 8.16).get,
+            ], voice =[
+        ri.normal(20.0, 10.2).get,
+        ri.normal(40.0, 10.2).get,
+        ri.normal(50.0, 4.51).get,
+        ri.normal(80.0, 10.2).get,
+        ri.normal(70.0, 15.31).get,
+        ri.normal(80.0, 10.2).get,
+        ri.normal(60.0, 10.2).get,
+        ri.normal(75.0, 12.76).get,
+        ri.normal(70.0, 10.2).get,
+        ri.normal(70.0, 10.2).get,
+        ri.normal(80.0, 10.2).get,
+            ], auton =[
+        ri.uniform(55.1981, 55.1981).get,
+        ri.uniform(55.2, 55.2).get,
+        ri.uniform(55.2, 55.2).get,
+        ri.uniform(80.32, 80.32).get,
+        ri.uniform(55.46, 55.46).get,
+        ri.uniform(100.0, 100.0).get,
+        ri.uniform(90.0, 90.0).get,
+        ri.uniform(89.33, 89.33).get,
+        ri.uniform(55.46, 55.46).get,
+        ri.uniform(55.4571, 55.4571).get,
+        ri.uniform(55.46, 55.46).get,
+            ], time =[
+        ri.uniform(0,0).get,
+        ri.uniform(0,0).get,
+        ri.uniform(0.36, 0.36).get,
+        ri.uniform(1.69, 1.69).get,
+        ri.uniform(5.0, 5.0).get,
+        ri.uniform(8.04, 8.04).get,
+        ri.uniform(0.36, 0.36).get,
+        ri.uniform(1.69, 1.69).get,
+        ri.uniform(0,0).get,
+        ri.uniform(0,0).get,
+        ri.uniform(0,0).get,
+            ], area =[
+        ri.uniform(0.0, 0.0).get,
+        ri.uniform(0.0, 0.0).get,
+        ri.uniform(0.0, 0.0).get,
+        ri.uniform(7.35, 7.35).get,
+        ri.uniform(0.25, 0.25).get,
+        ri.uniform(5.63, 5.63).get,
+        ri.uniform(6.78, 6.78).get,
+        ri.uniform(7.09, 7.09).get,
+        ri.uniform(0.0, 0.0).get,
+        ri.uniform(0.0, 0.0).get,
+        ri.uniform(0.0, 0.0).get,
+            ], collab=[
+        ri.uniform(6.0, 6.0).get,
+        ri.uniform(6.0, 6.0).get,
+        ri.uniform(6.0, 6.0).get,
+        ri.uniform(1.0, 1.0).get,
+        ri.uniform(1.0, 1.0).get,
+        ri.uniform(2.0, 2.0).get,
+        ri.uniform(6.0, 6.0).get,
+        ri.uniform(6.0, 6.0).get,
+        ri.uniform(2.0, 2.0).get,
+        ri.uniform(2.0, 2.0).get,
+        ri.uniform(1.0, 1.0).get,
+            ], costcap=[
+        ri.lognormal(-5.1776, 0.1232).get,
+        ri.lognormal(-5.1776, 0.1232).get,
+        ri.truncnormal(0.0039, 0.0006, 0.002, 0.007).get,
+        ri.lognormal(-4.2529, 0.2835).get,
+        ri.lognormal(-5.6495, 0.1676).get,
+        ri.lognormal(-5.0688, 0.3677).get,
+        ri.truncnormal(0.0039, 0.0006, 0.002, 0.006).get,
+        ri.lognormal(-4.7923, 0.2947).get,
+        ri.lognormal(-5.5707, 0.1603).get,
+        ri.lognormal(-5.5707, 0.1603).get,
+        ri.beta(25.88, 8599.462).get,
+            ], costchange=[
+        ri.normal(0.0062, 0.0003).get,
+        ri.normal(0.0062, 0.0003).get,
+        ri.normal(0.0043, 0.0002).get,
+        ri.normal(0.0043, 0.0002).get,
+        ri.normal(0.0038, 0.0002).get,
+        ri.normal(0.0074, 0.0004).get,
+        ri.normal(0.0043, 0.0002).get,
+        ri.normal(0.0094, 0.0005).get,
+        ri.normal(0.0042, 0.0002).get,
+        ri.normal(0.0042, 0.0002).get,
+        ri.normal(0.0032, 0.0001).get,
+            ])
+    return status_quo

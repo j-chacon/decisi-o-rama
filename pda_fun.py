@@ -22,7 +22,7 @@ def tn(mu, sigma, lower=-np.inf, upper=np.inf, size=None):
 class objective():
     '''all problems will become maximisation problems'''
     
-    def __init__(self, name, label, obj_min, obj_max, w, results, n=100, 
+    def __init__(self, name, w, results, obj_min=-np.inf, obj_max=np.inf, n=100, 
                  utility_func=utility.exponential, 
                  utility_pars=0.0, 
                  aggregation_func=aggregate.mix_linear_cobb, 
@@ -30,7 +30,7 @@ class objective():
                  maximise=True):
         '''intialisation method'''
         self.name = name
-        self.label = label
+#        self.label = label
         self.obj_min = obj_min
         self.obj_max = obj_max
         self.results = results  # for every action a generator
@@ -60,12 +60,18 @@ class objective():
             
             # get the solutions for x
             _sols = np.zeros([x.size, self.n])
-            if callable(self.results):  # using a generator
+            if callable(self.results):  # using a solution generator
                 for i in range(self.n):
                     _sols[:, i] = self.results() * x
+                    
+            elif callable(self.results[0]):  # Check if its a list of callables
+                for i in range(self.n):
+                    _sols[:, i] = np.array([r() for r in self.results])
+                    
             else:  # using a pre-rendered list
                 for i in range(self.n):
                     _sols[:, i] = self.results[:, i] * x
+            
             # rank-normalise the results
             _sols = (_sols - self.obj_min) / (self.obj_max - self.obj_min)
             
@@ -77,16 +83,36 @@ class objective():
             
             # apply the utility function to the actions and add up
 #            print(self.utility_func(_sols, self.utility_pars).shape)
-            value = np.sum(self.utility_func(_sols, self.utility_pars), axis=0)
+            value = np.zeros([x.size, self.n])
+            for i in range(self.n):
+                if callable(self.utility_pars[0]):  # Case using a generator
+                    ut_pars = [ut() for ut in self.utility_pars]
+                elif hasattr(self.utility_pars[0], '__iter__'):  # Check if its iterable
+                    ut_pars = [ut[i] for ut in self.utility_pars]
+                else:
+                    ut_pars = self.utility_pars    
+#                print(_sols[:,i])
+#                print(ut_pars)
+                value[:, i] = self.utility_func(_sols[:, i], ut_pars)
+                
+            value = np.sum(value, axis=0)
         
         else:
             # Calculate the utility for each children
             _temp_util = np.array([c.get_value(x) for c in self.children]).T
-            _w = np.array([c.w for c in self.children])
-            
-            # make the utility aggregation
-            value = self.aggregation_func(sols=_temp_util, w=_w, 
-                                     pars=self.aggregation_pars, w_norm=True)
+            value = np.zeros(self.n)
+            for i in range(self.n):  # atomic operation
+                # get random weights
+                if callable(self.children[0].w):  # Case using a generator
+                    _w = np.array([c.w() for c in self.children])
+                elif hasattr(self.children[0].w, '__iter__'):  # Check if its iterable
+                    _w = np.array([c.w[i] for c in self.children])
+                else:
+                    _w = np.array([c.w for c in self.children])
+#                print(_w)
+                # make the utility aggregation
+                value[i] = self.aggregation_func(sols=_temp_util[i, :], w=_w, 
+                                         pars=self.aggregation_pars, w_norm=True)
         
         return value
 if __name__ == '__main__':
