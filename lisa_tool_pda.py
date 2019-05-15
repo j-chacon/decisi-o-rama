@@ -64,7 +64,7 @@ wsis_map = dict(
 pda_fun.hierarchy_smith(wsis_map, prob)
 
 # Get a solution
-x = np.ones(11)
+x = np.zeros(11)
 #print(ctime())
 y = prob['water_supply_IS'].get_value(x)
 #print(ctime())

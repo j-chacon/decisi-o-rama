@@ -9,6 +9,8 @@ import utility
 import aggregate
 
 class objective():
+    
+    # TODO add chunks for the uncertainty analysis
     '''all problems will become maximisation problems'''
     
     def __init__(self, name, w, results, obj_min=-np.inf, obj_max=np.inf, n=100, 
@@ -16,14 +18,15 @@ class objective():
                  utility_pars=0.0, 
                  aggregation_func=aggregate.mix_linear_cobb, 
                  aggregation_pars=[0.5,], 
-                 maximise=True):
+                 maximise=True,
+                 chunks=None):
         '''intialisation method'''
         self.name = name
 #        self.label = label
         self.obj_min = obj_min
         self.obj_max = obj_max
         self.results = results  # for every action a generator
-        self.n = n
+        
         self.maximise = maximise
         self.utility_pars = utility_pars
         self.utility_func = utility_func
@@ -31,6 +34,12 @@ class objective():
         self.aggregation_pars = aggregation_pars
         self.children = []
         self.w = w
+        self.chunks = chunks
+        
+        if chunks is None:
+            self.n = n
+        else:
+            self.n = n//chunks
             
         return
     
@@ -48,27 +57,40 @@ class objective():
             # calculate the utility from the solutions
             # TODO make this a GPU function
             # get the solutions for x
-            _sols = np.zeros([x.size, self.n])
+            
+            
+#            _sols = np.zeros([x.size, self.n])
             if callable(self.results):  # using a solution generator
-                for i in range(self.n):
-                    _sols[:, i] = self.results() * x
+#                for i in range(self.n):
+                _sols = self.results(self.n)
                     
             elif callable(self.results[0]):  # Check if its a list of callables
-                for i in range(self.n):
-                    _sols[:, i] = np.array([r() for r in self.results])
+#                for i in range(self.n):
+                _sols = np.array([r(self.n) for r in self.results]).T
                     
             else:  # using a pre-rendered list
-                for i in range(self.n):
-                    _sols[:, i] = self.results[:, i] * x
+#                for i in range(self.n):
+                _sols = self.results
             
+            _sols *= x
+            _sols = _sols.T
+
             # rank-normalise the results
             _sols = (_sols - self.obj_min) / (self.obj_max - self.obj_min)
             
             if self.maximise is False:
                 _sols = 1.0 - _sols
             
+#            for elem in _sols:
+#                print(elem.shape)
+            
             # clip the results (may be unnecessary)
-            _sols = np.clip(_sols, 0.0, 1.0)
+#            _sols = np.clip(_sols, 0.0, 1.0)
+            try:
+                _sols = np.clip(_sols, 0.0, 1.0)
+            except:
+                y = _sols
+                print('something here')    
             
             # apply the utility function to the actions and add up
 #            print(self.utility_func(_sols, self.utility_pars).shape)
@@ -81,7 +103,7 @@ class objective():
                 else:
                     ut_pars = self.utility_pars    
 
-                value[:, i] = self.utility_func(_sols[:, i], ut_pars)
+                    value[:, i] = self.utility_func(_sols[:, i], ut_pars)
                 
             value = np.sum(value, axis=0)
         

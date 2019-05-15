@@ -26,13 +26,34 @@ def check_numeric(x):
         
     return flag
 
+##%% performance test for trncnorm vs truncnormal
+#from time import time
+#n = 10000000
+#res = np.zeros(n)
+#single = truncnormal(0,1,-2, 2).get
+#
+#a = time()
+#for i in range(n):
+#    res[i] = single()
+#print(time() - a)
+#
+#
+#a = time()
+#res = truncnorm.rvs(0, 1,-2, 2, n)
+#print(time() - a)
+
+#%%
 # Define the generator of the tuncated normal distributions
 def _tn(mu, sigma, lower=-np.inf, upper=np.inf, size=None):
-    out = random.uniform()
+    
     if size is None:
+        out = random.normal()
         while lower > out > upper:
-            out = random.uniform()
-
+            out = random.normal()
+    else:
+        a =  (lower - mu) / sigma
+        b =  (upper - mu) / sigma
+        out = truncnorm.rvs(a, b, mu, sigma, size)
     return out
 
 class normal():
@@ -55,7 +76,7 @@ class beta():
     def get(self, n=None):
         if n is None and self.n is not None:
             n = self.n
-        return random.beta(self.a, self.b, self.n)
+        return random.beta(self.a, self.b, n)
     
 class uniform():
     def __init__(self, a, b, n=None):
@@ -91,15 +112,17 @@ class truncnormal():
         return
     
     def get(self, n=None):
-        ## Does not support a size creation method
-        return _tn(self.mu, self.std, self.a, self.b, self.n)
+        if n is None and self.n is not None:
+            n = self.n
+        
+        return _tn(self.mu, self.std, self.a, self.b, n)
 if __name__ == '__main__':
     
-    print(normal(0, 1).get())
-    print(beta(1, 2).get())
-    print(uniform(0, 1).get())
-    print(lognormal(1, 2).get())
-    print(truncnormal(1, 1, 0).get())
+    print(normal(0, 1).get(2))
+    print(beta(1, 2).get(2))
+    print(uniform(0, 1).get(2))
+    print(lognormal(1, 2).get(2))
+    print(truncnormal(1, 1, 0).get(2))
 #class uniform():
 #    def __init__(self):
 #        
