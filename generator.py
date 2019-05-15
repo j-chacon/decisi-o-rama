@@ -27,35 +27,85 @@ import random_instance as ri
 
 # action labels
 act_labels = ['A1a','A1b','A2','A3','A4','A5','A6','A7','A8a','A8b','A9']
-obj_labels = ['rehab', 'adapt', 'gwhh', 'econs', 'vol_dw', 'vol_hw', 'vol_ffw',
-              'reliab_dw', 'reliab_hw', 'reliab_ffw', 'aes_dw', 'aes_hw', 
-              'faecal_dw', 'faecal_hw', 'cells_dw', 'cells_hw', 'no3_dw',
-              'pest', 'bta_dw', 'efqm', 'voice', 'auton', 'time', 'area',
-              'collab', 'cost_cap', 'cost_change',]
+#obj_labels = ['rehab', 'adapt', 'gwhh', 'econs', 'vol_dw', 'vol_hw', 'vol_ffw',
+#              'reliab_dw', 'reliab_hw', 'reliab_ffw', 'aes_dw', 'aes_hw', 
+#              'faecal_dw', 'faecal_hw', 'cells_dw', 'cells_hw', 'no3_dw',
+#              'pest', 'bta_dw', 'efqm', 'voice', 'auton', 'time', 'area',
+#              'collab', 'cost_cap', 'cost_change',]
 
 _keys = ['rehab', 'adapt', 'gwhh', 'econs', 'vol_dw', 'vol_hw', 'vol_ffw', 
          'reliab_dw', 'reliab_hw', 'reliab_ffw', 'aes_dw', 'aes_hw', 
-         'faecal_dw', 'faecal_hw', 'cells_dw', 'cells_hw', 'no3_dw', 
-         'pest', 'bta_dw', 'efqm', 'voice', 'auton', 'time', 'area', 'collab', 
+         'faecal_dw', 'faecal_hw', 'cells_dw', 'cells_hw', 'no3_dw', 'no3_hw',
+         'pest_dw', 'pest_hw', 'bta_dw', 'bta_hw', 'efqm', 'voice', 'auton', 'time', 'area', 'collab', 
          'costcap', 'costchange', 'intergen', 'res_gw_prot', 'water_supply', 
          'soc_accept', 'costs', 'dw_supply', 'hw_supply', 'ffw_supply', 
          'dw_quality', 'hw_quality', 'dw_micro_hyg', 'dw_phys_chem', 
-         'hw_micro_hyg', 'hw_phys_chem', 'water supply IS']
+         'hw_micro_hyg', 'hw_phys_chem', 'water_supply_IS']
 
-_primary_keys = ['rehab', 'adapt', 'gwhh', 'econs', 'vol_dw', 'vol_hw', 
-                 'vol_ffw', 'reliab_dw', 'reliab_hw', 'reliab_ffw', 'aes_dw', 
-                 'aes_hw', 'faecal_dw', 'faecal_hw', 'cells_dw', 'cells_hw', 
-                 'no3_dw', 'pest', 'bta_dw', 'efqm', 'voice', 'auton', 'time', 
-                 'area', 'collab', 'costcap', 'costchange']
+#_primary_keys = ['rehab', 'adapt', 'gwhh', 'econs', 'vol_dw', 'vol_hw', 
+#                 'vol_ffw', 'reliab_dw', 'reliab_hw', 'reliab_ffw', 'aes_dw', 
+#                 'aes_hw', 'faecal_dw', 'faecal_hw', 'cells_dw', 'cells_hw', 
+#                 'no3_dw', 'pest', 'bta_dw', 'efqm', 'voice', 'auton', 'time', 
+#                 'area', 'collab', 'costcap', 'costchange']
 # class objective():
 #     def __init__(self, childs=None, weights=None, label=None, sols )
 
 
 
 # always 27 objectives
-obj_maximise = [True, True, False, False, False, False, True, False, False, 
-                False, False, False, False, False, False, False, False, False, 
-                False, True, True, True, False, False, True, False, False]
+#obj_maximise = [True, True, False, False, False, False, True, False, False, 
+#                False, False, False, False, False, False, False, False, False, 
+#                False, True, True, True, False, False, True, False, False]
+
+obj_maximise = dict(
+        rehab = True,
+        adapt = True,
+        gwhh = False,
+        econs = False,
+        vol_dw = False,
+        vol_hw = False,
+        vol_ffw = True,
+        reliab_dw = False,
+        reliab_hw = False,
+        reliab_ffw = False,
+        aes_dw = False,
+        aes_hw = False,
+        faecal_dw = False,
+        faecal_hw = False,
+        cells_dw = False,
+        cells_hw = False,
+        no3_dw = False,
+        no3_hw = False,
+        pest_dw = False,
+        pest_hw = False,
+        bta_dw = False,
+        bta_hw = False,
+        efqm = True,
+        voice = True,
+        auton = True,
+        time = False,
+        area = False,
+        collab = True,
+        costcap = False,
+        costchange = False,
+        
+        # The secondary (higher aggregation) objectives this does not matter
+        intergen = False,
+        res_gw_prot = False, 
+        water_supply = False, 
+        soc_accept = False, 
+        costs = False, 
+        dw_supply = False, 
+        hw_supply = False, 
+        ffw_supply = False,
+        dw_quality = False, 
+        hw_quality = False, 
+        dw_micro_hyg = False, 
+        dw_phys_chem = False, 
+        hw_micro_hyg = False, 
+        hw_phys_chem = False, 
+        water_supply_IS = False,
+        )
 
 #obj_limits = np.array([
 #        [0.0, 100.0],  #rehab - max  - 0
@@ -87,33 +137,53 @@ obj_maximise = [True, True, False, False, False, False, True, False, False,
 #        [0.0, 5.0],  #costchange - min  - 26
 #            ])
 obj_limits = dict(
-        rehab = [  0., 100.],
-        adapt = [  0., 100.],
-        gwhh = [  0., 180.],
-        econs = [0., 2.],
-        vol_dw = [  0., 365.],
-        vol_hw = [  0., 365.],
-        vol_ffw = [ 500., 3600.],
-        reliab_dw = [0.  , 0.25],
-        reliab_hw = [0.  , 0.25],
-        reliab_ffw = [0.  , 0.25],
-        aes_dw = [  0., 365.],
-        aes_hw = [  0., 365.],
-        faecal_dw = [  0., 365.],
-        faecal_hw = [  0., 365.],
-        cells_dw = [0., 2.],
-        cells_hw = [0., 2.],
-        no3_dw = [ 0., 20.],
-        pest = [0.  , 0.02],
-        bta_dw = [  0., 150.],
-        efqm = [20., 95.],
-        voice = [  0., 100.],
-        auton = [  0., 100.],
-        time = [ 0., 10.],
-        area = [ 0., 10.],
-        collab = [1., 6.],
-        costcap = [0.01, 5.],
-        costchange = [0., 5.],
+        rehab = [0.0, 100.0],
+        adapt = [0.0, 100.0],
+        gwhh = [0.0, 180.0],
+        econs = [0.0, 2.0],
+        vol_dw = [0.0, 365.0],
+        vol_hw = [0.0, 365.0],
+        vol_ffw = [500.0, 3600.0],
+        reliab_dw = [0.0, 0.25],
+        reliab_hw = [0.0, 0.25],
+        reliab_ffw = [0.0, 0.25],
+        aes_dw = [0.0, 365.0],
+        aes_hw = [0.0, 365.0],
+        faecal_dw = [0.0, 365.0],
+        faecal_hw = [0.0, 365.0],
+        cells_dw = [0.0, 2.0],
+        cells_hw = [0.0, 2.0],
+        no3_dw = [0.0, 20.0],
+        no3_hw = [0.0, 20.0],
+        pest_dw = [0.0, 0.02],
+        pest_hw = [0.0, 0.02],
+        bta_dw = [0.0, 150.0],
+        bta_hw = [0.0, 150.0],
+        efqm = [20.0, 95.0],
+        voice = [0.0, 100.0],
+        auton = [0.0, 100.0],
+        time = [0.0, 10.0],
+        area = [0.0, 10.0],
+        collab = [1.0, 6.0],
+        costcap = [0.01, 5.0],
+        costchange = [0.0, 5.0],
+        
+        # The secondary (higher aggregation) objectives
+        intergen = [-np.inf, np.inf],
+        res_gw_prot = [-np.inf, np.inf], 
+        water_supply = [-np.inf, np.inf], 
+        soc_accept = [-np.inf, np.inf], 
+        costs = [-np.inf, np.inf], 
+        dw_supply = [-np.inf, np.inf], 
+        hw_supply = [-np.inf, np.inf], 
+        ffw_supply = [-np.inf, np.inf],
+        dw_quality = [-np.inf, np.inf], 
+        hw_quality = [-np.inf, np.inf], 
+        dw_micro_hyg = [-np.inf, np.inf], 
+        dw_phys_chem = [-np.inf, np.inf], 
+        hw_micro_hyg = [-np.inf, np.inf], 
+        hw_phys_chem = [-np.inf, np.inf], 
+        water_supply_IS = [-np.inf, np.inf],
         )
 
 
@@ -135,8 +205,11 @@ _wg_vals = dict(rehab =[0, 0.52, 0.83],	  # rehab
                 cells_dw = [0.0, 0.33, 0.50], # cells_dw  = microbial regrowth
                 cells_hw = [0.0, 0.32, 0.50], # cells_hw
                 no3_dw = [0.0, 0.27, 1.0], # no3_dw  == inorganics
-                pest = [0.0, 0.34, 1.0], # pest  = pest_dw
+                no3_hw = [0.0, 0.27, 1.0], # no3_dw  == inorganics
+                pest_dw = [0.0, 0.34, 1.0], # pest  = pest_dw
+                pest_hw = [0.0, 0.34, 1.0], # pest  = pest_dw
                 bta_dw = [0.0, 0.42, 1.0], # bta_dw  = micropollutants
+                bta_hw = [0.0, 0.42, 1.0], # bta_dw  = micropollutants
                 efqm = [0.0, 0.25, 0.83], # efqm  = operational management
                 voice = [0.0, 0.11, 0.29], # voice == codetermination
                 auton = [0.0, 0.11, 0.33], # auton
@@ -147,6 +220,8 @@ _wg_vals = dict(rehab =[0, 0.52, 0.83],	  # rehab
                 costchange = [0.29, 0.33, 0.38], # costchange
                 
                 # from this point on are the higher level weights
+                water_supply_IS = [0.0, 1.0, 2.0],  # dummy value will never be used
+                
                 # First_level
                 intergen = [0.0, 0.19, 0.34],
                 res_gw_prot = [0.06, 0.24, 0.48],
@@ -285,7 +360,7 @@ def status_quo():
         ri.lognormal(-4.2198, 0.3378).get,
         ri.lognormal(-4.2198, 0.3378).get,
         ri.lognormal(-4.0617, 0.3748).get,
-            ], relihab_hw =[
+            ], reliab_hw =[
         ri.lognormal(-5.2162, 0.2991).get,
         ri.lognormal(-5.2162, 0.2991).get,
         ri.lognormal(-5.1793, 0.3056).get,
@@ -381,7 +456,7 @@ def status_quo():
         ri.normal(0.1, 0.05).get,
         ri.normal(0.1, 0.05).get,
         ri.normal(0.15, 0.08).get,
-            ], no3 =[
+            ], no3_dw =[
         ri.uniform(0.0, 20.0).get,
         ri.uniform(0.0, 20.0).get,
         ri.uniform(0.0, 20.0).get,
@@ -393,7 +468,31 @@ def status_quo():
         ri.uniform(0.0, 20.0).get,
         ri.uniform(0.0, 20.0).get,
         ri.uniform(0.0, 20.0).get,
-            ], pest =[
+            ], no3_hw =[
+        ri.uniform(0.0, 20.0).get,
+        ri.uniform(0.0, 20.0).get,
+        ri.uniform(0.0, 20.0).get,
+        ri.uniform(0.0, 20.0).get,
+        ri.uniform(0.0, 20.0).get,
+        ri.uniform(0.0, 20.0).get,
+        ri.uniform(0.0, 20.0).get,
+        ri.uniform(0.0, 20.0).get,
+        ri.uniform(0.0, 20.0).get,
+        ri.uniform(0.0, 20.0).get,
+        ri.uniform(0.0, 20.0).get,
+            ],pest_dw =[
+        ri.uniform(0.0, 0.02).get,
+        ri.uniform(0.0, 0.02).get,
+        ri.uniform(0.0, 0.02).get,
+        ri.uniform(0.0, 0.02).get,
+        ri.uniform(0.0, 0.02).get,
+        ri.uniform(0.0, 0.02).get,
+        ri.uniform(0.0, 0.02).get,
+        ri.uniform(0.0, 0.02).get,
+        ri.uniform(0.0, 0.02).get,
+        ri.uniform(0.0, 0.02).get,
+        ri.uniform(0.0, 0.02).get,
+            ], pest_hw =[
         ri.uniform(0.0, 0.02).get,
         ri.uniform(0.0, 0.02).get,
         ri.uniform(0.0, 0.02).get,
@@ -417,7 +516,19 @@ def status_quo():
         ri.uniform(0.0, 150.0).get,
         ri.uniform(0.0, 150.0).get,
         ri.uniform(0.0, 150.0).get,
-            ], eqfm =[
+            ], bta_hw =[
+        ri.uniform(0.0, 150.0).get,
+        ri.uniform(0.0, 150.0).get,
+        ri.uniform(0.0, 150.0).get,
+        ri.uniform(0.0, 150.0).get,
+        ri.uniform(0.0, 150.0).get,
+        ri.uniform(0.0, 150.0).get,
+        ri.uniform(0.0, 150.0).get,
+        ri.uniform(0.0, 150.0).get,
+        ri.uniform(0.0, 150.0).get,
+        ri.uniform(0.0, 150.0).get,
+        ri.uniform(0.0, 150.0).get,
+            ], efqm =[
         ri.normal(68.0, 6.63).get,
         ri.normal(72.0, 6.63).get,
         ri.normal(69.0, 4.59).get,
@@ -513,5 +624,20 @@ def status_quo():
         ri.normal(0.0042, 0.0002).get,
         ri.normal(0.0042, 0.0002).get,
         ri.normal(0.0032, 0.0001).get,
-            ])
+            ], intergen = None,
+            res_gw_prot = None, 
+            water_supply = None, 
+            soc_accept = None, 
+            costs = None, 
+            dw_supply = None, 
+            hw_supply = None, 
+            ffw_supply = None,
+            dw_quality = None, 
+            hw_quality = None, 
+            dw_micro_hyg = None, 
+            dw_phys_chem = None, 
+            hw_micro_hyg = None, 
+            hw_phys_chem = None, 
+            water_supply_IS = None,
+            )
     return status_quo

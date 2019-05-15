@@ -41,8 +41,10 @@ class normal():
         self.std = std
         self.n = n
     
-    def get(self,):
-        return random.normal(self.mu, self.std)
+    def get(self, n=None):
+        if n is None and self.n is not None:
+            n = self.n
+        return random.normal(self.mu, self.std, n)
     
 class beta():
     def __init__(self, a, b, n=None):
@@ -50,7 +52,9 @@ class beta():
         self.b = b
         self.n = n
     
-    def get(self,):
+    def get(self, n=None):
+        if n is None and self.n is not None:
+            n = self.n
         return random.beta(self.a, self.b, self.n)
     
 class uniform():
@@ -59,8 +63,10 @@ class uniform():
         self.b = b
         self.n = n
         
-    def get(self,):
-        return random.uniform(self.a, self.b, self.n)
+    def get(self, n=None):
+        if n is None and self.n is not None:
+            n = self.n
+        return random.uniform(self.a, self.b, n)
     
 class lognormal():
     def __init__(self, mu, std, n=None):
@@ -69,8 +75,10 @@ class lognormal():
         self.n = n
         return
     
-    def get(self,):
-        return random.lognormal(self.mu, self.std, self.n)
+    def get(self, n=None):
+        if n is None and self.n is not None:
+            n = self.n
+        return random.lognormal(self.mu, self.std, n)
 
 class truncnormal():
     def __init__(self, mu, std, a=-np.inf, b=np.inf, n=None):
@@ -82,7 +90,7 @@ class truncnormal():
         
         return
     
-    def get(self,):
+    def get(self, n=None):
         ## Does not support a size creation method
         return _tn(self.mu, self.std, self.a, self.b, self.n)
 if __name__ == '__main__':

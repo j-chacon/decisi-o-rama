@@ -55,16 +55,17 @@ def cobb_douglas(sols, w, w_norm=True):
         out = np.prod(sols**w)
         
     elif sols.ndim == 2:
-        for i in range(sols.shape[0]):
-            out[i] = np.prod(sols[i,:]**w)
+        out = np.prod(sols**w, axis=1)
+#        for i in range(sols.shape[0]):
+#            out[i] = np.prod(sols[i,:]**w)
     else:
         raise ValueError('Dimension of the sols vector is not supported')
     return out
 
-#s = np.array([[0,1], [1,0], [0.5, 0.5]])
-#w = np.array([0.8, 0.2])
-#
-#cobb_douglas(s,w)
+s = np.array([[0,1], [1,0], [0.5, 0.5]])
+w = np.array([0.8, 0.2])
+
+cobb_douglas(s,w)
 #%%
 def mix_linear_cobb(sols, w, pars=[0.5,], w_norm=True):
     

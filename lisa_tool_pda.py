@@ -12,91 +12,73 @@ import utility
 import aggregate
 import random_instance as ri
 import matplotlib.pyplot as plt
+import ranker
+import itertools
+import multiprocessing as mp
 
-n = 100
+# 1000 runs about 12 min
 
+n = 1000
 sols = generator.status_quo()
 obj_lim = generator.obj_limits
-sq_rehab = [ # rehab
-        ri.beta(9.0375, 4.0951).get,
-        ri.beta(9.0375, 4.0951).get,
-        ri.beta(19.0754,8.9788).get,
-        ri.uniform(0,0).get,
-        ri.uniform(0,0).get,
-        ri.uniform(0,0).get,
-        ri.beta(19.0754, 8.9788).get,
-        ri.uniform(0,0).get,
-        ri.normal(0.0438, 0.0162).get,
-        ri.normal(0.0438, 0.0162).get,
-        ri.uniform(0, 0).get,
-        ]
 wgs = generator.weights()
-#rehab_w = ri.truncnormal(0.52, 0.83/3.6, 0).get
+alpha = ri.uniform(0,1).get
 
-sq_adapt = [ # adapt
-        ri.normal(35.0, 7.65).get,
-        ri.normal(40.0, 10.2).get,
-        ri.normal(20.0, 10.2).get,
-        ri.normal(85.0, 7.65).get,
-        ri.normal(62.5, 6.38).get,
-        ri.normal(62.5, 6.38).get,
-        ri.normal(55.0, 7.65).get,
-        ri.normal(65.0, 7.65).get,
-        ri.normal(35.0, 7.65).get,
-        ri.normal(35.0, 7.65).get,
-        ri.normal(30.0, 10.2).get,
-          ]
+# Create the objectives 
+prob = {}
+for elem in generator._keys:
+    prob[elem] = pda_fun.objective(
+            name = elem,
+            w = wgs[elem],
+            results = sols[elem], 
+            obj_min = obj_lim[elem][0], 
+            obj_max = obj_lim[elem][1], 
+            n = n, 
+            utility_func = utility.exponential, 
+            utility_pars = [0.01,], 
+            aggregation_func = aggregate.mix_linear_cobb, 
+            aggregation_pars = [alpha, ], # alpha
+            maximise=generator.obj_maximise[elem])
 
-adapt_w = ri.truncnormal(0.38, 0.77/3.6, 0).get
+# Make define map for the children of the nodes
+wsis_map = dict(
+        water_supply_IS = ['intergen', 'res_gw_prot', 'water_supply',
+                           'soc_accept','costs'],
+        intergen = ['rehab', 'adapt'],
+        res_gw_prot = ['gwhh', 'econs'],
+        water_supply = ['dw_supply', 'hw_supply', 'ffw_supply'],
+        soc_accept = ['efqm', 'voice', 'auton', 'time', 'area', 'collab'],
+        costs = ['costcap', 'costchange'],
+        dw_supply = ['vol_dw', 'reliab_dw', 'dw_quality'],
+        hw_supply = ['vol_hw', 'reliab_hw', 'hw_quality'],
+        ffw_supply = ['reliab_ffw', 'vol_ffw'],
+        dw_quality = ['aes_dw', 'dw_micro_hyg', 'dw_phys_chem'],
+        hw_quality = ['aes_hw', 'hw_micro_hyg', 'hw_phys_chem'],
+        dw_micro_hyg = ['faecal_dw', 'cells_dw'],
+        dw_phys_chem = ['no3_dw', 'pest_dw','bta_dw'],
+        hw_micro_hyg = ['faecal_hw', 'cells_hw'],
+        hw_phys_chem = ['no3_hw', 'pest_hw', 'bta_hw'],
+        )
 
-#%%
-# Make the objectives for all the fundamental objectives
-xx = 'rehab'
-rehab = pda_fun.objective(name=xx, 
-                          w=wgs[xx],
-                          results=sols[xx], 
-                          obj_min=obj_lim[xx][0], 
-                          obj_max=obj_lim[xx][1], 
-                          n=n, 
-                          utility_func=utility.exponential, 
-                          utility_pars = [0.01,], 
-                          aggregation_func=aggregate.mix_linear_cobb, 
-                          aggregation_pars=[0.5,], # alpha
-                          maximise=True)
-#res = rehab.get_value(np.ones(11))
-#plt.hist(res)
+# add the hierarchy to the problem
+pda_fun.hierarchy_smith(wsis_map, prob)
 
-#%%
-xx = 'adapt'
-adapt = pda_fun.objective(name=xx, 
-                          w=wgs[xx],
-                          results=sols[xx], 
-                          obj_min=obj_lim[xx][0], 
-                          obj_max=obj_lim[xx][1], 
-                          n=n, 
-                          utility_func=utility.exponential, 
-                          utility_pars = [0.01,], 
-                          aggregation_func=aggregate.mix_linear_cobb, 
-                          aggregation_pars=[0.5,], # alpha
-                          maximise=True)
-#adapt.get_value(np.ones(11))
-#plt.hist(res)
-#%%
-xx = 'intergen'
-intergen = pda_fun.objective(name=xx, 
-                          w=wgs[xx],
-                          results=None, 
-                          n=n, 
-                          utility_func=utility.exponential, 
-                          utility_pars = [0.01,], 
-                          aggregation_func=aggregate.mix_linear_cobb, 
-                          aggregation_pars=[0.5,], # alpha
-                          maximise=True)
-intergen.add_children(rehab)
-intergen.add_children(adapt)
-
-f = intergen.get_value(np.ones(11))
-plt.hist(f)
-
-
-
+# Get a solution
+x = np.ones(11)
+#print(ctime())
+y = prob['water_supply_IS'].get_value(x)
+#print(ctime())
+##%%
+#inp_comb = itertools.product([0, 1], repeat=len(x))
+#inps = np.array([i for i in inp_comb])
+#
+##res = list(map(prob['water_supply_IS'].get_value, inps))
+#
+##%%
+##med_rank = 
+#if __name__ == '__main__':
+#    from time import ctime
+#    print(ctime())
+#    with mp.Pool(3) as p:
+#        res = p.map(prob['water_supply_IS'].get_value, inps)
+#    print(ctime())

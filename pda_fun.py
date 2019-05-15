@@ -7,17 +7,6 @@ Created on Mon May 13 12:05:19 2019
 import numpy as np
 import utility
 import aggregate
-from numpy.random import beta, normal, lognormal, uniform
-from scipy.stats import truncnorm
-
-# Define the generator of the tuncated normal distributions
-def tn(mu, sigma, lower=-np.inf, upper=np.inf, size=None):
-    out = truncnorm((lower - mu) / sigma, 
-                    (upper - mu) / sigma, 
-                    loc=mu, 
-                    scale=sigma)
-    return out.rvs(size=size)
-
 
 class objective():
     '''all problems will become maximisation problems'''
@@ -57,7 +46,7 @@ class objective():
         
         if self.children == []:
             # calculate the utility from the solutions
-            
+            # TODO make this a GPU function
             # get the solutions for x
             _sols = np.zeros([x.size, self.n])
             if callable(self.results):  # using a solution generator
@@ -91,8 +80,7 @@ class objective():
                     ut_pars = [ut[i] for ut in self.utility_pars]
                 else:
                     ut_pars = self.utility_pars    
-#                print(_sols[:,i])
-#                print(ut_pars)
+
                 value[:, i] = self.utility_func(_sols[:, i], ut_pars)
                 
             value = np.sum(value, axis=0)
@@ -115,7 +103,18 @@ class objective():
                                          pars=self.aggregation_pars, w_norm=True)
         
         return value
+    
+def hierarchy_smith(h_map, prob):
+    '''Mutates the prob dictionary'''
+    for node in h_map.keys():
+        for child in h_map[node]:
+            prob[node].add_children(prob[child])
+    return
+    
 if __name__ == '__main__':
+    from numpy.random import beta, normal, uniform
+#    from scipy.stats import truncnorm
+    
     n = 3
     def sol_generator():
         return np.array([ # rehab
