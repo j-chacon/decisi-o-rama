@@ -85,25 +85,26 @@ class objective():
 #                print(elem.shape)
             
             # clip the results (may be unnecessary)
-#            _sols = np.clip(_sols, 0.0, 1.0)
-            try:
-                _sols = np.clip(_sols, 0.0, 1.0)
-            except:
-                y = _sols
-                print('something here')    
+            _sols = np.clip(_sols, 0.0, 1.0)
+#            try:
+#                _sols = np.clip(_sols, 0.0, 1.0)
+#            except:
+#                y = _sols
+#                print('something here')    
             
             # apply the utility function to the actions and add up
 #            print(self.utility_func(_sols, self.utility_pars).shape)
             value = np.zeros([x.size, self.n])
-            for i in range(self.n):
-                if callable(self.utility_pars[0]):  # Case using a generator
-                    ut_pars = [ut() for ut in self.utility_pars]
-                elif hasattr(self.utility_pars[0], '__iter__'):  # Check if its iterable
-                    ut_pars = [ut[i] for ut in self.utility_pars]
-                else:
-                    ut_pars = self.utility_pars    
-
-                    value[:, i] = self.utility_func(_sols[:, i], ut_pars)
+#            for i in range(self.n):
+            if callable(self.utility_pars[0]):  # Case using a generator
+                ut_pars = [ut(self.n) for ut in self.utility_pars]
+            elif hasattr(self.utility_pars[0], '__iter__'):  # Check if its iterable
+                ut_pars = [ut[:](self.n) for ut in self.utility_pars]
+            else:
+                ut_pars = self.utility_pars   
+            
+#                print(ut_pars.shape)
+            value = self.utility_func(_sols, ut_pars)
                 
             value = np.sum(value, axis=0)
         
@@ -111,19 +112,30 @@ class objective():
             # Calculate the utility for each children
             _temp_util = np.array([c.get_value(x) for c in self.children]).T
             value = np.zeros(self.n)
-            for i in range(self.n):  # atomic operation
+#            for i in range(self.n):  # atomic operation
                 # get random weights
-                if callable(self.children[0].w):  # Case using a generator
-                    _w = np.array([c.w() for c in self.children])
-                elif hasattr(self.children[0].w, '__iter__'):  # Check if its iterable
-                    _w = np.array([c.w[i] for c in self.children])
-                else:
-                    _w = np.array([c.w for c in self.children])
+            if callable(self.children[0].w):  # Case using a generator
+#                print('in the generator')
+#                _w = np.array([c.w() for c in self.children])
+                _w = np.array([c.w(self.n) for c in self.children]).T
+            elif hasattr(self.children[0].w, '__iter__'):  # Check if its iterable
+#                print('in the iterable')
+#                _w = np.array([c.w[i] for c in self.children])
+                _w = np.array([c.w[:](self.n) for c in self.children]).T
+            else:
+#                print('in the else')
+                _w = np.array([c.w for c in self.children]).T
 #                print(_w)
                 # make the utility aggregation
-                value[i] = self.aggregation_func(sols=_temp_util[i, :], w=_w, 
+#                if np.min(_temp_util[i, :]) < 0.0:
+#                    print('we got a value below zero')
+#                print(_w)
+#                value[i] = self.aggregation_func(sols=_temp_util[i, :], w=_w, 
+#                                         pars=self.aggregation_pars, w_norm=True)
+#            print(_w.shape)
+#            print(_temp_util.shape)
+            value = self.aggregation_func(sols=_temp_util, w=_w, 
                                          pars=self.aggregation_pars, w_norm=True)
-        
         return value
     
 def hierarchy_smith(h_map, prob):

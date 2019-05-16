@@ -25,14 +25,24 @@ def additive(sols, w=None, w_norm=True):
     if np.sum(w) != 1.0 and w_norm is False:
         raise ValueError('weights have to be normalised to 1')
     elif w_norm:
-        w = w / np.sum(w, axis=0)
+        if w.ndim == 1:
+            w = w / np.sum(w, axis=0)
+        else:
+            w = np.array([wi / np.sum(wi) for wi in w])
     
-    return np.dot(sols, w)
+    if w.shape == sols.shape:
+        out = np.sum(sols * w, axis=1)
+    else:
+        out = np.dot(sols, w)
+        
+    
+    return out
 
 #s = np.array([[0,1], [1,0], [0.5, 0.5]])
 #w = np.array([0.8, 0.2])
-#
-#additive(s,w)
+#w2 = np.array([[0.8, 0.2], [0.8, 0.2], [0.8, 0.2]])
+#print(additive(s,w))
+#print(additive(s,w2))
 #%%
 
 # also known as the geometric mean operator
@@ -47,7 +57,10 @@ def cobb_douglas(sols, w, w_norm=True):
     if np.sum(w) != 1.0 and w_norm is False:
         raise ValueError('weights have to be normalised to 1')
     elif w_norm:
-        w = w / np.sum(w, axis=0)
+        if w.ndim == 1:
+            w = w / np.sum(w, axis=0)
+        else:
+            w = np.array([wi / np.sum(wi) for wi in w])
     
     out = np.zeros([sols.shape[0]])
 #    print(sols.ndim == 1)
@@ -55,6 +68,7 @@ def cobb_douglas(sols, w, w_norm=True):
         out = np.prod(sols**w)
         
     elif sols.ndim == 2:
+#        print(np.min(sols))
         out = np.prod(sols**w, axis=1)
 #        for i in range(sols.shape[0]):
 #            out[i] = np.prod(sols[i,:]**w)
@@ -62,10 +76,13 @@ def cobb_douglas(sols, w, w_norm=True):
         raise ValueError('Dimension of the sols vector is not supported')
     return out
 
-s = np.array([[0,1], [1,0], [0.5, 0.5]])
-w = np.array([0.8, 0.2])
-
-cobb_douglas(s,w)
+#s = np.array([[0.0, 1.0], [1.0, 0.0], [0.5, 0.5], [0.0, -0.1]])
+#w = np.array([0.8, 0.2])
+#s = np.array([[0,1], [1,0], [0.5, 0.5]])
+#w = np.array([0.8, 0.2])
+#w2 = np.array([[0.8, 0.2], [0.8, 0.2], [0.8, 0.2]])
+#print(cobb_douglas(s, w))
+#print(cobb_douglas(s, w2))
 #%%
 def mix_linear_cobb(sols, w, pars=[0.5,], w_norm=True):
     
