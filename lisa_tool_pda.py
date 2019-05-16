@@ -18,8 +18,10 @@ import multiprocessing as mp
 from time import time
 
 # 1000 runs about 12 min
+# single run 100k 18.5 seg
+# in MP 1000 runs in 1.8 min
 
-n = 100000
+n = 1000
 sols = generator.status_quo()
 obj_lim = generator.obj_limits
 wgs = generator.weights()
@@ -38,7 +40,7 @@ for elem in generator._keys:
             utility_func = utility.exponential, 
             utility_pars = [0.01,], 
             aggregation_func = aggregate.mix_linear_cobb, 
-            aggregation_pars = [alpha, ], # alpha
+            aggregation_pars = [0.01, ], # alpha
             maximise=generator.obj_maximise[elem])
 
 # Make define map for the children of the nodes
@@ -65,10 +67,10 @@ wsis_map = dict(
 pda_fun.hierarchy_smith(wsis_map, prob)
 
 ## Get a solution
-a = time()
-x = np.zeros(11)
-y = prob['water_supply_IS'].get_value(x)
-print(time() - a)
+#a = time()
+#x = np.zeros(11)
+#y = prob['water_supply_IS'].get_value(x)
+#print(time() - a)
 
 #a = time()
 ##y = prob['intergen'].get_value(x)
@@ -97,12 +99,13 @@ print(time() - a)
 ###%%
 ##med_rank = 
 
-#if __name__ == '__main__':
-#    inp_comb = itertools.product([0, 1], repeat=len(x))
-#    inps = np.array([i for i in inp_comb])
-#    f = prob['water_supply_IS'].get_value
-#    
-#    a = time()
-#    with mp.Pool(3) as p:
-#        res = p.map(f, inps)
-#    print(time() - a)
+if __name__ == '__main__':
+    inp_comb = itertools.product([0, 1], repeat=11)
+    inps = np.array([i for i in inp_comb])
+    f = prob['water_supply_IS'].get_value
+    chunks = (len(inps)//3) + 1
+    
+    a = time()
+    with mp.Pool(3) as p:
+        res = p.map(f, inps, chunks)
+    print(time() - a)
