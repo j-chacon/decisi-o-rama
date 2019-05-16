@@ -65,10 +65,10 @@ wsis_map = dict(
 pda_fun.hierarchy_smith(wsis_map, prob)
 
 ## Get a solution
-#a = time()
+a = time()
 x = np.zeros(11)
-#y = prob['water_supply_IS'].get_value(x)
-#print(time() - a)
+y = prob['water_supply_IS'].get_value(x)
+print(time() - a)
 
 #a = time()
 ##y = prob['intergen'].get_value(x)
@@ -97,12 +97,12 @@ x = np.zeros(11)
 ###%%
 ##med_rank = 
 
-if __name__ == '__main__':
-    inp_comb = itertools.product([0, 1], repeat=len(x))
-    inps = np.array([i for i in inp_comb])  
-    f = prob['water_supply_IS'].get_value
-    
-    a = time()
-    with mp.Pool(3) as p:
-        res = p.map(f, inps)
-    print(time() - a)
+#if __name__ == '__main__':
+#    inp_comb = itertools.product([0, 1], repeat=len(x))
+#    inps = np.array([i for i in inp_comb])
+#    f = prob['water_supply_IS'].get_value
+#    
+#    a = time()
+#    with mp.Pool(3) as p:
+#        res = p.map(f, inps)
+#    print(time() - a)
