@@ -20,8 +20,9 @@ from time import time
 # 1000 runs about 12 min
 # single run 100k 18.5 seg
 # in MP 1000 runs in 1.8 min
+# in MP 2000 runs in 8.0 min
 
-n = 1000
+n = 2000
 sols = generator.status_quo()
 obj_lim = generator.obj_limits
 wgs = generator.weights()
@@ -106,6 +107,9 @@ if __name__ == '__main__':
     chunks = (len(inps)//3) + 1
     
     a = time()
+    
+#    for i in range(n):
+#        f(inps[i])
     with mp.Pool(3) as p:
         res = p.map(f, inps, chunks)
     print(time() - a)

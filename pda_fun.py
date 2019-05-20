@@ -7,13 +7,20 @@ Created on Mon May 13 12:05:19 2019
 import numpy as np
 import utility
 import aggregate
+import ranker
+import utils
 
 class objective():
     
-    # TODO add chunks for the uncertainty analysis
     '''all problems will become maximisation problems'''
     
-    def __init__(self, name, w, results, obj_min=-np.inf, obj_max=np.inf, n=100, 
+    def __init__(self, 
+                 name, 
+                 w, 
+                 results, 
+                 obj_min=-np.inf, 
+                 obj_max=np.inf, 
+                 n=100, 
                  utility_func=utility.exponential, 
                  utility_pars=0.0, 
                  aggregation_func=aggregate.mix_linear_cobb, 
@@ -22,7 +29,6 @@ class objective():
                  chunks=None):
         '''intialisation method'''
         self.name = name
-#        self.label = label
         self.obj_min = obj_min
         self.obj_max = obj_max
         self.results = results  # for every action a generator
@@ -54,22 +60,12 @@ class objective():
         x = np.array(x)
         
         if self.children == []:
-            # calculate the utility from the solutions
-            # TODO make this a GPU function
-            # get the solutions for x
             
-            
-#            _sols = np.zeros([x.size, self.n])
             if callable(self.results):  # using a solution generator
-#                for i in range(self.n):
-                _sols = self.results(self.n)
-                    
+                _sols = self.results(self.n)                    
             elif callable(self.results[0]):  # Check if its a list of callables
-#                for i in range(self.n):
-                _sols = np.array([r(self.n) for r in self.results]).T
-                    
+                _sols = np.array([r(self.n) for r in self.results]).T                    
             else:  # using a pre-rendered list
-#                for i in range(self.n):
                 _sols = self.results
             
             _sols *= x
@@ -80,62 +76,41 @@ class objective():
             
             if self.maximise is False:
                 _sols = 1.0 - _sols
-            
-#            for elem in _sols:
-#                print(elem.shape)
-            
+
             # clip the results (may be unnecessary)
             _sols = np.clip(_sols, 0.0, 1.0)
-#            try:
-#                _sols = np.clip(_sols, 0.0, 1.0)
-#            except:
-#                y = _sols
-#                print('something here')    
-            
+
             # apply the utility function to the actions and add up
-#            print(self.utility_func(_sols, self.utility_pars).shape)
-            value = np.zeros([x.size, self.n])
-#            for i in range(self.n):
+#            value = np.zeros([x.size, self.n])
+
             if callable(self.utility_pars[0]):  # Case using a generator
                 ut_pars = [ut(self.n) for ut in self.utility_pars]
-            elif hasattr(self.utility_pars[0], '__iter__'):  # Check if its iterable
+            elif hasattr(self.utility_pars[0], '__iter__'):  # Check iterable
                 ut_pars = [ut[:](self.n) for ut in self.utility_pars]
             else:
                 ut_pars = self.utility_pars   
             
-#                print(ut_pars.shape)
             value = self.utility_func(_sols, ut_pars)
-                
             value = np.sum(value, axis=0)
         
         else:
             # Calculate the utility for each children
             _temp_util = np.array([c.get_value(x) for c in self.children]).T
-            value = np.zeros(self.n)
-#            for i in range(self.n):  # atomic operation
-                # get random weights
+            
+#            value = np.zeros(self.n)
+
+            # get random weights
             if callable(self.children[0].w):  # Case using a generator
-#                print('in the generator')
-#                _w = np.array([c.w() for c in self.children])
                 _w = np.array([c.w(self.n) for c in self.children]).T
-            elif hasattr(self.children[0].w, '__iter__'):  # Check if its iterable
-#                print('in the iterable')
-#                _w = np.array([c.w[i] for c in self.children])
+            elif hasattr(self.children[0].w, '__iter__'):  # Check iterable
                 _w = np.array([c.w[:](self.n) for c in self.children]).T
             else:
-#                print('in the else')
                 _w = np.array([c.w for c in self.children]).T
-#                print(_w)
-                # make the utility aggregation
-#                if np.min(_temp_util[i, :]) < 0.0:
-#                    print('we got a value below zero')
-#                print(_w)
-#                value[i] = self.aggregation_func(sols=_temp_util[i, :], w=_w, 
-#                                         pars=self.aggregation_pars, w_norm=True)
-#            print(_w.shape)
-#            print(_temp_util.shape)
-            value = self.aggregation_func(sols=_temp_util, w=_w, 
-                                         pars=self.aggregation_pars, w_norm=True)
+
+            value = self.aggregation_func(sols=_temp_util, 
+                                          w=_w, 
+                                          pars=self.aggregation_pars, 
+                                          w_norm=True)
         return value
     
 def hierarchy_smith(h_map, prob):
@@ -144,10 +119,48 @@ def hierarchy_smith(h_map, prob):
         for child in h_map[node]:
             prob[node].add_children(prob[child])
     return
+
+class evaluator():
+    def __init__(self, inps, res):
+        self.inps = inps
+        self.res = res
+        self.n_sols = res.shape[0]
+        return
+    
+    def _performance(self, functions):
+        '''Calculate the performance indicators'''        
+        perf = np.zeros([len(functions), self.n_sols])
+        for i, func in enumerate(functions):
+            perf[i, :] = func(self.res)            
+        return perf
+    
+    def get_ranked_solutions(self, functions):
+        '''Get the pareto ranking of the solutions'''
+        perf = self._performance(functions).T
+        return utils.pareto_front_i(perf, minimize=False)
+    
+    def get_weak_ranked_solutions(self, functions, i=0):
+        '''Get weakly ranked solutions'''
+        perf = self._performance(functions).T
+        _temp = []
+        for i in range(i+1):
+            _temp.append(utils.pareto_front_i(perf, minimize=False, i=i))
+        return np.array([item for sublist in _temp for item in sublist])
+    
+    def get_core_index(self, functions, i=0):
+        # get pf
+        pf = self.get_weak_ranked_solutions(functions, i)
+        return np.mean(self.inps[pf], axis=0)
+    
+    
+    
+#ee = evaluator(inps, np.array(res))
+#g = ee.get_ranked_solutions([ranker.mean, ranker.iqr])
+#g = ee.get_weak_ranked_solutions([ranker.mean, ranker.iqr], 3)
+#print(ee.get_core_index([ranker.iqr, ranker.mean], 0))
     
 if __name__ == '__main__':
     from numpy.random import beta, normal, uniform
-#    from scipy.stats import truncnorm
     
     n = 3
     def sol_generator():
@@ -168,11 +181,15 @@ if __name__ == '__main__':
 
     x0 = np.zeros(11)
     x1 = np.ones(11)        
-    rehab = objective(name='rehab', label='Rehab', obj_min=0.0, obj_max=100.0, w=0.5,
-                      results=sol_generator, n=n, utility_func=utility.exponential, 
+    rehab = objective(name='rehab', 
+                      label='Rehab', 
+                      obj_min=0.0, 
+                      obj_max=100.0, 
+                      w=0.5, results=sol_generator, n=n, 
+                      utility_func=utility.exponential, 
                       utility_pars=[0.01,],  
                       aggregation_func=aggregate.mix_linear_cobb, 
                       aggregation_pars=[0.5,], maximise=True)
-    #
+    
     print(rehab.get_value(x0))
     print(rehab.get_value(x1))
