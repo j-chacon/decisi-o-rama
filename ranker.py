@@ -10,7 +10,6 @@ All of the functions to make a ranking. ranking are made on pda_fun
 
 
 import numpy as np
-#import utils
 
 def iqr(sols, lq=0.25, uq=0.75):
     '''Calculate the interquantile range. shape is [solutions, n]'''    

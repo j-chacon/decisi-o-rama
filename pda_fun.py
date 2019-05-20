@@ -121,10 +121,11 @@ def hierarchy_smith(h_map, prob):
     return
 
 class evaluator():
-    def __init__(self, inps, res):
+    def __init__(self, inps, res, labels=None):
         self.inps = inps
         self.res = res
         self.n_sols = res.shape[0]
+        self.labels = labels
         return
     
     def _performance(self, functions):
@@ -151,8 +152,7 @@ class evaluator():
         # get pf
         pf = self.get_weak_ranked_solutions(functions, i)
         return np.mean(self.inps[pf], axis=0)
-    
-    
+
     
 #ee = evaluator(inps, np.array(res))
 #g = ee.get_ranked_solutions([ranker.mean, ranker.iqr])

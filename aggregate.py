@@ -95,22 +95,37 @@ def mix_linear_cobb(sols, w, pars=[0.5,], w_norm=True):
     return alpha*(add_model) + (1.0 - alpha)*cd_model
 
 
+
+#%%
+    # STill TODO
 def harmonic(sols, w=None, w_norm=False):
+    raise NameError('Not implemented yet')
     if w is None:
         w = np.ones(sols.shape[1]) / sols.shape[1]
+    elif callable(w[0]):  # check if its an iterable with a generator
+        w = np.array([wi() for wi in w])
+        w = w / np.sum(w, axis=0)
     
     if np.sum(w) != 1.0 and w_norm is False:
         raise ValueError('weights have to be normalised to 1')
     elif w_norm:
-        w = w / np.sum(w, axis=0)
+        if w.ndim == 1:
+            w = w / np.sum(w, axis=0)
+        else:
+            w = np.array([wi / np.sum(wi) for wi in w])
     
-    # to implement    
-    out = None
+    if w.shape == sols.shape:
+        out = np.sum(sols * w, axis=1)
+    else:
+        out = np.dot(sols, w)
     
     return out
 
 
+#%%
+
 def bonferroni(sols, w=None, w_norm=False):
+    raise NameError('Not implemented yet')
     if w is None:
         w = np.ones(sols.shape[1]) / sols.shape[1]
     
@@ -126,6 +141,7 @@ def bonferroni(sols, w=None, w_norm=False):
 
 
 def power(sols, w=None, w_norm=False):
+    raise NameError('Not implemented yet')
     if w is None:
         w = np.ones(sols.shape[1]) / sols.shape[1]
     
@@ -140,6 +156,7 @@ def power(sols, w=None, w_norm=False):
     return out
 
 def choquet(sols, w=None, w_norm=False):
+    raise NameError('Not implemented yet')
     if w is None:
         w = np.ones(sols.shape[1]) / sols.shape[1]
     
@@ -154,6 +171,7 @@ def choquet(sols, w=None, w_norm=False):
     return out
 
 def sugeno(sols, w=None, w_norm=False):
+    raise NameError('Not implemented yet')
     if w is None:
         w = np.ones(sols.shape[1]) / sols.shape[1]
     
