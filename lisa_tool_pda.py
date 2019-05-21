@@ -29,7 +29,6 @@ if __name__ == '__main__':
     wgs = generator.weights()
     alpha = ri.uniform(0,1).get
     
-    
     # Create the objectives 
     prob = {}
     for elem in generator._keys:
