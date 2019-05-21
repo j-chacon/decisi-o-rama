@@ -9,6 +9,11 @@ from numpy.random import beta, normal, lognormal, uniform
 from scipy.stats import truncnorm
 import random_instance as ri
 
+import sys
+sys.path.append('..')
+
+import decisiorama
+
 
 # DEfine the generator of the tuncated normal distributions
 #def tn(mu, sigma, lower=-np.inf, upper=np.inf, size=None):

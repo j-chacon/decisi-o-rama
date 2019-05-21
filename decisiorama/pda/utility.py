@@ -5,7 +5,7 @@ Created on Thu May  9 11:47:00 2019
 @author: jchaconhurtado
 """
 import numpy as np
-from random_instance import check_numeric
+from ..utils.random_instance import check_numeric
 
 #OFFSET_VAL = np.random.uniform(-0.00000000001, 0.00000000001)
 # This is the value module. Here all the value funcitons are created
@@ -33,15 +33,15 @@ def exponential(v, pars):
         out = np.array(out)
     return out
     
-if __name__ == '__main__':
-    import matplotlib.pyplot as plt
-    
-    r = -2
-    v = np.linspace(0,1,200)
-    out = exponential(v, r)
-    plt.plot(v,v, '--', label='Neutral')
-    plt.plot(v, out, label='Exp')
-    plt.grid()
-    plt.legend()
-    plt.show()
+#if __name__ == '__main__':
+#    import matplotlib.pyplot as plt
+#    
+#    r = -2
+#    v = np.linspace(0,1,200)
+#    out = exponential(v, r)
+#    plt.plot(v,v, '--', label='Neutral')
+#    plt.plot(v, out, label='Exp')
+#    plt.grid()
+#    plt.legend()
+#    plt.show()
 

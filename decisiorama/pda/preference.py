@@ -5,19 +5,25 @@ Created on Mon May 13 12:05:19 2019
 @author: jchaconhurtado
 """
 import numpy as np
-import utility
-import aggregate
-import ranker
-import utils
+from . import utility
+from . import aggregate
+#from . import ranker
+from .. import utils
+
+_num_types = (int, float, np.float, np.float16, np.float32, np.float64, 
+                 np.int, np.int16, np.int32, np.int64)
+
+def _isnumeric(x):
+    return isinstance(x, _num_types)
 
 class objective():
-    
-    '''all problems will become maximisation problems'''
-    
+    '''
+    The objective class constructor allows to 
+    '''
     def __init__(self, 
                  name, 
                  w, 
-                 results, 
+                 alternatives, 
                  obj_min=-np.inf, 
                  obj_max=np.inf, 
                  n=100, 
@@ -26,28 +32,45 @@ class objective():
                  aggregation_func=aggregate.mix_linear_cobb, 
                  aggregation_pars=[0.5,], 
                  maximise=True,
-#                 chunks=None
                  ):
         '''intialisation method'''
+        if type(name) is not str:
+            raise TypeError('name has to be string, got {0}'.format(type(name)))
         self.name = name
-        self.obj_min = obj_min
-        self.obj_max = obj_max
-        self.results = results  # for every action a generator
         
+        if not _isnumeric(obj_min):
+            raise TypeError('obj_min is not of numeric type. got {0}'.format(type(obj_min)))
+        self.obj_min = obj_min
+        
+        if not _isnumeric(obj_max):
+            raise TypeError('obj_max is not of numeric type. got {0}'.format(type(obj_max)))
+        self.obj_max = obj_max
+        
+        self.alternatives = alternatives  # for every action a generator
+        
+        if type(maximise) is not bool:
+            raise TypeError('maximise is not of bool type. got {0}'.format(type(maximise)))
         self.maximise = maximise
+        
         self.utility_pars = utility_pars
+        
+        if not callable(utility_func):
+            raise TypeError('utility_func is not a callable type')
         self.utility_func = utility_func
+        
+        if not callable(aggregation_func):
+            raise TypeError('aggregation_func is not a callable type')
         self.aggregation_func = aggregation_func
+        
         self.aggregation_pars = aggregation_pars
-        self.children = []
+        
         self.w = w
-#        self.chunks = chunks
-#        
-#        if chunks is None:
-#            self.n = n
-#        else:
-#            self.n = n//chunks
-            
+        if type(n) is not int:
+            raise TypeError('n should be int, got {0}'.format(type(n)))
+        self.n = n
+        
+        self.children = []
+        self.all_children = [name, ]
         return
     
     def __getstate__(self,):
@@ -55,7 +78,7 @@ class objective():
             name = self.name,
             obj_min = self.obj_min,
             obj_max = self.obj_max,
-            results = self.results,
+            alternatives = self.alternatives,
             maximise = self.maximise,
             utility_pars = self.utility_pars,
             utility_func = self.utility_func,
@@ -63,6 +86,8 @@ class objective():
             aggregation_pars = self.aggregation_pars,
             children = self.children,
             w = self.w,
+            n = self.n,
+            all_children = self.all_children
             )
         return state
     
@@ -70,7 +95,7 @@ class objective():
         self.name = state['name']
         self.obj_min = state['obj_min']
         self.obj_max = state['obj_max']
-        self.results = state['results']
+        self.alternatives = state['alternatives']
         self.maximise = state['maximise']
         self.utility_pars = state['utility_pars']
         self.utility_func = state['utility_func']
@@ -78,37 +103,54 @@ class objective():
         self.aggregation_pars = state['aggregation_pars']
         self.children = state['children']
         self.w = state['w']
+        self.n = state['n']
+        self.all_children = state['all_children']
         return
     
     def add_children(self, children):
         '''method to add childrens'''
+        # check if children is the same as the current node (no self reference)
+        if self.name == children.name:
+            raise AttributeError('It is not possible to have a self reference')
+        
+        if children.name in self.all_children or self.name in children.all_children:
+            raise AttributeError('Not possible to have a circular reference')
+        
         self.children.append(children)
+        for ci in children.all_children:
+            self.all_children.append(ci)
         
         return
-    
+
     def get_value(self, x):
-        '''normalise the results of the actions before adding up'''
+        '''normalise the alternatives of the actions before adding up'''
+        
+        if not hasattr(x, '__iter__'):
+            raise TypeError('x is not an iterable')
         x = np.array(x)
+        
+        if x.ndim != 1:
+            raise AttributeError('Number of dimensions of x is not 1. got {0}'.format(x.ndim))
         
         if self.children == []:
             
-            if callable(self.results):  # using a solution generator
-                _sols = self.results(self.n)                    
-            elif callable(self.results[0]):  # Check if its a list of callables
-                _sols = np.array([r(self.n) for r in self.results]).T                    
+            if callable(self.alternatives):  # using a solution generator
+                _sols = self.alternatives(self.n)                    
+            elif callable(self.alternatives[0]):  # Check if its a list of callables
+                _sols = np.array([r(self.n) for r in self.alternatives]).T                    
             else:  # using a pre-rendered list
-                _sols = self.results
+                _sols = self.alternatives
             
             _sols *= x
             _sols = _sols.T
 
-            # rank-normalise the results
+            # rank-normalise the alternatives
             _sols = (_sols - self.obj_min) / (self.obj_max - self.obj_min)
             
             if self.maximise is False:
                 _sols = 1.0 - _sols
 
-            # clip the results (may be unnecessary)
+            # clip the alternatives (may be unnecessary)
             _sols = np.clip(_sols, 0.0, 1.0)
 
             # apply the utility function to the actions and add up
@@ -159,6 +201,22 @@ class evaluator():
         self.labels = labels
         return
     
+    def __getstate__(self):
+        state = dict(
+                inps = self.inps,
+                res = self.res,
+                n_sols = self.n_sols,
+                labels = self.labels,
+                )
+        return state
+    
+    def __setstate__(self, state):
+        self.inps = state['inps']
+        self.res = state['res']
+        self.n_sols = state['n_sols']
+        self.labels = state['labels']
+        return
+    
     def _performance(self, functions):
         '''Calculate the performance indicators'''        
         perf = np.zeros([len(functions), self.n_sols])
@@ -185,6 +243,7 @@ class evaluator():
         return np.mean(self.inps[pf], axis=0)
 
 if __name__ == '__main__':
+    print('None')
 #    from numpy.random import beta, normal, uniform
 #    
 #    n = 3
@@ -210,7 +269,7 @@ if __name__ == '__main__':
 #                      label='Rehab', 
 #                      obj_min=0.0, 
 #                      obj_max=100.0, 
-#                      w=0.5, results=sol_generator, n=n, 
+#                      w=0.5, alternatives=sol_generator, n=n, 
 #                      utility_func=utility.exponential, 
 #                      utility_pars=[0.01,],  
 #                      aggregation_func=aggregate.mix_linear_cobb, 

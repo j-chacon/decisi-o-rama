@@ -11,7 +11,7 @@ import generator
 import utility
 import aggregate
 import random_instance as ri
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import ranker
 import itertools
 import multiprocessing as mp
@@ -22,12 +22,13 @@ from time import time
 # in MP 1000 runs in 1.8 min
 # in MP 2000 runs in 8.0 min
 if __name__ == '__main__':
-    n = 200
+    n = 100
     n_att = 11
-    sols = generator.status_quo()
+    alternatives = generator.status_quo()
     obj_lim = generator.obj_limits
     wgs = generator.weights()
     alpha = ri.uniform(0,1).get
+    multiproc = False
     
     # Create the objectives 
     prob = {}
@@ -35,7 +36,7 @@ if __name__ == '__main__':
         prob[elem] = pda_fun.objective(
                 name = elem,
                 w = wgs[elem],
-                results = sols[elem], 
+                alternatives = alternatives[elem], 
                 obj_min = obj_lim[elem][0], 
                 obj_max = obj_lim[elem][1], 
                 n = n, 
@@ -74,10 +75,15 @@ if __name__ == '__main__':
     
     # run the decision problem
     f = prob['water_supply_IS'].get_value
-    chunks = (len(inps)//3) + 1
     a = time()
-    with mp.Pool(3) as p:
-        res = p.map(f, inps, chunks)
+    
+    if multiproc:
+        chunks = (len(inps)//3) + 1
+        with mp.Pool(3) as p:
+            res = p.map(f, inps, chunks)
+    else:
+        res = list(map(f, inps))
+    
     print(time() - a)
     res = np.array(res)
     
