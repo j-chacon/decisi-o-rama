@@ -4,15 +4,18 @@ Created on Mon May 13 15:58:12 2019
 
 @author: jchaconhurtado
 """
+from sys import path
+path.append('..')
 
+import decisiorama
 import numpy as np
-import pda_fun
+from decisiorama import pda
 import generator
-import utility
-import aggregate
-import random_instance as ri
+#import utility
+#import aggregate
+from decisiorama.utils import random_instance as ri
 #import matplotlib.pyplot as plt
-import ranker
+#import ranker
 import itertools
 import multiprocessing as mp
 from time import time
@@ -27,22 +30,22 @@ if __name__ == '__main__':
     alternatives = generator.status_quo()
     obj_lim = generator.obj_limits
     wgs = generator.weights()
-    alpha = ri.uniform(0,1).get
+    alpha = ri.Uniform(0,1).get
     multiproc = False
     
     # Create the objectives 
     prob = {}
     for elem in generator._keys:
-        prob[elem] = pda_fun.objective(
+        prob[elem] = pda.Objective(
                 name = elem,
                 w = wgs[elem],
                 alternatives = alternatives[elem], 
                 obj_min = obj_lim[elem][0], 
                 obj_max = obj_lim[elem][1], 
                 n = n, 
-                utility_func = utility.exponential, 
+                utility_func = pda.utility.exponential, 
                 utility_pars = [0.01,], 
-                aggregation_func = aggregate.mix_linear_cobb, 
+                aggregation_func = pda.aggregate.mix_linear_cobb, 
                 aggregation_pars = [0.01, ], # alpha
                 maximise=generator.obj_maximise[elem])
     
@@ -67,7 +70,7 @@ if __name__ == '__main__':
             )
     
     # add the hierarchy to the problem
-    pda_fun.hierarchy_smith(wsis_map, prob)
+    pda.hierarchy_smith(wsis_map, prob)
     
     # Get the inputs (all possible binary combinations)
     inp_comb = itertools.product([0, 1], repeat=n_att)
@@ -88,8 +91,8 @@ if __name__ == '__main__':
     res = np.array(res)
     
     # From this point we start ranking the solutions
-    evaluator = pda_fun.evaluator(inps, res)
-    obj_funs = [ranker.mean, ranker.iqr]
+    evaluator = pda.Evaluator(inps, res)
+    obj_funs = [pda.ranker.mean, pda.ranker.iqr]
     ranked_sols = evaluator.get_ranked_solutions(obj_funs)
     core_index = evaluator.get_core_index(obj_funs)
     

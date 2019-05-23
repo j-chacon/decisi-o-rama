@@ -16,7 +16,7 @@ _num_types = (int, float, np.float, np.float16, np.float32, np.float64,
 def _isnumeric(x):
     return isinstance(x, _num_types)
 
-class objective():
+class Objective():
     '''
     The objective class constructor allows to 
     '''
@@ -35,38 +35,48 @@ class objective():
                  ):
         '''intialisation method'''
         if type(name) is not str:
-            raise TypeError('name has to be string, got {0}'.format(type(name)))
+            msg = 'name has to be string, got {0}'.format(type(name))
+            raise TypeError(msg)
         self.name = name
         
         if not _isnumeric(obj_min):
-            raise TypeError('obj_min is not of numeric type. got {0}'.format(type(obj_min)))
+            msg = ('obj_min is not of numeric type. got ' 
+                   '{0}'.format(type(obj_min)))
+            raise TypeError(msg)
         self.obj_min = obj_min
         
         if not _isnumeric(obj_max):
-            raise TypeError('obj_max is not of numeric type. got {0}'.format(type(obj_max)))
+            msg = ('obj_max is not of numeric type. got '
+                   '{0}'.format(type(obj_max)))
+            raise TypeError(msg)
         self.obj_max = obj_max
         
         self.alternatives = alternatives  # for every action a generator
         
         if type(maximise) is not bool:
-            raise TypeError('maximise is not of bool type. got {0}'.format(type(maximise)))
+            msg = ('maximise is not of bool type. got '
+                   '{0}'.format(type(maximise)))
+            raise TypeError(msg)
         self.maximise = maximise
         
         self.utility_pars = utility_pars
         
         if not callable(utility_func):
-            raise TypeError('utility_func is not a callable type')
+            msg = 'utility_func is not a callable type'
+            raise TypeError(msg)
         self.utility_func = utility_func
         
         if not callable(aggregation_func):
-            raise TypeError('aggregation_func is not a callable type')
+            msg = 'aggregation_func is not a callable type'
+            raise TypeError(msg)
         self.aggregation_func = aggregation_func
         
         self.aggregation_pars = aggregation_pars
         
         self.w = w
         if type(n) is not int:
-            raise TypeError('n should be int, got {0}'.format(type(n)))
+            msg = 'n should be int, got {0}'.format(type(n))
+            raise TypeError()
         self.n = n
         
         self.children = []
@@ -111,10 +121,13 @@ class objective():
         '''method to add childrens'''
         # check if children is the same as the current node (no self reference)
         if self.name == children.name:
-            raise AttributeError('It is not possible to have a self reference')
+            msg = 'It is not possible to have a self reference'
+            raise AttributeError(msg)
         
-        if children.name in self.all_children or self.name in children.all_children:
-            raise AttributeError('Not possible to have a circular reference')
+        if (children.name in self.all_children or 
+            self.name in children.all_children):
+            msg = 'Not possible to have a circular reference'
+            raise AttributeError(msg)
         
         self.children.append(children)
         for ci in children.all_children:
@@ -126,17 +139,20 @@ class objective():
         '''normalise the alternatives of the actions before adding up'''
         
         if not hasattr(x, '__iter__'):
-            raise TypeError('x is not an iterable')
+            msg = 'x is not an iterable'
+            raise TypeError(msg)
         x = np.array(x)
         
         if x.ndim != 1:
-            raise AttributeError('Number of dimensions of x is not 1. got {0}'.format(x.ndim))
+            msg = 'Number of dimensions of x is not 1. got {0}'.format(x.ndim)
+            raise AttributeError(msg)
         
         if self.children == []:
             
             if callable(self.alternatives):  # using a solution generator
                 _sols = self.alternatives(self.n)                    
-            elif callable(self.alternatives[0]):  # Check if its a list of callables
+            # Check if its a list of callables
+            elif callable(self.alternatives[0]):  
                 _sols = np.array([r(self.n) for r in self.alternatives]).T                    
             else:  # using a pre-rendered list
                 _sols = self.alternatives
@@ -193,7 +209,7 @@ def hierarchy_smith(h_map, prob):
             prob[node].add_children(prob[child])
     return
 
-class evaluator():
+class Evaluator():
     def __init__(self, inps, res, labels=None):
         self.inps = inps
         self.res = res
