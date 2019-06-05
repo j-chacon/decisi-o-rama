@@ -12,15 +12,10 @@ import os.path
 import numpy as np
 from decisiorama import pda
 import generator
-#import utility
-#import aggregate
 from decisiorama.utils import random_instance as ri
-#import matplotlib.pyplot as plt
-#import ranker
 import itertools
 import multiprocessing as mp
 from time import time
-#from schwimmbad import MPIPool
 from mpi4py import MPI
 
 comm = MPI.COMM_WORLD
@@ -33,7 +28,7 @@ size = comm.size
 ## in MP 2000 runs in 8.0 min
 #if __name__ == '__main__':
 #n_proc = 200
-n = 1000
+n = 100
 n_att = 11
 alternatives = generator.status_quo()
 obj_lim = generator.obj_limits
