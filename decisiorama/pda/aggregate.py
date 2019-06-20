@@ -34,20 +34,20 @@ def _dimcheck(sols, w):
     
     if w.ndim == 1:
         if sols.shape[1] != w.shape[0]:
-            msg = ('Weights and solutions do not match. the shape of '
-                   'solutions are (n, {0}) and {1}, and the indices should '
-                   'match'.format(sols.shape[1], w.shape)
+            msg = ('Weights and solutions do not match. The shape of '
+                   'solutions is {0} and of weights is {1}'.format(sols.shape[1], 
+                                 w.shape)
                    )
             raise ValueError(msg)
     
     elif w.ndim == 2:
         if sols.shape != w.shape:
-            msg = ('Weights and solutions do not match. the shape of '
-                   'solutions are {0} and {1}, and the indices should '
-                   'match'.format(sols.shape, w.shape)
+            msg = ('Weights and solutions do not match. The shape of '
+                   'solutions is {0} and of weights is {1}'.format(sols.shape, 
+                                 w.shape)
                    )
             raise ValueError(msg)
-#%%
+
 def _w_normalize(w):
     if w.ndim == 1:
         w[:] = w / np.sum(w, axis=0)
@@ -98,7 +98,7 @@ def cobb_douglas(sols, w, w_norm=True):
 #print(cobb_douglas(s, w2))
 #%%
 def mix_linear_cobb(sols, w, pars=[0.5,], w_norm=True):
-    
+    print('The mix_linear_cobb function has been deprecated. rather use mix')
     if callable(pars[0]):
         alpha = pars[0]()
     else:
@@ -119,12 +119,12 @@ def reverse_harmonic(sols, w, w_norm=True):
         out = 1.0 - 1.0 / (np.sum(w / (1.0 - sols), axis=1))
     
     return out
-
-s = np.array([[0,1], [1,0], [0.5, 0.5]])
-w = np.array([0.8, 0.2])
-w2 = np.array([[0.8, 0.2], [0.8, 0.2], [0.8, 0.2]])
-print(reverse_harmonic(s,w))
-print(reverse_harmonic(s,w2))
+#
+#s = np.array([[0,1], [1,0], [0.5, 0.5]])
+#w = np.array([0.8, 0.2])
+#w2 = np.array([[0.8, 0.2], [0.8, 0.2], [0.8, 0.2]])
+#print(reverse_harmonic(s,w))
+#print(reverse_harmonic(s,w2))
 
 #%%
 #https://www.rdocumentation.org/packages/utility/versions/1.4.3/topics/utility.aggregate.revaddpower
@@ -140,11 +140,11 @@ def reverse_power(sols, w, w_norm=True, alpha=1.0):
     
     return out
 
-s = np.array([[0,1], [1,0], [0.5, 0.5]])
-w = np.array([0.8, 0.2])
-w2 = np.array([[0.8, 0.2], [0.8, 0.2], [0.8, 0.2]])
-print(reverse_power(s,w))
-print(reverse_power(s,w2))
+#s = np.array([[0,1], [1,0], [0.5, 0.5]])
+#w = np.array([0.8, 0.2])
+#w2 = np.array([[0.8, 0.2], [0.8, 0.2], [0.8, 0.2]])
+#print(reverse_power(s,w))
+#print(reverse_power(s,w2))
 #%%
 ## https://www.rdocumentation.org/packages/utility/versions/1.4.3/topics/utility.aggregate.mult
 #def multiplicative(sols, w, w_norm=True):
@@ -203,15 +203,15 @@ def split_power(sols, w, pars=[0.5, 0.5], w_norm=True):
     
     return out
 
-s = np.array([[0,1], [1,0], [0.5, 0.5]])
-w = np.array([0.8, 0.2])
-w2 = np.array([[0.8, 0.2], [0.8, 0.2], [0.8, 0.2]])
-print(split_power(s,w))
-print(split_power(s,w2))
+#s = np.array([[0,1], [1,0], [0.5, 0.5]])
+#w = np.array([0.8, 0.2])
+#w2 = np.array([[0.8, 0.2], [0.8, 0.2], [0.8, 0.2]])
+#print(split_power(s,w))
+#print(split_power(s,w2))
 
 #%%
 
-def harmonic(sols, w=None, w_norm=True):
+def harmonic(sols, w, w_norm=True):
     _dimcheck(sols, w)
     if w_norm:
         _w_normalize(w)
@@ -225,11 +225,80 @@ def harmonic(sols, w=None, w_norm=True):
     
     return out
 
-s = np.array([[0,1], [1,0], [0.5, 0.5]])
-w = np.array([0.8, 0.2])
-w2 = np.array([[0.8, 0.2], [0.8, 0.2], [0.8, 0.2]])
-print(harmonic(s,w))
-print(harmonic(s,w2))
+#s = np.array([[0,1], [1,0], [0.5, 0.5]])
+#w = np.array([0.8, 0.2])
+#w2 = np.array([[0.8, 0.2], [0.8, 0.2], [0.8, 0.2]])
+#print(harmonic(s,w))
+#print(harmonic(s,w2))
+
+
+#%%
+
+def maximum(sols, w=None, w_norm=True):
+    _dimcheck(sols, w)
+    if w_norm:
+        _w_normalize(w)
+    
+    if sols.ndim == 1:
+        out = np.max(sols)
+    else:
+        out = np.max(sols, axis=1)
+    
+    return out
+    
+#s = np.array([[0,1], [1,0], [0.5, 0.5]])
+#w = np.array([0.8, 0.2])
+#w2 = np.array([[0.8, 0.2], [0.8, 0.2], [0.8, 0.2]])
+#print(maximum(s,w))
+#print(maximum(s,w2))
+
+
+#%%
+def minimum(sols, w=None, w_norm=True):
+    _dimcheck(sols, w)
+    if w_norm:
+        _w_normalize(w)
+    
+    if sols.ndim == 1:
+        out = np.min(sols)
+    else:
+        out = np.min(sols, axis=1)
+    
+    return out
+    
+#s = np.array([[0,1], [1,0], [0.5, 0.5]])
+#w = np.array([0.8, 0.2])
+#w2 = np.array([[0.8, 0.2], [0.8, 0.2], [0.8, 0.2]])
+#print(minimum(s,w))
+#print(minimum(s,w2))
+
+
+#%% 
+def mix(sols, w, methods, w_methods, mix_fun, w_norm=True):
+    _dimcheck(sols, w)
+    if len(methods) != len(w_methods):
+        _msg = ('length of methods ({0}) and w_methods ({1}) are not '
+                'the same'.format(len(methods), len(w_methods))
+                )
+        raise ValueError(_msg)
+    
+    if w_norm:
+        _w_normalize(w)
+        _w_normalize(w_methods)
+    
+    agg_util = np.array([m(sols, w) for m in methods]).T
+    return mix_fun(agg_util, w_methods)
+
+#s = np.array([[0,1], [1,0], [0.5, 0.5]])
+#w = np.array([0.8, 0.2])
+#w2 = np.array([[0.8, 0.2], [0.8, 0.2], [0.8, 0.2]])
+#methods = [maximum, minimum]
+#w_methods = np.array([0.5, 0.5])
+#mix_fun = additive
+#print(mix(s, w, methods, w_methods, mix_fun))
+##print(linear_mix(s, w2))    
+#
+#
 
 #%%
 
