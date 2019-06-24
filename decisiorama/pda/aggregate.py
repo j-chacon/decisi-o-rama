@@ -86,13 +86,13 @@ def additive(utils, w, w_norm=True, *args, **kwargs):
     .. highlight:: python
     .. code-block:: python
 
-        s = np.array([0.0, 1.0])
+        utils = np.array([0.0, 1.0])
         w = np.array([0.8, 0.2])
         print(additive(s,w))
         
         >>> [0.2]
         
-        s = np.array([[0.0, 1.0], 
+        utils = np.array([[0.0, 1.0], 
                       [1.0, 0.0], 
                       [0.5, 0.5]])
         w = np.array([0.8, 0.2])
@@ -100,7 +100,7 @@ def additive(utils, w, w_norm=True, *args, **kwargs):
         
         >>> [0.2 0.8 0.5]
         
-        s = np.array([[0.0, 1.0], 
+        utils = np.array([[0.0, 1.0], 
                       [1.0, 0.0], 
                       [0.5, 0.5]])
         w = np.array([[0.8, 0.2], 
@@ -124,23 +124,23 @@ def additive(utils, w, w_norm=True, *args, **kwargs):
         
     return out
 
-#s = np.array([0.0, 1.0])
+#utils = np.array([0.0, 1.0])
 #w = np.array([0.8, 0.2])
-#print(additive(s,w))
+#print(additive(utils, w))
 #
-#s = np.array([[0.0, 1.0], 
+#utils = np.array([[0.0, 1.0], 
 #              [1.0, 0.0], 
 #              [0.5, 0.5]])
 #w = np.array([0.8, 0.2])
-#print(additive(s,w))
+#print(additive(utils, w))
 #
-#s = np.array([[0.0, 1.0], 
+#utils = np.array([[0.0, 1.0], 
 #              [1.0, 0.0], 
 #              [0.5, 0.5]])
 #w = np.array([[0.8, 0.2], 
 #              [0.8, 0.2], 
 #              [0.8, 0.2]])
-#print(additive(s,w))
+#print(additive(utils, w))
     
 #%%
 
@@ -174,27 +174,27 @@ def cobb_douglas(utils, w, w_norm=True, *args, **kwargs):
     .. highlight:: python
     .. code-block:: python
 
-        s = np.array([0.0, 1.0])
+        utils = np.array([0.0, 1.0])
         w = np.array([0.8, 0.2])
-        print(cobb_douglas(s,w))
+        print(cobb_douglas(utils, w))
         
         >>> [0.]
         
-        s = np.array([[0.0, 1.0], 
+        utils = np.array([[0.0, 1.0], 
                       [1.0, 0.0], 
                       [0.5, 0.5]])
         w = np.array([0.8, 0.2])
-        print(cobb_douglas(s,w))
+        print(cobb_douglas(utils, w))
         
         >>> [0. 0. 0.5]
         
-        s = np.array([[0.0, 1.0], 
+        utils = np.array([[0.0, 1.0], 
                       [1.0, 0.0], 
                       [0.5, 0.5]])
         w = np.array([[0.8, 0.2], 
                       [0.8, 0.2], 
                       [0.8, 0.2]])
-        print(cobb_douglas(s,w))
+        print(cobb_douglas(utils, w))
         
         >>> [0. 0. 0.5]
 
@@ -209,23 +209,23 @@ def cobb_douglas(utils, w, w_norm=True, *args, **kwargs):
     return np.prod(utils**w, axis=1)
 
 
-#s = np.array([0.0, 1.0])
+#utils = np.array([0.0, 1.0])
 #w = np.array([0.8, 0.2])
-#print(cobb_douglas(s,w))
+#print(cobb_douglas(utils, w))
 #
-#s = np.array([[0.0, 1.0], 
+#utils = np.array([[0.0, 1.0], 
 #              [1.0, 0.0], 
 #              [0.5, 0.5]])
 #w = np.array([0.8, 0.2])
-#print(cobb_douglas(s,w))
+#print(cobb_douglas(utils, w))
 #
-#s = np.array([[0.0, 1.0], 
+#utils = np.array([[0.0, 1.0], 
 #              [1.0, 0.0], 
 #              [0.5, 0.5]])
 #w = np.array([[0.8, 0.2], 
 #              [0.8, 0.2], 
 #              [0.8, 0.2]])
-#print(cobb_douglas(s,w))
+#print(cobb_douglas(utils, w))
 
 
 #%%
@@ -270,27 +270,27 @@ def reverse_harmonic(utils, w, w_norm=True, *args, **kwargs):
     .. highlight:: python
     .. code-block:: python
 
-        s = np.array([0.0, 1.0])
+        utils = np.array([0.0, 1.0])
         w = np.array([0.8, 0.2])
-        print(reverse_harmonic(s,w))
+        print(reverse_harmonic(utils, w))
         
         >>> [1.]
         
-        s = np.array([[0.0, 1.0], 
+        utils = np.array([[0.0, 1.0], 
                       [1.0, 0.0], 
                       [0.5, 0.5]])
         w = np.array([0.8, 0.2])
-        print(reverse_harmonic(s,w))
+        print(reverse_harmonic(utils, w))
         
         >>> [1. 1. 0.5]
         
-        s = np.array([[0.0, 1.0], 
+        utils = np.array([[0.0, 1.0], 
                       [1.0, 0.0], 
                       [0.5, 0.5]])
         w = np.array([[0.8, 0.2], 
                       [0.8, 0.2], 
                       [0.8, 0.2]])
-        print(reverse_harmonic(s,w))
+        print(reverse_harmonic(utils, w))
         
         >>> [1. 1. 0.5]
     '''
@@ -303,24 +303,24 @@ def reverse_harmonic(utils, w, w_norm=True, *args, **kwargs):
     
     return 1.0 - 1.0 / (np.sum(w / (1.0 - utils), axis=1))
 
-s = np.array([0.0, 1.0])
-w = np.array([0.8, 0.2])
-print(reverse_harmonic(s,w))
-
-
-s = np.array([[0.0, 1.0], 
-              [1.0, 0.0], 
-              [0.5, 0.5]])
-w = np.array([0.8, 0.2])
-print(reverse_harmonic(s,w))
-
-s = np.array([[0.0, 1.0], 
-              [1.0, 0.0], 
-              [0.5, 0.5]])
-w = np.array([[0.8, 0.2], 
-              [0.8, 0.2], 
-              [0.8, 0.2]])
-print(reverse_harmonic(s,w))
+#utils = np.array([0.0, 1.0])
+#w = np.array([0.8, 0.2])
+#print(reverse_harmonic(utils, w))
+#
+#
+#utils = np.array([[0.0, 1.0], 
+#              [1.0, 0.0], 
+#              [0.5, 0.5]])
+#w = np.array([0.8, 0.2])
+#print(reverse_harmonic(utils, w))
+#
+#utils = np.array([[0.0, 1.0], 
+#              [1.0, 0.0], 
+#              [0.5, 0.5]])
+#w = np.array([[0.8, 0.2], 
+#              [0.8, 0.2], 
+#              [0.8, 0.2]])
+#print(reverse_harmonic(utils, w))
 
 
 #%%
@@ -357,85 +357,82 @@ def reverse_power(utils, w, alpha, w_norm=True, *args, **kwargs):
     .. highlight:: python
     .. code-block:: python
 
-        s = np.array([0.0, 1.0])
+        utils = np.array([0.0, 1.0])
         w = np.array([0.8, 0.2])
         alpha = 1.0
-        print(reverse_power(s, w, alpha))
+        print(reverse_power(utils, w, alpha))
         
-        >>> [1.]
+        >>> [0.2]
         
-        s = np.array([[0.0, 1.0], 
+        utils = np.array([[0.0, 1.0], 
                       [1.0, 0.0], 
                       [0.5, 0.5]])
         w = np.array([0.8, 0.2])
-        alpha = np.array([1.0],
-                         [1.0],
-                         [1.0])
-        print(reverse_power(s, w, alpha))
+        alpha = np.array([1.0, 1.0, 1.0])
+        print(reverse_power(utils, w, alpha))
         
-        >>> [1. 1. 0.5]
+        >>> [0.2 0.8 0.5]
         
-        s = np.array([[0.0, 1.0], 
+        utils = np.array([[0.0, 1.0], 
                       [1.0, 0.0], 
                       [0.5, 0.5]])
         w = np.array([[0.8, 0.2], 
                       [0.8, 0.2], 
                       [0.8, 0.2]])
-        alpha = np.array([1.0],
-                         [1.0],
-                         [1.0])
-        print(reverse_power(s, w, alpha))
+        alpha = np.array([1.0, 1.0,1.0])
+        print(reverse_power(utils, w, alpha))
         
-        >>> [1. 1. 0.5]
+        >>> [0.2 0.8 0.5]
     '''
     if utils.ndim == 1:
         utils = np.reshape(utils, [1,-1])
         
     _dimcheck(utils, w)
     if w_norm:
-        _w_normalize(w)
+        _w_normalize(w)  
     
     if type(alpha) is np.ndarray:
         if alpha.ndim == 1:
             alpha = np.tile(alpha, (utils.shape[1], 1)).T
-        
-    return 1.0 - np.power(np.sum(w*(1.0 - utils)**alpha, axis=1), 1.0/alpha)
+#            print('alpha: {0}'.format(alpha))
+            out = 1.0 - np.power(np.sum(np.power(w*(1.0 - utils), alpha), 
+                                        axis=1), 1.0/alpha[:,0])
+        else:
+            _msg = ('alpha has to be scalar or 1D array, '
+                    'got {0}'.format(alpha.ndim))
+            raise ValueError(_msg)
+    else:
+        out = 1.0 - np.power(np.sum(np.power(w*(1.0 - utils), alpha), 
+                                    axis=1), 1.0/alpha)
+    return out
 
-s = np.array([0.0, 1.0])
-w = np.array([0.8, 0.2])
-alpha = 1.0
-print(reverse_power(s, w, alpha))
-
-#>>> [1.]
-
-s = np.array([[0.0, 1.0], 
-              [1.0, 0.0], 
-              [0.5, 0.5]])
-w = np.array([0.8, 0.2])
-alpha = np.array([1.0, 1.0, 1.0])
-print(reverse_power(s, w, alpha))
-
-#>>> [1. 1. 0.5]
-
-s = np.array([[0.0, 1.0], 
-              [1.0, 0.0], 
-              [0.5, 0.5]])
-w = np.array([[0.8, 0.2], 
-              [0.8, 0.2], 
-              [0.8, 0.2]])
-alpha = np.array([1.0],
-                 [1.0],
-                 [1.0])
-print(reverse_power(s, w, alpha))
-
-#
-#s = np.array([[0,1], [1,0], [0.5, 0.5]])
+# 
+#utils = np.array([0.0, 1.0])
 #w = np.array([0.8, 0.2])
-#w2 = np.array([[0.8, 0.2], [0.8, 0.2], [0.8, 0.2]])
-#s2 = np.array([0,1])
-#print(reverse_power(s,w))
-#print(reverse_power(s,w2))
-#print(reverse_power(s2,w))
+#alpha = 1.0
+#print(reverse_power(utils, w, alpha))
+#
+##>>> [0.2]
+#
+#utils = np.array([[0.0, 1.0], 
+#              [1.0, 0.0], 
+#              [0.5, 0.5]])
+#w = np.array([0.8, 0.2])
+#alpha = np.array([1.0, 1.0, 1.0])
+#print(reverse_power(utils, w, alpha))
+#
+##>>> [0.2 0.8 0.5]
+#
+#utils = np.array([[0.0, 1.0], 
+#              [1.0, 0.0], 
+#              [0.5, 0.5]])
+#w = np.array([[0.8, 0.2], 
+#              [0.8, 0.2], 
+#              [0.8, 0.2]])
+#alpha = np.array([1.0, 1.0, 1.0])
+#print(reverse_power(utils, w, alpha))
+#
+##>>> [0.2 0.8 0.5]
 #%%
 ## https://www.rdocumentation.org/packages/utility/versions/1.4.3/topics/utility.aggregate.mult
 def multiplicative(utils, w, w_norm=True, *args, **kwargs):
@@ -453,7 +450,7 @@ def multiplicative(utils, w, w_norm=True, *args, **kwargs):
 #    
 #    return out
 #
-#s = np.array([[0,1], [1,0], [0.5, 0.5]])
+#utils = np.array([[0,1], [1,0], [0.5, 0.5]])
 #w = np.array([0.8, 0.2])
 #w2 = np.array([[0.8, 0.2], [0.8, 0.2], [0.8, 0.2]])
 #print(multiplicative(s,w))
@@ -493,19 +490,50 @@ def split_power(utils, w, alpha, s, w_norm=True, *args, **kwargs):
     
     Example
     -------
-    s = np.array([[0.0, 1.0], 
-                  [1.0, 0.0], 
-                  [0.5, 0.5]])
-    w = np.array([0.8, 0.2])
-    additive(s,w)
-    
-    s = np.array([[0.0, 1.0], 
-                  [1.0, 0.0], 
-                  [0.5, 0.5]])
-    w = np.array([[0.8, 0.2], 
-                  [0.8, 0.2], 
-                  [0.8, 0.2]])
-    additive(s,w)
+    .. highlight:: python
+    .. code-block:: python
+
+        utils = np.array([0.0, 1.0])
+        w = np.array([0.8, 0.2])
+        alpha = 1.0
+        s = 1.0
+        print(split_power(utils, w, alpha, s))
+        
+        >>> [0.2]
+        
+        utils = np.array([[0.0, 1.0], 
+                      [1.0, 0.0], 
+                      [0.5, 0.5]])
+        w = np.array([0.8, 0.2])
+        alpha = np.array([1.0, 1.0, 1.0])
+        s = 1.0
+        print(split_power(utils, w, alpha, s))
+        
+        >>> [0.2 0.8 0.5]
+        
+        utils = np.array([[0.0, 1.0], 
+                      [1.0, 0.0], 
+                      [0.5, 0.5]])
+        w = np.array([[0.8, 0.2], 
+                      [0.8, 0.2], 
+                      [0.8, 0.2]])
+        alpha = np.array([1.0, 1.0, 1.0])
+        s = np.array([1.0, 1.0, 1.0])
+        print(split_power(utils, w, alpha, s))
+        
+        >>> [0.2 0.8 0.5]
+        
+        utils = np.array([[0.0, 1.0], 
+                      [1.0, 0.0], 
+                      [0.5, 0.5]])
+        w = np.array([[0.8, 0.2], 
+                      [0.8, 0.2], 
+                      [0.8, 0.2]])
+        alpha = 1.0
+        s = np.array([1.0, 1.0, 1.0])
+        print(split_power(utils, w, alpha, s))
+        
+        >>> [0.2 0.8 0.5]
     '''
     if utils.ndim == 1:
         utils = np.reshape(utils, [1,-1])
@@ -529,19 +557,76 @@ def split_power(utils, w, alpha, s, w_norm=True, *args, **kwargs):
         else:
             out = 1.0 - (1.0 - s)*((1.0 - u)/(1.0 - s))**(1.0/alpha)
         return out
+    
+    if type(alpha) is np.ndarray:
+        if alpha.ndim == 1:
+            _alpha = np.tile(alpha, (utils.shape[1], 1)).T
 
-    return _g_inv(np.sum(w*_g(utils, s, alpha), axis=1), s, alpha)
+        else:
+            _msg = ('alpha has to be scalar or 1D array, '
+                    'got {0}'.format(alpha.ndim))
+            raise ValueError(_msg)
+    else:
+        _alpha = alpha
+      
+    if type(s) is np.ndarray:
+        if s.ndim == 1:
+            _s = np.tile(s, (utils.shape[1], 1)).T
 
-s = np.array([[0,1], [1,0], [0.5, 0.5]])
-w = np.array([0.8, 0.2])
-w2 = np.array([[0.8, 0.2], [0.8, 0.2], [0.8, 0.2]])
-s2 = np.array([0,1])
-print(split_power(s,w, 1, 1))
-print(split_power(s,w2, 1, 1))
-print(split_power(s2,w, 1, 1))
+        else:
+            _msg = ('s has to be scalar or 1D array, '
+                    'got {0}'.format(alpha.ndim))
+            raise ValueError(_msg)
+    else:
+        _s = s
+        
+    out = _g_inv(np.sum(w*_g(utils, _s, _alpha), axis=1), s, alpha)
+    return out
+
+#utils = np.array([0.0, 1.0])
+#w = np.array([0.8, 0.2])
+#alpha = 1.0
+#s = 1.0
+#print(split_power(utils, w, alpha, s))
+#
+##>>> [0.2]
+#
+#utils = np.array([[0.0, 1.0], 
+#              [1.0, 0.0], 
+#              [0.5, 0.5]])
+#w = np.array([0.8, 0.2])
+#alpha = np.array([1.0, 1.0, 1.0])
+#s = 1.0
+#print(split_power(utils, w, alpha, s))
+#
+##>>> [0.2 0.8 0.5]
+#
+#utils = np.array([[0.0, 1.0], 
+#              [1.0, 0.0], 
+#              [0.5, 0.5]])
+#w = np.array([[0.8, 0.2], 
+#              [0.8, 0.2], 
+#              [0.8, 0.2]])
+#alpha = np.array([1.0, 1.0, 1.0])
+#s = np.array([1.0, 1.0, 1.0])
+#print(split_power(utils, w, alpha, s))
+#
+##>>> [0.2 0.8 0.5]
+#
+#utils = np.array([[0.0, 1.0], 
+#              [1.0, 0.0], 
+#              [0.5, 0.5]])
+#w = np.array([[0.8, 0.2], 
+#              [0.8, 0.2], 
+#              [0.8, 0.2]])
+#alpha = 1.0
+#s = np.array([1.0, 1.0, 1.0])
+#print(split_power(utils, w, alpha, s))
+#
+##>>> [0.2 0.8 0.5]
 #%%
 
-def harmonic(utils, w, w_norm=True, *args, **kwargs):
+def harmonic(utils, w, w_norm=True, rerange=False, *args, **kwargs):
     '''Harmonic utility aggregation function
     
     Aggregate preferences using the reverse power aggregation function. 
@@ -558,6 +643,10 @@ def harmonic(utils, w, w_norm=True, *args, **kwargs):
         In case it is a 2D-array, w requires the same dimensions as `utils`
     w_norm : Bool, optional
         If True, the sum of the weights will be equal to 1
+    rerange : Bool, optional
+        Changes the range of utils to be in the open interval (0,1), defined 
+        by the offset value (defined at a library level as OFFSET, 1e-6). 
+        By default is set to False.
     
     Returns
     -------
@@ -566,19 +655,56 @@ def harmonic(utils, w, w_norm=True, *args, **kwargs):
     
     Example
     -------
-    s = np.array([[0.0, 1.0], 
-                  [1.0, 0.0], 
-                  [0.5, 0.5]])
-    w = np.array([0.8, 0.2])
-    additive(s,w)
-    
-    s = np.array([[0.0, 1.0], 
-                  [1.0, 0.0], 
-                  [0.5, 0.5]])
-    w = np.array([[0.8, 0.2], 
-                  [0.8, 0.2], 
-                  [0.8, 0.2]])
-    additive(s,w)
+    .. highlight:: python
+    .. code-block:: python
+        utils = np.array([0.0, 1.0])
+        w = np.array([0.8, 0.2])
+        print(harmonic(utils, w, rerange=True))
+        
+        >>> [1.24999969e-06]
+        
+        utils = np.array([[0.0, 1.0], 
+                      [1.0, 0.0], 
+                      [0.5, 0.5]])
+        w = np.array([0.8, 0.2])
+        print(harmonic(utils, w, rerange=True))
+        
+        >>>[1.24999969e-06 4.99998000e-06 5.00000000e-01]
+        
+        utils = np.array([[0.0, 1.0], 
+                      [1.0, 0.0], 
+                      [0.5, 0.5]])
+        w = np.array([[0.8, 0.2], 
+                      [0.8, 0.2], 
+                      [0.8, 0.2]])
+        print(harmonic(utils, w, rerange=True))
+        
+        >>>[1.24999969e-06 4.99998000e-06 5.00000000e-01]
+        
+        utils = np.array([0.0, 1.0])
+        w = np.array([0.8, 0.2])
+        print(harmonic(utils, w, rerange=False))
+        
+        >>> [0.]
+        
+        utils = np.array([[0.0, 1.0], 
+                      [1.0, 0.0], 
+                      [0.5, 0.5]])
+        w = np.array([0.8, 0.2])
+        print(harmonic(utils, w, rerange=False))
+        
+        >>> [0.  0.  0.5]
+        
+        utils = np.array([[0.0, 1.0], 
+                      [1.0, 0.0], 
+                      [0.5, 0.5]])
+        w = np.array([[0.8, 0.2], 
+                      [0.8, 0.2], 
+                      [0.8, 0.2]])
+        print(harmonic(utils, w, rerange=False))
+        
+        >>> [0.  0.  0.5]
+        
     '''
     if utils.ndim == 1:
         utils = np.reshape(utils, [1,-1])
@@ -586,17 +712,49 @@ def harmonic(utils, w, w_norm=True, *args, **kwargs):
     _dimcheck(utils, w)
     if w_norm:
         _w_normalize(w)
-    
-    utils = _rerange(utils, OFFSET)
+    if rerange:
+        utils = _rerange(utils, OFFSET)
     return 1.0 / np.sum(w/utils, axis=1)
 
-s = np.array([[0,1], [1,0], [0.5, 0.5]])
-w = np.array([0.8, 0.2])
-w2 = np.array([[0.8, 0.2], [0.8, 0.2], [0.8, 0.2]])
-s2 = np.array([0,1])
-print(harmonic(s,w))
-print(harmonic(s,w2))
-print(harmonic(s2,w))
+#
+#utils = np.array([0.0, 1.0])
+#w = np.array([0.8, 0.2])
+#print(harmonic(utils, w, rerange=True))
+#
+#
+#utils = np.array([[0.0, 1.0], 
+#              [1.0, 0.0], 
+#              [0.5, 0.5]])
+#w = np.array([0.8, 0.2])
+#print(harmonic(utils, w, rerange=True))
+#
+#utils = np.array([[0.0, 1.0], 
+#              [1.0, 0.0], 
+#              [0.5, 0.5]])
+#w = np.array([[0.8, 0.2], 
+#              [0.8, 0.2], 
+#              [0.8, 0.2]])
+#print(harmonic(utils, w, rerange=True))
+#
+#
+#utils = np.array([0.0, 1.0])
+#w = np.array([0.8, 0.2])
+#print(harmonic(utils, w, rerange=False))
+#
+#
+#utils = np.array([[0.0, 1.0], 
+#              [1.0, 0.0], 
+#              [0.5, 0.5]])
+#w = np.array([0.8, 0.2])
+#print(harmonic(utils, w, rerange=False))
+#
+#utils = np.array([[0.0, 1.0], 
+#              [1.0, 0.0], 
+#              [0.5, 0.5]])
+#w = np.array([[0.8, 0.2], 
+#              [0.8, 0.2], 
+#              [0.8, 0.2]])
+#print(harmonic(utils, w, rerange=False))
 
 #%%
 
@@ -619,31 +777,26 @@ def maximum(utils, *args, **kwargs):
     
     Example
     -------
-    s = np.array([[0.0, 1.0], 
-                  [1.0, 0.0], 
-                  [0.5, 0.5]])
-    w = np.array([0.8, 0.2])
-    additive(s,w)
-    
-    s = np.array([[0.0, 1.0], 
-                  [1.0, 0.0], 
-                  [0.5, 0.5]])
-    w = np.array([[0.8, 0.2], 
-                  [0.8, 0.2], 
-                  [0.8, 0.2]])
-    additive(s,w)
+    .. highlight:: python
+    .. code-block:: python
+        utils = np.array([[0.0, 1.0], 
+                          [1.0, 0.0], 
+                          [0.5, 0.5]])
+        print(maximum(utils))    
+        
+        >>> [1.  1.  0.5]
     '''
     if utils.ndim == 1:
         utils = np.reshape(utils, [1,-1])
         
     return np.max(utils, axis=1)
-    
-#s = np.array([[0,1], [1,0], [0.5, 0.5]])
-#w = np.array([0.8, 0.2])
-#w2 = np.array([[0.8, 0.2], [0.8, 0.2], [0.8, 0.2]])
-#print(maximum(s,w))
-#print(maximum(s,w2))
-
+#    
+#utils = np.array([[0.0, 1.0], 
+#                  [1.0, 0.0], 
+#                  [0.5, 0.5]])
+#print(maximum(utils))    
+#
+##>>> [1.  1.  0.5]
 
 #%%
 def minimum(utils, *args, **kwargs):
@@ -657,12 +810,6 @@ def minimum(utils, *args, **kwargs):
         Two-dimensional array with the provided utilities to aggregate. The 
         dimensions corresponds to the number of random samples (n) and the 
         number of utilities (u)
-    w : ndarray [u], [n, u]
-        Array with the provided weights to each of the utilities. If passed 
-        as a 1D-array, the same weights are used for of all the random samples.
-        In case it is a 2D-array, w requires the same dimensions as `utils`
-    w_norm : Bool, optional
-        If True, the sum of the weights will be equal to 1
     
     Returns
     -------
@@ -671,35 +818,30 @@ def minimum(utils, *args, **kwargs):
     
     Example
     -------
-    s = np.array([[0.0, 1.0], 
-                  [1.0, 0.0], 
-                  [0.5, 0.5]])
-    w = np.array([0.8, 0.2])
-    additive(s,w)
-    
-    s = np.array([[0.0, 1.0], 
-                  [1.0, 0.0], 
-                  [0.5, 0.5]])
-    w = np.array([[0.8, 0.2], 
-                  [0.8, 0.2], 
-                  [0.8, 0.2]])
-    additive(s,w)
+    .. highlight:: python
+    .. code-block:: python
+        utils = np.array([[0.0, 1.0], 
+                          [1.0, 0.0], 
+                          [0.5, 0.5]])
+        print(minimum(utils))    
+        
+        >>> [0.  0.  0.5]
     '''
     if utils.ndim == 1:
         utils = np.reshape(utils, [1,-1])
         
     return np.min(utils, axis=1)
-    
-s = np.array([[0,1], [1,0], [0.5, 0.5]])
-w = np.array([0.8, 0.2])
-s = np.array([[0,1]])
-#w2 = np.array([[0.8, 0.2], [0.8, 0.2], [0.8, 0.2]])
-print(minimum(s,w=10))
-#print(minimum(s,w2))
 
+#utils = np.array([[0.0, 1.0], 
+#                  [1.0, 0.0], 
+#                  [0.5, 0.5]])
+#print(minimum(utils))    
+#
+##>>> [0.  0.  0.5]
 
 #%% 
-def mix(utils, w, methods, w_methods, mix_fun, w_norm=True):
+def mix(utils, w, methods, w_methods, mix_fun, w_norm=True, methods_args=None, 
+        mix_args=None, *args, **kwargs):
     '''mixed utility aggregation function
     
     Aggregate preferences using a mix of aggregation functions. 
@@ -732,25 +874,98 @@ def mix(utils, w, methods, w_methods, mix_fun, w_norm=True):
     
     Example
     -------
-    s = np.array([[0.0, 1.0], 
-                  [1.0, 0.0], 
-                  [0.5, 0.5]])
-    w = np.array([0.8, 0.2])
-    additive(s,w)
-    
-    s = np.array([[0.0, 1.0], 
-                  [1.0, 0.0], 
-                  [0.5, 0.5]])
-    w = np.array([[0.8, 0.2], 
-                  [0.8, 0.2], 
-                  [0.8, 0.2]])
-    additive(s,w)
+    .. highlight:: python
+    .. code-block:: python
+        utils = np.array([[0.0, 1.0], 
+                      [1.0, 0.0], 
+                      [0.5, 0.5]])
+        w = np.array([[0.8, 0.2], 
+                      [0.8, 0.2], 
+                      [0.8, 0.2]])
+        methods = [cobb_douglas, 
+                   additive,]
+        w_methods = np.array([0.5, 0.5])
+        mix_fun = additive
+        print(mix(utils, w, methods, w_methods, mix_fun))
+        
+        #>>> [0.1 0.4 0.5]
+        
+        utils = np.array([[0.0, 1.0], 
+                      [1.0, 0.0], 
+                      [0.5, 0.5]])
+        w = np.array([[0.8, 0.2], 
+                      [0.8, 0.2], 
+                      [0.8, 0.2]])
+        methods = [cobb_douglas, 
+                   split_power,]
+        methods_args = [{}, 
+                        dict(alpha = 1.0, s = 1.0)]
+        w_methods = np.array([0.5, 0.5])
+        mix_fun = additive
+        print(mix(utils, w, methods, w_methods, mix_fun, methods_args=methods_args))
+        #>>> [0.1 0.4 0.5]
+        
+        
+        utils = np.array([[0.0, 1.0], 
+                      [1.0, 0.0], 
+                      [0.5, 0.5]])
+        w = np.array([[0.8, 0.2], 
+                      [0.8, 0.2], 
+                      [0.8, 0.2]])
+        methods = [cobb_douglas, 
+                   additive,]
+        mix_args = dict(alpha = 1.0, s = 1.0)
+        w_methods = np.array([0.5, 0.5])
+        mix_fun = split_power
+        print(mix(utils, w, methods, w_methods, mix_fun, mix_args=mix_args))
+        #>>> [0.1 0.4 0.5]
+        
+        
+        utils = np.array([[0.0, 1.0], 
+                      [1.0, 0.0], 
+                      [0.5, 0.5]])
+        w = np.array([[0.8, 0.2], 
+                      [0.8, 0.2], 
+                      [0.8, 0.2]])
+        methods = [cobb_douglas, 
+                   additive,]
+        mix_args = dict(alpha = 1.0, s = 1.0)
+        w_methods = np.array([[0.5, 0.5],
+                              [0.5, 0.5],
+                              [0.5, 0.5]])
+        mix_fun = split_power
+        print(mix(utils, w, methods, w_methods, mix_fun, mix_args=mix_args))
+        #>>> [0.1 0.4 0.5]
+        
+        
+        utils = np.array([[0.0, 1.0], 
+                      [1.0, 0.0], 
+                      [0.5, 0.5]])
+        w = np.array([[0.8, 0.2], 
+                      [0.8, 0.2], 
+                      [0.8, 0.2]])
+        methods = [cobb_douglas, 
+                   additive,]
+        mix_args = dict(alpha = np.array([1.0, 1.0, 1.0]), s = 1.0)
+        w_methods = np.array([[0.5, 0.5],
+                              [0.5, 0.5],
+                              [0.5, 0.5]])
+        mix_fun = split_power
+        print(mix(utils, w, methods, w_methods, mix_fun, mix_args=mix_args))
+        #>>> [0.1 0.4 0.5]
     '''
     if utils.ndim == 1:
         utils = np.reshape(utils, [1,-1])
-        
+    
+    if w_methods.ndim == 1:
+        _dim_w_methods = w_methods.shape[0]
+    elif w_methods.ndim == 2:
+        _dim_w_methods = w_methods.shape[1]
+    
     _dimcheck(utils, w)
-    if len(methods) != len(w_methods):
+    
+    
+    if len(methods) != _dim_w_methods:
         _msg = ('length of methods ({0}) and w_methods ({1}) are not '
                 'the same'.format(len(methods), len(w_methods))
                 )
@@ -760,19 +975,92 @@ def mix(utils, w, methods, w_methods, mix_fun, w_norm=True):
         _w_normalize(w)
         _w_normalize(w_methods)
     
-    agg_util = np.array([m(utils, w) for m in methods]).T
-    return mix_fun(agg_util, w_methods)
+    if methods_args is None:
+        methods_args = [{}, ]*len(methods)
+    
+    if mix_args is None:
+        mix_args = {}
+    
+    agg_util = np.array([m(utils, w, **methods_args[i]) for i, m in enumerate(methods)]).T
+    return mix_fun(agg_util, w_methods, **mix_args)
 
-#s = np.array([[0,1], [1,0], [0.5, 0.5]])
-#w = np.array([0.8, 0.2])
-#w2 = np.array([[0.8, 0.2], [0.8, 0.2], [0.8, 0.2]])
-#methods = [maximum, minimum]
+#utils = np.array([[0.0, 1.0], 
+#                  [1.0, 0.0], 
+#                  [0.5, 0.5]])
+#w = np.array([[0.8, 0.2], 
+#              [0.8, 0.2], 
+#              [0.8, 0.2]])
+#methods = [cobb_douglas, 
+#           additive,]
 #w_methods = np.array([0.5, 0.5])
 #mix_fun = additive
-#print(mix(s, w, methods, w_methods, mix_fun))
-##print(linear_mix(s, w2))    
+#print(mix(utils, w, methods, w_methods, mix_fun))
+#
+##>>> [0.1 0.4 0.5]
+#
+#utils = np.array([[0.0, 1.0], 
+#              [1.0, 0.0], 
+#              [0.5, 0.5]])
+#w = np.array([[0.8, 0.2], 
+#              [0.8, 0.2], 
+#              [0.8, 0.2]])
+#methods = [cobb_douglas, 
+#           split_power,]
+#methods_args = [{}, 
+#                dict(alpha = 1.0, s = 1.0)]
+#w_methods = np.array([0.5, 0.5])
+#mix_fun = additive
+#print(mix(utils, w, methods, w_methods, mix_fun, methods_args=methods_args))
+##>>> [0.1 0.4 0.5]
 #
 #
+#utils = np.array([[0.0, 1.0], 
+#              [1.0, 0.0], 
+#              [0.5, 0.5]])
+#w = np.array([[0.8, 0.2], 
+#              [0.8, 0.2], 
+#              [0.8, 0.2]])
+#methods = [cobb_douglas, 
+#           additive,]
+#mix_args = dict(alpha = 1.0, s = 1.0)
+#w_methods = np.array([0.5, 0.5])
+#mix_fun = split_power
+#print(mix(utils, w, methods, w_methods, mix_fun, mix_args=mix_args))
+##>>> [0.1 0.4 0.5]
+#
+#
+#utils = np.array([[0.0, 1.0], 
+#              [1.0, 0.0], 
+#              [0.5, 0.5]])
+#w = np.array([[0.8, 0.2], 
+#              [0.8, 0.2], 
+#              [0.8, 0.2]])
+#methods = [cobb_douglas, 
+#           additive,]
+#mix_args = dict(alpha = 1.0, s = 1.0)
+#w_methods = np.array([[0.5, 0.5],
+#                      [0.5, 0.5],
+#                      [0.5, 0.5]])
+#mix_fun = split_power
+#print(mix(utils, w, methods, w_methods, mix_fun, mix_args=mix_args))
+##>>> [0.1 0.4 0.5]
+#
+#
+#utils = np.array([[0.0, 1.0], 
+#              [1.0, 0.0], 
+#              [0.5, 0.5]])
+#w = np.array([[0.8, 0.2], 
+#              [0.8, 0.2], 
+#              [0.8, 0.2]])
+#methods = [cobb_douglas, 
+#           additive,]
+#mix_args = dict(alpha = np.array([1.0, 1.0, 1.0]), s = 1.0)
+#w_methods = np.array([[0.5, 0.5],
+#                      [0.5, 0.5],
+#                      [0.5, 0.5]])
+#mix_fun = split_power
+#print(mix(utils, w, methods, w_methods, mix_fun, mix_args=mix_args))
+##>>> [0.1 0.4 0.5]
 
 #%%
 

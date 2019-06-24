@@ -7,18 +7,16 @@ Created on Mon May 13 15:58:12 2019
 from sys import path
 path.append('..')
 
-import decisiorama
+#import decisiorama
 import numpy as np
-from decisiorama import pda
-import generator
-#import utility
-#import aggregate
-from decisiorama.utils import random_instance as ri
-#import matplotlib.pyplot as plt
-#import ranker
 import itertools
 import multiprocessing as mp
 from time import time
+
+from decisiorama import pda
+from decisiorama.utils import random_instance as ri
+import generator
+
 
 # 1000 runs about 12 min
 # single run 100k 18.5 seg
@@ -31,7 +29,7 @@ if __name__ == '__main__':
     obj_lim = generator.obj_limits
     wgs = generator.weights()
     alpha = ri.Uniform(0,1).get
-    multiproc = False
+    multiproc = True
     
     # Create the objectives 
     prob = {}
@@ -76,25 +74,35 @@ if __name__ == '__main__':
     inp_comb = itertools.product([0, 1], repeat=n_att)
     inps = np.array([i for i in inp_comb])
     
-    # run the decision problem
+    # run the decision problem (is left outside of the function to be decided 
+    # by the experimenter how to do it)
     f = prob['water_supply_IS'].get_value
     a = time()
     
     if multiproc:
         chunks = (len(inps)//3) + 1
-        with mp.Pool(3) as p:
-            res = p.map(f, inps, chunks)
+        with mp.Pool(4) as p:
+#            res = p.map(f, inps, chunks)
+            res = p.map(f, inps, 4)
     else:
         res = list(map(f, inps))
     
     print(time() - a)
     res = np.array(res)
-    
+    #%%
     # From this point we start ranking the solutions
     evaluator = pda.Evaluator(inps, res)
-    obj_funs = [pda.ranker.mean, pda.ranker.iqr]
-    ranked_sols = evaluator.get_ranked_solutions(obj_funs)
-    core_index = evaluator.get_core_index(obj_funs)
+#    evaluator = Evaluator(inps, res)
+    # objective functions - they all must be to minimise
+#    obj_funs = dict{mean = [pda.ranker.mean, False],  # to maximise pass the negative mean
+#                    iqr = [pda.ranker.iqr, True],
+#                    cov = [pda.ranker.cov, True]}
+    evaluator.add_function(pda.ranker.mean, minimize=False)
+    evaluator.add_function(pda.ranker.iqr, minimize=True)
+    evaluator.add_function(pda.ranker.cov, minimize=True)
+    
+    ranked_sols = evaluator.get_ranked_solutions()
+    core_index = evaluator.get_core_index()
     
     
     

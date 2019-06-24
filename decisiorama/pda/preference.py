@@ -17,23 +17,50 @@ def _isnumeric(x):
     return isinstance(x, _num_types)
 
 class Objective():
+    ''' Class to create a node in the hierarchy tree
+    
+    This is the base class for structuring each of the nodes for the 
+    hierarchical aggregation. In the hierarchy, all of the nodes are instances 
+    of the Objective class.
+    
     '''
-    The objective class constructor allows to 
-    '''
-    def __init__(self, 
-                 name, 
-                 w, 
-                 alternatives, 
-                 obj_min=-np.inf, 
-                 obj_max=np.inf, 
-                 n=100, 
-                 utility_func=utility.exponential, 
-                 utility_pars=0.0, 
-                 aggregation_func=aggregate.mix_linear_cobb, 
-                 aggregation_pars=[0.5,], 
-                 maximise=True,
-                 ):
-        '''intialisation method'''
+    def __init__(self, name, w, alternatives, obj_min, obj_max, n=100, 
+                 utility_func=utility.exponential, utility_pars=0.0, 
+                 aggregation_func=aggregate.additive, aggregation_pars=[0.5,], 
+                 maximise=True):
+        '''
+        Parameters
+        ----------
+        
+        name : str
+            Name of the objective. This will be used to keep track of the nodes
+        w : float, ndarray or ri instance
+            Weight of the objective in the hierarchical aggregation.
+        alternatives : list
+            List containing the consequences of each action in the objective. This 
+            only have an impact on leaf nodes, and will be override in parent 
+            nodes.
+        obj_min : float
+            Minimum value of the objective. Is used to create the utility function.
+        obj_max : float, optional
+            Maximum value of the objective. Is used to create the utility function.
+        n : float
+            Number of random samples to be used in the uncertainty analysis.
+        utility_function : func
+            Function that converts the values of the objectives into utilities
+        utility_pars : dict
+            Dictionary with extra inputs to the utility function. Only used if it 
+            is a leaf node.
+        aggregation_function : func
+            Aggregation function for this particular objective. Only used if it is 
+            not a leaf node.
+        aggregation_pars : dict
+            Additional parameters to pass to the aggregation function
+        maximise : Bool
+            Indicates if the optimal of the objective function is to maximise. In 
+            case the optimal value is its minimum, set to False
+        '''
+        
         if type(name) is not str:
             msg = 'name has to be string, got {0}'.format(type(name))
             raise TypeError(msg)
@@ -74,6 +101,7 @@ class Objective():
         self.aggregation_pars = aggregation_pars
         
         self.w = w
+        
         if type(n) is not int:
             msg = 'n should be int, got {0}'.format(type(n))
             raise TypeError()
@@ -84,6 +112,7 @@ class Objective():
         return
     
     def __getstate__(self,):
+        '''Function to get state of current object. It is pickable'''
         state = dict(
             name = self.name,
             obj_min = self.obj_min,
@@ -102,6 +131,7 @@ class Objective():
         return state
     
     def __setstate__(self, state):
+        '''Function to set state of current object. It is pickable'''
         self.name = state['name']
         self.obj_min = state['obj_min']
         self.obj_max = state['obj_max']
@@ -118,7 +148,16 @@ class Objective():
         return
     
     def add_children(self, children):
-        '''method to add childrens'''
+        '''This is the method to add children nodes
+        
+        This method is used to create a child node in the hierarchy tree
+        
+        Parameters
+        ----------
+        
+        children : objective
+            An instance of the Objective node is passed.
+        '''
         # check if children is the same as the current node (no self reference)
         if self.name == children.name:
             msg = 'It is not possible to have a self reference'
@@ -136,7 +175,25 @@ class Objective():
         return
 
     def get_value(self, x):
-        '''normalise the alternatives of the actions before adding up'''
+        ''' get the attribute utlity based on the portfolio of actions
+        
+        This function is used to calculate the value of the attribute 
+        (objective), for a given portfolio. If it is a leaf node, the values 
+        must be provided to the object, otherwise it is calculated from the 
+        hierarchical aggregation.
+        
+        Parameters
+        ----------
+        x : 1D array
+            A binary vector that represent the portfolio of actions. 1 for 
+            done, and 0 for no action
+        
+        Returns
+        -------
+        out : ndarray
+            Utility value of the attributes
+            
+        '''
         
         if not hasattr(x, '__iter__'):
             msg = 'x is not an iterable'
@@ -196,68 +253,129 @@ class Objective():
             else:
                 _w = np.array([c.w for c in self.children]).T
 
-            value = self.aggregation_func(sols=_temp_util, 
+            value = self.aggregation_func(utils=_temp_util, 
                                           w=_w, 
                                           pars=self.aggregation_pars, 
                                           w_norm=True)
         return value
     
 def hierarchy_smith(h_map, prob):
-    '''Mutates the prob dictionary'''
+    '''Function to creeate a hierarchy in the problem object
+    
+    This function heps in building the hierarchies, by helping in the 
+    definition of child nodes. This can also be done manually for each 
+    objective
+    
+    Parameters
+    ----------
+    h_map : dict
+        Dictionary containing the child nodes. The key of the dictionary has 
+        to be the parent node. The keys in the maps have to be consistent with 
+        the keys used in the problem (prob) definition.
+    prob : dict
+        Dictionary containing all of the nodes. This will be mutated as a 
+        result of this operation
+    '''
     for node in h_map.keys():
         for child in h_map[node]:
             prob[node].add_children(prob[child])
     return
 
+#%%
 class Evaluator():
-    def __init__(self, inps, res, labels=None):
-        self.inps = inps
-        self.res = res
-        self.n_sols = res.shape[0]
+    ''' Function to pos process the utilsults of the problem
+    
+    The utilsults will be posprocessed here. This object may contain methods to 
+    rank the solutions, assess the performance and do sensitivity analysis
+    '''
+    def __init__(self, portfolio, utils, labels=None):
+        ''' Constructor of the Evaluator class
+        
+        Parameters
+        ----------
+        portfolio : ndarray
+            Array with the portfolio of decisions. This can be seed as the 
+            same portfolio of decisions that were used to calculate the 
+            utilities of a given objective.
+        utils : ndarray
+            Array with resulting utilities for each of the portfolios passed 
+            as inputs.
+        '''
+        
+        self.portfolio = portfolio
+        self.utils = utils
+        self.n_sols = utils.shape[0]
         self.labels = labels
+        self.functions = []
+        self.minimize = []
         return
     
     def __getstate__(self):
+        '''Makes the object pickleable'''
         state = dict(
-                inps = self.inps,
-                res = self.res,
+                portfolio = self.portfolio,
+                utils = self.utils,
                 n_sols = self.n_sols,
                 labels = self.labels,
                 )
         return state
     
     def __setstate__(self, state):
-        self.inps = state['inps']
-        self.res = state['res']
+        '''Makes the object pickleable'''
+        self.portfolio = state['portfolio']
+        self.utils = state['utils']
         self.n_sols = state['n_sols']
         self.labels = state['labels']
         return
     
-    def _performance(self, functions):
+    def add_function(self, function, minimize=True):
+        '''
+        add an objective function for evaluating the solutions
+        
+        Parameters
+        ----------
+        
+        function : func
+            function to process the a 2D vector containing the stochastic 
+            utilities for each portfolio
+        minimize : Bool
+            Determines if the function is to be minimised. If False, it means 
+            the function will be maximised. Default is True.
+        '''
+        
+        self.minimize.append(minimize)
+        if minimize:
+            self.functions.append(function)
+        else:
+            _f = lambda sols : -function(sols)
+            self.functions.append(_f)
+            
+    def _performance(self):
         '''Calculate the performance indicators'''        
-        perf = np.zeros([len(functions), self.n_sols])
-        for i, func in enumerate(functions):
-            perf[i, :] = func(self.res)            
+        perf = np.zeros([len(self.functions), self.n_sols])
+        for i, func in enumerate(self.functions):
+            perf[i, :] = func(self.utils)            
         return perf
     
-    def get_ranked_solutions(self, functions):
+    def get_ranked_solutions(self):
         '''Get the pareto ranking of the solutions'''
-        perf = self._performance(functions).T
-        return utils.pareto_front_i(perf, minimize=False)
+        perf = self._performance().T
+        return utils.pareto_front_i(perf, minimize=True)
     
-    def get_weak_ranked_solutions(self, functions, i=0):
+    def get_weak_ranked_solutions(self, i=0):
         '''Get weakly ranked solutions'''
-        perf = self._performance(functions).T
+        perf = self._performance().T
         _temp = []
         for i in range(i+1):
             _temp.append(utils.pareto_front_i(perf, minimize=False, i=i))
         return np.array([item for sublist in _temp for item in sublist])
     
-    def get_core_index(self, functions, i=0):
+    def get_core_index(self, i=0):
         # get pf
-        pf = self.get_weak_ranked_solutions(functions, i)
-        return np.mean(self.inps[pf], axis=0)
+        pf = self.get_weak_ranked_solutions(i)
+        return np.mean(self.portfolio[pf], axis=0)
 
+#%%
 if __name__ == '__main__':
     print('None')
 #    from numpy.random import beta, normal, uniform
