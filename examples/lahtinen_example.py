@@ -7,12 +7,14 @@ Created on Tue Apr 30 14:14:49 2019
 Implementation of Lahtinen2017 (RPM)
 
 """
+import sys
+sys.path.append('..')
 
 import numpy as np
 import matplotlib.pyplot as plt
 import itertools
-import plot_help
-import utils
+#import plot_help
+from decisiorama import utils
 
 budget_limit = 45.0
 # target to reduce water by 50%
@@ -81,7 +83,7 @@ def of(x, budget_limit=budget_limit):
 
 x = [1,1,1,0,0,1,0,0,1]
 of(x)
-
+#%%
 # Generate all potential portfolios
 inp_comb = itertools.product([0, 1], repeat=len(x))
 

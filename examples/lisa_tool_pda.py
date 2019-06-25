@@ -89,19 +89,17 @@ if __name__ == '__main__':
     
     print(time() - a)
     res = np.array(res)
-    #%%
+    
     # From this point we start ranking the solutions
     evaluator = pda.Evaluator(inps, res)
-#    evaluator = Evaluator(inps, res)
-    # objective functions - they all must be to minimise
-#    obj_funs = dict{mean = [pda.ranker.mean, False],  # to maximise pass the negative mean
-#                    iqr = [pda.ranker.iqr, True],
-#                    cov = [pda.ranker.cov, True]}
+    
+    # add the objective functions
     evaluator.add_function(pda.ranker.mean, minimize=False)
     evaluator.add_function(pda.ranker.iqr, minimize=True)
     evaluator.add_function(pda.ranker.cov, minimize=True)
     
-    ranked_sols = evaluator.get_ranked_solutions()
+    # get the itneresting solutions
+    ranked_sols = evaluator.get_pareto_solutions()
     core_index = evaluator.get_core_index()
     
     

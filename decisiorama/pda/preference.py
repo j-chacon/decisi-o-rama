@@ -212,7 +212,7 @@ class Objective():
             elif callable(self.alternatives[0]):  
                 _sols = np.array([r(self.n) for r in self.alternatives]).T                    
             else:  # using a pre-rendered list
-                _sols = self.alternatives
+                _sols = self.alternatives.T
             
             _sols *= x
             _sols = _sols.T
@@ -349,21 +349,58 @@ class Evaluator():
         else:
             _f = lambda sols : -function(sols)
             self.functions.append(_f)
+        return
+    
+    def remove_function(self, i):
+        '''Method to remove an objective function
+        
+        This method is used to remove an objective function from the objective 
+        function pool
+        
+        Parameters
+        ----------
+        i : int
+            Index of the objective functions
+        '''
+        
+        if type(i) is not int:
+            _msj = 'The variable i has to be int, got a {0}'.format(type(i))
+            raise ValueError(_msj)
             
+        self.minimize.pop(i)
+        self.functions.pop(i)
+        return
+    
     def _performance(self):
-        '''Calculate the performance indicators'''        
+        '''Calculate the performance indicators for the defined objective 
+        functions'''
+        if self.functions == []:
+            _msj = 'No objective functions are declared'
+            raise ValueError(_msj)
         perf = np.zeros([len(self.functions), self.n_sols])
         for i, func in enumerate(self.functions):
             perf[i, :] = func(self.utils)            
         return perf
     
-    def get_ranked_solutions(self):
-        '''Get the pareto ranking of the solutions'''
+    def get_pareto_solutions(self):
+        '''Get the pareto solutions'''
         perf = self._performance().T
         return utils.pareto_front_i(perf, minimize=True)
     
-    def get_weak_ranked_solutions(self, i=0):
-        '''Get weakly ranked solutions'''
+    def get_weak_pareto_solutions(self, i=0):
+        '''Get weakly ranked solutions up to level i
+        
+        Parameters
+        ----------
+        i : int
+            Pareto front index up to which the pareto solutions will be 
+            retrieved. A value of 0 indicates the formal pareto front.
+        
+        Returns
+        -------
+        out : ndarray
+            Array with the pareto solutions for each pareto front
+        '''
         perf = self._performance().T
         _temp = []
         for i in range(i+1):
@@ -371,8 +408,22 @@ class Evaluator():
         return np.array([item for sublist in _temp for item in sublist])
     
     def get_core_index(self, i=0):
-        # get pf
-        pf = self.get_weak_ranked_solutions(i)
+        '''Get core index for weakly ranked solutions up to level i
+        
+        Parameters
+        ----------
+        i : int
+            Pareto front index up to which the core index will be 
+            retrieved. A value of 0 indicates the core index for the formal 
+            pareto front.
+        
+        Returns
+        -------
+        out : ndarray
+            Array with the core index for each weak pareto front
+        '''
+        
+        pf = self.get_weak_pareto_solutions(i)
         return np.mean(self.portfolio[pf], axis=0)
 
 #%%
