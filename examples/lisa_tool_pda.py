@@ -7,7 +7,6 @@ Created on Mon May 13 15:58:12 2019
 from sys import path
 path.append('..')
 
-#import decisiorama
 import numpy as np
 import itertools
 import multiprocessing as mp
