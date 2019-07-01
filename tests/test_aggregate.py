@@ -21,7 +21,7 @@ def test_additive_aggregation_single_weight():
                       [1.0, 0.0], 
                       [0.5, 0.5]])
     w = np.array([0.8, 0.2])
-    res = decisiorama.pda.additive(utils, w)
+    res = decisiorama.pda.aggregate.additive(utils, w)
     
     assert(res.ndim == 1)  # dimensions of the results have to be 1
     assert(np.isclose(res[0], 0.2))  # only considering 
@@ -40,7 +40,7 @@ def test_additive_aggregation_variable_weight():
     w = np.array([[0.8, 0.2], 
                   [0.8, 0.2], 
                   [0.8, 0.2]])
-    res = decisiorama.pda.additive(utils, w)
+    res = decisiorama.pda.aggregate.additive(utils, w)
     
     assert(res.ndim == 1)  # dimensions of the results have to be 1
     assert(np.isclose(res[0], 0.2))  # only considering 
@@ -55,7 +55,7 @@ def test_additive_dimension_error():
     w = np.array([0.8, 0.2])
     
     with pytest.raises(ValueError):
-        decisiorama.pda.additive(utils, w)
+        decisiorama.pda.aggregate.additive(utils, w)
 #test_additive_dimension_error()
 
 def test_additive_w_utils_dimension_mismatch():
@@ -68,7 +68,7 @@ def test_additive_w_utils_dimension_mismatch():
     w = np.array([0.5, 0.2, 0.3])
     
     with pytest.raises(ValueError):
-        decisiorama.pda.additive(utils, w)
+        decisiorama.pda.aggregate.additive(utils, w)
 #test_additive_w_sols_dimension_mismatch()
 
 #%%
@@ -81,7 +81,7 @@ def test_cobb_douglas_aggregation_single_weight():
                       [1.0, 0.0], 
                       [0.5, 0.5]])
     w = np.array([0.8, 0.2])
-    res = decisiorama.pda.cobb_douglas(utils, w)
+    res = decisiorama.pda.aggregate.cobb_douglas(utils, w)
     
     assert(res.ndim == 1)  # dimensions of the results have to be 1
     assert(np.isclose(res[0], 0.0))  # only considering 
@@ -98,7 +98,7 @@ def test_cobb_douglas_aggregation_variable_weight():
     w = np.array([[0.8, 0.2], 
                   [0.8, 0.2], 
                   [0.8, 0.2]])
-    res = decisiorama.pda.cobb_douglas(utils, w)
+    res = decisiorama.pda.aggregate.cobb_douglas(utils, w)
     
     assert(res.ndim == 1)  # dimensions of the results have to be 1
     assert(np.isclose(res[0], 0.0))  # only considering 
@@ -113,7 +113,7 @@ def test_cobb_douglas_dimension_error():
     w = np.array([0.8, 0.2])
     
     with pytest.raises(ValueError):
-        decisiorama.pda.cobb_douglas(utils, w)
+        decisiorama.pda.aggregate.cobb_douglas(utils, w)
 
 def test_cobb_douglas_w_utils_dimension_mismatch():
     '''
@@ -124,7 +124,7 @@ def test_cobb_douglas_w_utils_dimension_mismatch():
     w = np.array([0.5, 0.2, 0.3])
     
     with pytest.raises(ValueError):
-        decisiorama.pda.cobb_douglas(utils, w)
+        decisiorama.pda.aggregate.cobb_douglas(utils, w)
         
         
 def test_mixed_linear_aggregation_single_weight():
@@ -137,7 +137,7 @@ def test_mixed_linear_aggregation_single_weight():
                       [0.5, 0.5]])
     w = np.array([0.8, 0.2])
     
-    res = decisiorama.pda.mix_linear_cobb(utils, w, pars=[1.0,])
+    res = decisiorama.pda.aggregate.mix_linear_cobb(utils, w, pars=[1.0,])
     assert(res.ndim == 1)  # dimensions of the results have to be 1
     
     #all linear additive model
@@ -146,14 +146,14 @@ def test_mixed_linear_aggregation_single_weight():
     assert(np.isclose(res[2], 0.5))
     
     # all cpbb-douglas
-    res = decisiorama.pda.mix_linear_cobb(utils, w, pars=[0.0,])
+    res = decisiorama.pda.aggregate.mix_linear_cobb(utils, w, pars=[0.0,])
     
     assert(np.isclose(res[0], 0.0))  # only considering 
     assert(np.isclose(res[1], 0.0))
     assert(np.isclose(res[2], 0.5))
     
     # half and half
-    res = decisiorama.pda.mix_linear_cobb(utils, w, pars=[0.5,])
+    res = decisiorama.pda.aggregate.mix_linear_cobb(utils, w, pars=[0.5,])
     
     assert(np.isclose(res[0], 0.1))  # only considering 
     assert(np.isclose(res[1], 0.4))
@@ -172,7 +172,7 @@ def test_mixed_linear_aggregation_variable_weight():
                   [0.8, 0.2], 
                   [0.8, 0.2]])
     
-    res = decisiorama.pda.mix_linear_cobb(utils, w, pars=[1.0,])
+    res = decisiorama.pda.aggregate.mix_linear_cobb(utils, w, pars=[1.0,])
     assert(res.ndim == 1)  # dimensions of the results have to be 1
     
     #all linear additive model
@@ -181,14 +181,14 @@ def test_mixed_linear_aggregation_variable_weight():
     assert(np.isclose(res[2], 0.5))
     
     # all cpbb-douglas
-    res = decisiorama.pda.mix_linear_cobb(utils, w, pars=[0.0,])
+    res = decisiorama.pda.aggregate.mix_linear_cobb(utils, w, pars=[0.0,])
     
     assert(np.isclose(res[0], 0.0))  # only considering 
     assert(np.isclose(res[1], 0.0))
     assert(np.isclose(res[2], 0.5))
     
     # half and half
-    res = decisiorama.pda.mix_linear_cobb(utils, w, pars=[0.5,])
+    res = decisiorama.pda.aggregate.mix_linear_cobb(utils, w, pars=[0.5,])
     
     assert(np.isclose(res[0], 0.1))  # only considering 
     assert(np.isclose(res[1], 0.4))
@@ -202,7 +202,7 @@ def test_mixed_linear_dimension_error():
     w = np.array([0.8, 0.2])
     
     with pytest.raises(ValueError):
-        decisiorama.pda.mix_linear_cobb(utils, w, [1.0,])
+        decisiorama.pda.aggregate.mix_linear_cobb(utils, w, [1.0,])
 
 def test_mixed_linear_w_utils_dimension_mismatch():
     '''
@@ -214,20 +214,20 @@ def test_mixed_linear_w_utils_dimension_mismatch():
     w = np.array([0.5, 0.2, 0.3])
     
     with pytest.raises(ValueError):
-        decisiorama.pda.mix_linear_cobb(utils, w, [1.0, ])
+        decisiorama.pda.aggregate.mix_linear_cobb(utils, w, [1.0, ])
         
 #%%  reverse_harmonic tests
 def test_reverse_harmonic_single_w():
     utils = np.array([0.0, 1.0])
     w = np.array([0.8, 0.2])
-    res =  decisiorama.pda.reverse_harmonic(utils, w)
+    res =  decisiorama.pda.aggregate.reverse_harmonic(utils, w)
     assert(np.isclose(res[0], 1.0))
     
     utils = np.array([[0.0, 1.0], 
                       [1.0, 0.0], 
                       [0.5, 0.5]])
     w = np.array([0.8, 0.2])
-    res =  decisiorama.pda.reverse_harmonic(utils, w)
+    res =  decisiorama.pda.aggregate.reverse_harmonic(utils, w)
     assert(np.isclose(res[0], 1.0))
     assert(np.isclose(res[1], 1.0))
     assert(np.isclose(res[2], 0.5))
@@ -239,7 +239,7 @@ def test_reverse_harmonic_variable_w():
     w = np.array([[0.8, 0.2], 
                   [0.8, 0.2], 
                   [0.8, 0.2]])
-    res =  decisiorama.pda.reverse_harmonic(utils, w)
+    res =  decisiorama.pda.aggregate.reverse_harmonic(utils, w)
     assert(np.isclose(res[0], 1.0))
     assert(np.isclose(res[1], 1.0))
     assert(np.isclose(res[2], 0.5))
@@ -254,7 +254,7 @@ def test_reverse_harmonic_w_utils_dimension_mismatch():
     w = np.array([0.5, 0.2, 0.3])
     
     with pytest.raises(ValueError):
-        decisiorama.pda.reverse_harmonic(utils, w, [1.0, ])
+        decisiorama.pda.aggregate.reverse_harmonic(utils, w, [1.0, ])
         
 def test_reverse_harmonic_dimension_error():
     '''
@@ -264,14 +264,14 @@ def test_reverse_harmonic_dimension_error():
     w = np.array([0.8, 0.2])
     
     with pytest.raises(ValueError):
-        decisiorama.pda.reverse_harmonic(utils, w, [1.0,])     
+        decisiorama.pda.aggregate.reverse_harmonic(utils, w, [1.0,])     
         
 #%%  reverse_power tests
 def test_reverse_power_single_w():
     utils = np.array([0.0, 1.0])
     w = np.array([0.8, 0.2])
     alpha = 1.0
-    res =  decisiorama.pda.reverse_power(utils, w, alpha)
+    res =  decisiorama.pda.aggregate.reverse_power(utils, w, alpha)
     assert(np.isclose(res[0], 0.2))
     
     utils = np.array([[0.0, 1.0], 
@@ -279,7 +279,7 @@ def test_reverse_power_single_w():
                       [0.5, 0.5]])
     w = np.array([0.8, 0.2])
     alpha = 1.0
-    res =  decisiorama.pda.reverse_power(utils, w, alpha)
+    res =  decisiorama.pda.aggregate.reverse_power(utils, w, alpha)
     assert(np.isclose(res[0], 0.2))
     assert(np.isclose(res[1], 0.8))
     assert(np.isclose(res[2], 0.5))
@@ -292,7 +292,7 @@ def test_reverse_power_variable_w():
                   [0.8, 0.2], 
                   [0.8, 0.2]])
     alpha = 1.0
-    res =  decisiorama.pda.reverse_power(utils, w, alpha)
+    res =  decisiorama.pda.aggregate.reverse_power(utils, w, alpha)
     assert(np.isclose(res[0], 0.2))
     assert(np.isclose(res[1], 0.8))
     assert(np.isclose(res[2], 0.5))
@@ -307,7 +307,7 @@ def test_reverse_power_w_utils_dimension_mismatch():
     w = np.array([0.5, 0.2, 0.3])
     alpha = 1.0
     with pytest.raises(ValueError):
-        decisiorama.pda.reverse_power(utils, w, alpha)
+        decisiorama.pda.aggregate.reverse_power(utils, w, alpha)
         
 def test_reverse_power_dimension_error():
     '''
@@ -317,13 +317,13 @@ def test_reverse_power_dimension_error():
     w = np.array([0.8, 0.2])
     alpha = 1.0
     with pytest.raises(ValueError):
-        decisiorama.pda.reverse_power(utils, w, alpha)
+        decisiorama.pda.aggregate.reverse_power(utils, w, alpha)
 
 def test_reverse_power_single_w_variable_alpha():
     utils = np.array([0.0, 1.0])
     w = np.array([0.8, 0.2])
     alpha = np.array([1.0, ])
-    res =  decisiorama.pda.reverse_power(utils, w, alpha)
+    res =  decisiorama.pda.aggregate.reverse_power(utils, w, alpha)
     assert(np.isclose(res[0], 0.2))
     
     utils = np.array([[0.0, 1.0], 
@@ -331,7 +331,7 @@ def test_reverse_power_single_w_variable_alpha():
                       [0.5, 0.5]])
     w = np.array([0.8, 0.2])
     alpha = np.array([1.0, 1.0, 1.0])
-    res =  decisiorama.pda.reverse_power(utils, w, alpha)
+    res =  decisiorama.pda.aggregate.reverse_power(utils, w, alpha)
     assert(np.isclose(res[0], 0.2))
     assert(np.isclose(res[1], 0.8))
     assert(np.isclose(res[2], 0.5))
@@ -344,7 +344,7 @@ def test_reverse_power_variable_w_variable_alpha():
                   [0.8, 0.2], 
                   [0.8, 0.2]])
     alpha = np.array([1.0, 1.0, 1.0])
-    res =  decisiorama.pda.reverse_power(utils, w, alpha)
+    res =  decisiorama.pda.aggregate.reverse_power(utils, w, alpha)
     assert(np.isclose(res[0], 0.2))
     assert(np.isclose(res[1], 0.8))
     assert(np.isclose(res[2], 0.5))
@@ -359,7 +359,7 @@ def test_reverse_power_w_utils_dimension_mismatch_variable_alpha():
     w = np.array([0.5, 0.2, 0.3])
     alpha = np.array([1.0, 1.0, 1.0])
     with pytest.raises(ValueError):
-        decisiorama.pda.reverse_power(utils, w, alpha)
+        decisiorama.pda.aggregate.reverse_power(utils, w, alpha)
         
 def test_reverse_power_dimension_error_variable_alpha():
     '''
@@ -369,7 +369,7 @@ def test_reverse_power_dimension_error_variable_alpha():
     w = np.array([0.8, 0.2])
     alpha = np.array([1.0, 1.0, 1.0])
     with pytest.raises(ValueError):
-        decisiorama.pda.reverse_power(utils, w, alpha)        
+        decisiorama.pda.aggregate.reverse_power(utils, w, alpha)        
 
 def test_reverse_power_alpha_dimension_error():
     '''
@@ -379,7 +379,7 @@ def test_reverse_power_alpha_dimension_error():
     w = np.array([0.8, 0.2])
     alpha = np.array([1.0, 1.0, 1.0, 1.0])
     with pytest.raises(ValueError):
-        decisiorama.pda.reverse_power(utils, w, alpha)
+        decisiorama.pda.aggregate.reverse_power(utils, w, alpha)
         
 #%%  split_power tests
 def test_split_power_single_w():
@@ -387,7 +387,7 @@ def test_split_power_single_w():
     w = np.array([0.8, 0.2])
     alpha = 1.0
     s = 1.0
-    res =  decisiorama.pda.split_power(utils, w, alpha, s)
+    res =  decisiorama.pda.aggregate.split_power(utils, w, alpha, s)
     assert(np.isclose(res[0], 0.2))
     
     utils = np.array([[0.0, 1.0], 
@@ -396,7 +396,7 @@ def test_split_power_single_w():
     w = np.array([0.8, 0.2])
     alpha = 1.0
     s = 1.0
-    res =  decisiorama.pda.split_power(utils, w, alpha, s)
+    res =  decisiorama.pda.aggregate.split_power(utils, w, alpha, s)
     assert(np.isclose(res[0], 0.2))
     assert(np.isclose(res[1], 0.8))
     assert(np.isclose(res[2], 0.5))
@@ -410,7 +410,7 @@ def test_split_power_variable_w():
                   [0.8, 0.2]])
     alpha = 1.0
     s = 1.0
-    res =  decisiorama.pda.split_power(utils, w, alpha, s)
+    res =  decisiorama.pda.aggregate.split_power(utils, w, alpha, s)
     assert(np.isclose(res[0], 0.2))
     assert(np.isclose(res[1], 0.8))
     assert(np.isclose(res[2], 0.5))
@@ -426,7 +426,7 @@ def test_split_power_w_utils_dimension_mismatch():
     alpha = 1.0
     s = 1.0
     with pytest.raises(ValueError):
-        decisiorama.pda.split_power(utils, w, alpha, s)
+        decisiorama.pda.aggregate.split_power(utils, w, alpha, s)
         
 def test_split_power_dimension_error():
     '''
@@ -437,14 +437,14 @@ def test_split_power_dimension_error():
     alpha = 1.0
     s = 1.0
     with pytest.raises(ValueError):
-        decisiorama.pda.split_power(utils, w, alpha, s)
+        decisiorama.pda.aggregate.split_power(utils, w, alpha, s)
 
 def test_split_power_single_w_variable_alpha():
     utils = np.array([0.0, 1.0])
     w = np.array([0.8, 0.2])
     alpha = np.array([1.0, ])
     s = 1.0
-    res =  decisiorama.pda.split_power(utils, w, alpha, s)
+    res =  decisiorama.pda.aggregate.split_power(utils, w, alpha, s)
     assert(np.isclose(res[0], 0.2))
     
     utils = np.array([[0.0, 1.0], 
@@ -453,7 +453,7 @@ def test_split_power_single_w_variable_alpha():
     w = np.array([0.8, 0.2])
     alpha = np.array([1.0, 1.0, 1.0])
     s = 1.0
-    res =  decisiorama.pda.split_power(utils, w, alpha, s)
+    res =  decisiorama.pda.aggregate.split_power(utils, w, alpha, s)
     assert(np.isclose(res[0], 0.2))
     assert(np.isclose(res[1], 0.8))
     assert(np.isclose(res[2], 0.5))
@@ -467,7 +467,7 @@ def test_split_power_variable_w_variable_alpha():
                   [0.8, 0.2]])
     alpha = np.array([1.0, 1.0, 1.0])
     s = 1.0
-    res =  decisiorama.pda.split_power(utils, w, alpha, s)
+    res =  decisiorama.pda.aggregate.split_power(utils, w, alpha, s)
     assert(np.isclose(res[0], 0.2))
     assert(np.isclose(res[1], 0.8))
     assert(np.isclose(res[2], 0.5))
@@ -483,7 +483,7 @@ def test_split_power_w_utils_dimension_mismatch_variable_alpha():
     alpha = np.array([1.0, 1.0, 1.0])
     s = 1.0
     with pytest.raises(ValueError):
-        decisiorama.pda.split_power(utils, w, alpha, s)
+        decisiorama.pda.aggregate.split_power(utils, w, alpha, s)
         
 def test_split_power_dimension_error_variable_alpha():
     '''
@@ -494,7 +494,7 @@ def test_split_power_dimension_error_variable_alpha():
     alpha = np.array([1.0, 1.0, 1.0])
     s = 1.0
     with pytest.raises(ValueError):
-        decisiorama.pda.split_power(utils, w, alpha, s)
+        decisiorama.pda.aggregate.split_power(utils, w, alpha, s)
 
 def test_split_power_alpha_dimension_error():
     '''
@@ -505,7 +505,7 @@ def test_split_power_alpha_dimension_error():
     alpha = np.array([1.0, 1.0, 1.0, 1.0])
     s = 1.0
     with pytest.raises(ValueError):
-        decisiorama.pda.split_power(utils, w, alpha, s)
+        decisiorama.pda.aggregate.split_power(utils, w, alpha, s)
         
    
 def test_split_power_variable_s():
@@ -517,7 +517,7 @@ def test_split_power_variable_s():
                   [0.8, 0.2]])
     alpha = 1.0
     s = np.array([1.0, 1.0, 1.0])
-    res =  decisiorama.pda.split_power(utils, w, alpha, s)
+    res =  decisiorama.pda.aggregate.split_power(utils, w, alpha, s)
     assert(np.isclose(res[0], 0.2))
     assert(np.isclose(res[1], 0.8))
     assert(np.isclose(res[2], 0.5))
@@ -533,14 +533,14 @@ def test_split_power_s_utils_dimension_mismatch():
     alpha = 1.0
     s = s = np.array([1.0, 1.0, 1.0, 1.0])
     with pytest.raises(ValueError):
-        decisiorama.pda.split_power(utils, w, alpha, s)
+        decisiorama.pda.aggregate.split_power(utils, w, alpha, s)
         
 def test_split_power_single_w_variable_s():
     utils = np.array([0.0, 1.0])
     w = np.array([0.8, 0.2])
     alpha = np.array([1.0, ])
     s = np.array([1.0, ])
-    res =  decisiorama.pda.split_power(utils, w, alpha, s)
+    res =  decisiorama.pda.aggregate.split_power(utils, w, alpha, s)
     assert(np.isclose(res[0], 0.2))
     
     utils = np.array([[0.0, 1.0], 
@@ -549,7 +549,7 @@ def test_split_power_single_w_variable_s():
     w = np.array([0.8, 0.2])
     alpha = np.array([1.0, 1.0, 1.0])
     s = np.array([1.0, 1.0, 1.0])
-    res =  decisiorama.pda.split_power(utils, w, alpha, s)
+    res =  decisiorama.pda.aggregate.split_power(utils, w, alpha, s)
     assert(np.isclose(res[0], 0.2))
     assert(np.isclose(res[1], 0.8))
     assert(np.isclose(res[2], 0.5))
@@ -563,7 +563,7 @@ def test_split_power_variable_w_variable_s():
                   [0.8, 0.2]])
     alpha = np.array([1.0, 1.0, 1.0])
     s = np.array([1.0, 1.0, 1.0])
-    res =  decisiorama.pda.split_power(utils, w, alpha, s)
+    res =  decisiorama.pda.aggregate.split_power(utils, w, alpha, s)
     assert(np.isclose(res[0], 0.2))
     assert(np.isclose(res[1], 0.8))
     assert(np.isclose(res[2], 0.5))
@@ -577,7 +577,7 @@ def test_split_power_dimension_error_variable_s():
     alpha = np.array([1.0, 1.0, 1.0])
     s = np.array([1.0, 1.0, 1.0, 1.0])
     with pytest.raises(ValueError):
-        decisiorama.pda.split_power(utils, w, alpha, s)
+        decisiorama.pda.aggregate.split_power(utils, w, alpha, s)
 
 #%% 
 def test_harmonic_aggregation_single_weight():
@@ -588,7 +588,7 @@ def test_harmonic_aggregation_single_weight():
                       [1.0, 0.0], 
                       [0.5, 0.5]])
     w = np.array([0.8, 0.2])
-    res = decisiorama.pda.harmonic(utils, w)
+    res = decisiorama.pda.aggregate.harmonic(utils, w)
     
     assert(res.ndim == 1)  # dimensions of the results have to be 1
     assert(np.isclose(res[0], 0.0))  # only considering 
@@ -607,7 +607,7 @@ def test_harmonic_aggregation_variable_weight():
     w = np.array([[0.8, 0.2], 
                   [0.8, 0.2], 
                   [0.8, 0.2]])
-    res = decisiorama.pda.harmonic(utils, w)
+    res = decisiorama.pda.aggregate.harmonic(utils, w)
     
     assert(res.ndim == 1)  # dimensions of the results have to be 1
     assert(np.isclose(res[0], 0.0))  # only considering 
@@ -622,7 +622,7 @@ def test_harmonic_dimension_error():
     w = np.array([0.8, 0.2])
     
     with pytest.raises(ValueError):
-        decisiorama.pda.harmonic(utils, w)
+        decisiorama.pda.aggregate.harmonic(utils, w)
 #test_harmonic_dimension_error()
 
 def test_harmonic_w_utils_dimension_mismatch():
@@ -635,7 +635,7 @@ def test_harmonic_w_utils_dimension_mismatch():
     w = np.array([0.5, 0.2, 0.3])
     
     with pytest.raises(ValueError):
-        decisiorama.pda.harmonic(utils, w)
+        decisiorama.pda.aggregate.harmonic(utils, w)
 #test_harmonic_w_sols_dimension_mismatch()
         
 #%% maximum
@@ -647,7 +647,7 @@ def test_maximum_aggregation_single_weight():
     utils = np.array([[0.0 ,1.0], 
                       [1.0, 0.0], 
                       [0.5, 0.5]])
-    res = decisiorama.pda.maximum(utils)
+    res = decisiorama.pda.aggregate.maximum(utils)
     assert(res.ndim == 1)  # dimensions of the results have to be 1
     assert(np.isclose(res[0], 1.0))  # only considering 
     assert(np.isclose(res[1], 1.0))
@@ -664,7 +664,7 @@ def test_minimum_aggregation_single_weight():
     utils = np.array([[0.0 ,1.0], 
                       [1.0, 0.0], 
                       [0.5, 0.5]])
-    res = decisiorama.pda.minimum(utils)
+    res = decisiorama.pda.aggregate.minimum(utils)
     assert(res.ndim == 1)  # dimensions of the results have to be 1
     assert(np.isclose(res[0], 0.0))  # only considering 
     assert(np.isclose(res[1], 0.0))

@@ -1,0 +1,236 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>decisiorama.utils package &#8212; decisiorama 0.1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="decisiorama-utils-package">
+<h1>decisiorama.utils package<a class="headerlink" href="#decisiorama-utils-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-decisiorama.utils.random_instance">
+<span id="decisiorama-utils-random-instance-module"></span><h2>decisiorama.utils.random_instance module<a class="headerlink" href="#module-decisiorama.utils.random_instance" title="Permalink to this headline">¶</a></h2>
+<p>Created on Tue May 14 10:04:20 2019</p>
+<p>&#64;author: jchaconhurtado</p>
+<p>library to create random numbers on demand</p>
+<dl class="class">
+<dt id="decisiorama.utils.random_instance.Beta">
+<em class="property">class </em><code class="sig-prename descclassname">decisiorama.utils.random_instance.</code><code class="sig-name descname">Beta</code><span class="sig-paren">(</span><em class="sig-param">a</em>, <em class="sig-param">b</em>, <em class="sig-param">n=None</em><span class="sig-paren">)</span><a class="headerlink" href="#decisiorama.utils.random_instance.Beta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#decisiorama.utils.random_instance.RandomNumber" title="decisiorama.utils.random_instance.RandomNumber"><code class="xref py py-class docutils literal notranslate"><span class="pre">decisiorama.utils.random_instance.RandomNumber</span></code></a></p>
+<dl class="method">
+<dt id="decisiorama.utils.random_instance.Beta.get">
+<code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param">n=None</em><span class="sig-paren">)</span><a class="headerlink" href="#decisiorama.utils.random_instance.Beta.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="decisiorama.utils.random_instance.Lognormal">
+<em class="property">class </em><code class="sig-prename descclassname">decisiorama.utils.random_instance.</code><code class="sig-name descname">Lognormal</code><span class="sig-paren">(</span><em class="sig-param">mu</em>, <em class="sig-param">std</em>, <em class="sig-param">n=None</em><span class="sig-paren">)</span><a class="headerlink" href="#decisiorama.utils.random_instance.Lognormal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#decisiorama.utils.random_instance.RandomNumber" title="decisiorama.utils.random_instance.RandomNumber"><code class="xref py py-class docutils literal notranslate"><span class="pre">decisiorama.utils.random_instance.RandomNumber</span></code></a></p>
+<dl class="method">
+<dt id="decisiorama.utils.random_instance.Lognormal.get">
+<code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param">n=None</em><span class="sig-paren">)</span><a class="headerlink" href="#decisiorama.utils.random_instance.Lognormal.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="decisiorama.utils.random_instance.Normal">
+<em class="property">class </em><code class="sig-prename descclassname">decisiorama.utils.random_instance.</code><code class="sig-name descname">Normal</code><span class="sig-paren">(</span><em class="sig-param">mu</em>, <em class="sig-param">std</em>, <em class="sig-param">n=None</em><span class="sig-paren">)</span><a class="headerlink" href="#decisiorama.utils.random_instance.Normal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#decisiorama.utils.random_instance.RandomNumber" title="decisiorama.utils.random_instance.RandomNumber"><code class="xref py py-class docutils literal notranslate"><span class="pre">decisiorama.utils.random_instance.RandomNumber</span></code></a></p>
+<dl class="method">
+<dt id="decisiorama.utils.random_instance.Normal.get">
+<code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param">n=None</em><span class="sig-paren">)</span><a class="headerlink" href="#decisiorama.utils.random_instance.Normal.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="decisiorama.utils.random_instance.RandomNumber">
+<em class="property">class </em><code class="sig-prename descclassname">decisiorama.utils.random_instance.</code><code class="sig-name descname">RandomNumber</code><a class="headerlink" href="#decisiorama.utils.random_instance.RandomNumber" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="decisiorama.utils.random_instance.RandomNumber.a">
+<code class="sig-name descname">a</code><em class="property"> = None</em><a class="headerlink" href="#decisiorama.utils.random_instance.RandomNumber.a" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="decisiorama.utils.random_instance.RandomNumber.b">
+<code class="sig-name descname">b</code><em class="property"> = None</em><a class="headerlink" href="#decisiorama.utils.random_instance.RandomNumber.b" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="decisiorama.utils.random_instance.RandomNumber.check_lims">
+<code class="sig-name descname">check_lims</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#decisiorama.utils.random_instance.RandomNumber.check_lims" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="decisiorama.utils.random_instance.RandomNumber.check_numeric">
+<code class="sig-name descname">check_numeric</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#decisiorama.utils.random_instance.RandomNumber.check_numeric" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="decisiorama.utils.random_instance.RandomNumber.mu">
+<code class="sig-name descname">mu</code><em class="property"> = None</em><a class="headerlink" href="#decisiorama.utils.random_instance.RandomNumber.mu" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="decisiorama.utils.random_instance.RandomNumber.n">
+<code class="sig-name descname">n</code><em class="property"> = None</em><a class="headerlink" href="#decisiorama.utils.random_instance.RandomNumber.n" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="decisiorama.utils.random_instance.RandomNumber.std">
+<code class="sig-name descname">std</code><em class="property"> = None</em><a class="headerlink" href="#decisiorama.utils.random_instance.RandomNumber.std" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="decisiorama.utils.random_instance.Truncnormal">
+<em class="property">class </em><code class="sig-prename descclassname">decisiorama.utils.random_instance.</code><code class="sig-name descname">Truncnormal</code><span class="sig-paren">(</span><em class="sig-param">mu</em>, <em class="sig-param">std</em>, <em class="sig-param">a=-inf</em>, <em class="sig-param">b=inf</em>, <em class="sig-param">n=None</em><span class="sig-paren">)</span><a class="headerlink" href="#decisiorama.utils.random_instance.Truncnormal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#decisiorama.utils.random_instance.RandomNumber" title="decisiorama.utils.random_instance.RandomNumber"><code class="xref py py-class docutils literal notranslate"><span class="pre">decisiorama.utils.random_instance.RandomNumber</span></code></a></p>
+<dl class="method">
+<dt id="decisiorama.utils.random_instance.Truncnormal.get">
+<code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param">n=None</em><span class="sig-paren">)</span><a class="headerlink" href="#decisiorama.utils.random_instance.Truncnormal.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="decisiorama.utils.random_instance.Uniform">
+<em class="property">class </em><code class="sig-prename descclassname">decisiorama.utils.random_instance.</code><code class="sig-name descname">Uniform</code><span class="sig-paren">(</span><em class="sig-param">a</em>, <em class="sig-param">b</em>, <em class="sig-param">n=None</em><span class="sig-paren">)</span><a class="headerlink" href="#decisiorama.utils.random_instance.Uniform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#decisiorama.utils.random_instance.RandomNumber" title="decisiorama.utils.random_instance.RandomNumber"><code class="xref py py-class docutils literal notranslate"><span class="pre">decisiorama.utils.random_instance.RandomNumber</span></code></a></p>
+<dl class="method">
+<dt id="decisiorama.utils.random_instance.Uniform.get">
+<code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param">n=None</em><span class="sig-paren">)</span><a class="headerlink" href="#decisiorama.utils.random_instance.Uniform.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-decisiorama.utils.utils">
+<span id="decisiorama-utils-utils-module"></span><h2>decisiorama.utils.utils module<a class="headerlink" href="#module-decisiorama.utils.utils" title="Permalink to this headline">¶</a></h2>
+<p>Created on Mon Apr 29 12:42:31 2019</p>
+<p>&#64;author: jchaconhurtado</p>
+<dl class="data">
+<dt id="decisiorama.utils.utils.UTILITY_THRESHOLD">
+<code class="sig-prename descclassname">decisiorama.utils.utils.</code><code class="sig-name descname">UTILITY_THRESHOLD</code><em class="property"> = 1e-05</em><a class="headerlink" href="#decisiorama.utils.utils.UTILITY_THRESHOLD" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="decisiorama.utils.utils.core_index">
+<code class="sig-prename descclassname">decisiorama.utils.utils.</code><code class="sig-name descname">core_index</code><span class="sig-paren">(</span><em class="sig-param">sols_inp</em>, <em class="sig-param">pf</em><span class="sig-paren">)</span><a class="headerlink" href="#decisiorama.utils.utils.core_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>calculate the core index. takes solutions and position of pareto-solutions</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="decisiorama.utils.utils.pareto_front_i">
+<code class="sig-prename descclassname">decisiorama.utils.utils.</code><code class="sig-name descname">pareto_front_i</code><span class="sig-paren">(</span><em class="sig-param">M</em>, <em class="sig-param">minimize=True</em>, <em class="sig-param">i=0</em><span class="sig-paren">)</span><a class="headerlink" href="#decisiorama.utils.utils.pareto_front_i" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to get a specific pareto set. i=0 means optimal</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="decisiorama.utils.utils.pareto_fronts">
+<code class="sig-prename descclassname">decisiorama.utils.utils.</code><code class="sig-name descname">pareto_fronts</code><span class="sig-paren">(</span><em class="sig-param">M</em>, <em class="sig-param">minimize=True</em><span class="sig-paren">)</span><a class="headerlink" href="#decisiorama.utils.utils.pareto_fronts" title="Permalink to this definition">¶</a></dt>
+<dd><p>function to calculate the pareto fronts</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-decisiorama.utils">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-decisiorama.utils" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">decisiorama</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Juan Carlos Chacon-Hurtado.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.1.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/decisiorama.utils.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

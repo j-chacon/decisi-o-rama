@@ -1,0 +1,968 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>decisiorama.pda package &#8212; decisiorama 0.1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="decisiorama-pda-package">
+<h1>decisiorama.pda package<a class="headerlink" href="#decisiorama-pda-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-decisiorama.pda.aggregate">
+<span id="decisiorama-pda-aggregate-module"></span><h2>decisiorama.pda.aggregate module<a class="headerlink" href="#module-decisiorama.pda.aggregate" title="Permalink to this headline">¶</a></h2>
+<p>Aggregate Module</p>
+<p>This module contains a collection of functions for utility aggregation.</p>
+<dl class="data">
+<dt id="decisiorama.pda.aggregate.OFFSET">
+<code class="sig-prename descclassname">decisiorama.pda.aggregate.</code><code class="sig-name descname">OFFSET</code><em class="property"> = 1e-06</em><a class="headerlink" href="#decisiorama.pda.aggregate.OFFSET" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="decisiorama.pda.aggregate.additive">
+<code class="sig-prename descclassname">decisiorama.pda.aggregate.</code><code class="sig-name descname">additive</code><span class="sig-paren">(</span><em class="sig-param">utils</em>, <em class="sig-param">w</em>, <em class="sig-param">w_norm=True</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#decisiorama.pda.aggregate.additive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Additive utility aggregation function</p>
+<p>Aggregate preferences using a weighted average</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>utils</strong> (<em>ndarray</em><em> [</em><em>n</em><em>, </em><em>u</em><em>]</em>) – Two-dimensional array with the provided utilities to aggregate. The
+dimensions corresponds to the number of random samples (n) and the
+number of utilities (u)</p></li>
+<li><p><strong>w</strong> (<em>ndarray</em><em> [</em><em>u</em><em>]</em><em>, </em><em>[</em><em>n</em><em>, </em><em>u</em><em>]</em>) – <p>Array with the provided weights to each of the utilities. If passed
+as a 1D-array, the same weights are used for of all the random samples.</p>
+<blockquote>
+<div><p>In case it is a 2D-array, w requires the same dimensions as <cite>utils</cite></p>
+</div></blockquote>
+</p></li>
+<li><p><strong>w_norm</strong> (<em>Bool</em><em>, </em><em>optional</em>) – If True, the sum of the weights will be equal to 1</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>out</strong> – Vector with the aggregated values</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray [n]</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">utils</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">])</span>
+<span class="k">print</span><span class="p">(</span><span class="n">additive</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">w</span><span class="p">))</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="p">[</span><span class="mf">0.2</span><span class="p">]</span>
+
+<span class="n">utils</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]])</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">])</span>
+<span class="k">print</span><span class="p">(</span><span class="n">additive</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">w</span><span class="p">))</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="p">[</span><span class="mf">0.2</span> <span class="mf">0.8</span> <span class="mf">0.5</span><span class="p">]</span>
+
+<span class="n">utils</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]])</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">]])</span>
+<span class="k">print</span><span class="p">(</span><span class="n">additive</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">w</span><span class="p">))</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="p">[</span><span class="mf">0.2</span> <span class="mf">0.8</span> <span class="mf">0.5</span><span class="p">]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="decisiorama.pda.aggregate.bonferroni">
+<code class="sig-prename descclassname">decisiorama.pda.aggregate.</code><code class="sig-name descname">bonferroni</code><span class="sig-paren">(</span><em class="sig-param">utils</em>, <em class="sig-param">w=None</em>, <em class="sig-param">w_norm=False</em><span class="sig-paren">)</span><a class="headerlink" href="#decisiorama.pda.aggregate.bonferroni" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="decisiorama.pda.aggregate.choquet">
+<code class="sig-prename descclassname">decisiorama.pda.aggregate.</code><code class="sig-name descname">choquet</code><span class="sig-paren">(</span><em class="sig-param">utils</em>, <em class="sig-param">w=None</em>, <em class="sig-param">w_norm=False</em><span class="sig-paren">)</span><a class="headerlink" href="#decisiorama.pda.aggregate.choquet" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="decisiorama.pda.aggregate.cobb_douglas">
+<code class="sig-prename descclassname">decisiorama.pda.aggregate.</code><code class="sig-name descname">cobb_douglas</code><span class="sig-paren">(</span><em class="sig-param">utils</em>, <em class="sig-param">w</em>, <em class="sig-param">w_norm=True</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#decisiorama.pda.aggregate.cobb_douglas" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cobb-Douglas utility aggregation function</p>
+<p>Aggregate preferences using the cobb-douglas aggregation function. This
+method is also known as the weighted geometric average</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>utils</strong> (<em>ndarray</em><em> [</em><em>n</em><em>, </em><em>u</em><em>]</em>) – Two-dimensional array with the provided utilities to aggregate. The
+dimensions corresponds to the number of random samples (n) and the
+number of utilities (u)</p></li>
+<li><p><strong>w</strong> (<em>ndarray</em><em> [</em><em>u</em><em>]</em><em>, </em><em>[</em><em>n</em><em>, </em><em>u</em><em>]</em>) – <p>Array with the provided weights to each of the utilities. If passed
+as a 1D-array, the same weights are used for of all the random samples.</p>
+<blockquote>
+<div><p>In case it is a 2D-array, w requires the same dimensions as <cite>utils</cite></p>
+</div></blockquote>
+</p></li>
+<li><p><strong>w_norm</strong> (<em>Bool</em><em>, </em><em>optional</em>) – If True, the sum of the weights will be equal to 1</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>out</strong> – Vector with the aggregated values</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray [n]</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">utils</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">])</span>
+<span class="k">print</span><span class="p">(</span><span class="n">cobb_douglas</span><span class="p">(</span><span class="n">utils</span><span class="p">,</span> <span class="n">w</span><span class="p">))</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="p">[</span><span class="mf">0.</span><span class="p">]</span>
+
+<span class="n">utils</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]])</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">])</span>
+<span class="k">print</span><span class="p">(</span><span class="n">cobb_douglas</span><span class="p">(</span><span class="n">utils</span><span class="p">,</span> <span class="n">w</span><span class="p">))</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="p">[</span><span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.5</span><span class="p">]</span>
+
+<span class="n">utils</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]])</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">]])</span>
+<span class="k">print</span><span class="p">(</span><span class="n">cobb_douglas</span><span class="p">(</span><span class="n">utils</span><span class="p">,</span> <span class="n">w</span><span class="p">))</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="p">[</span><span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.5</span><span class="p">]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="decisiorama.pda.aggregate.harmonic">
+<code class="sig-prename descclassname">decisiorama.pda.aggregate.</code><code class="sig-name descname">harmonic</code><span class="sig-paren">(</span><em class="sig-param">utils</em>, <em class="sig-param">w</em>, <em class="sig-param">w_norm=True</em>, <em class="sig-param">rerange=False</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#decisiorama.pda.aggregate.harmonic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Harmonic utility aggregation function</p>
+<p>Aggregate preferences using the reverse power aggregation function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>utils</strong> (<em>ndarray</em><em> [</em><em>n</em><em>, </em><em>u</em><em>]</em>) – Two-dimensional array with the provided utilities to aggregate. The
+dimensions corresponds to the number of random samples (n) and the
+number of utilities (u)</p></li>
+<li><p><strong>w</strong> (<em>ndarray</em><em> [</em><em>u</em><em>]</em><em>, </em><em>[</em><em>n</em><em>, </em><em>u</em><em>]</em>) – Array with the provided weights to each of the utilities. If passed
+as a 1D-array, the same weights are used for of all the random samples.
+In case it is a 2D-array, w requires the same dimensions as <cite>utils</cite></p></li>
+<li><p><strong>w_norm</strong> (<em>Bool</em><em>, </em><em>optional</em>) – If True, the sum of the weights will be equal to 1</p></li>
+<li><p><strong>rerange</strong> (<em>Bool</em><em>, </em><em>optional</em>) – Changes the range of utils to be in the open interval (0,1), defined
+by the offset value (defined at a library level as OFFSET, 1e-6).
+By default is set to False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>out</strong> – Vector with the aggregated values</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray [n]</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">utils</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">])</span>
+<span class="k">print</span><span class="p">(</span><span class="n">harmonic</span><span class="p">(</span><span class="n">utils</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">rerange</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="p">[</span><span class="mf">1.24999969e-06</span><span class="p">]</span>
+
+<span class="n">utils</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]])</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">])</span>
+<span class="k">print</span><span class="p">(</span><span class="n">harmonic</span><span class="p">(</span><span class="n">utils</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">rerange</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
+
+<span class="o">&gt;&gt;&gt;</span><span class="p">[</span><span class="mf">1.24999969e-06</span> <span class="mf">4.99998000e-06</span> <span class="mf">5.00000000e-01</span><span class="p">]</span>
+
+<span class="n">utils</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]])</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">]])</span>
+<span class="k">print</span><span class="p">(</span><span class="n">harmonic</span><span class="p">(</span><span class="n">utils</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">rerange</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
+
+<span class="o">&gt;&gt;&gt;</span><span class="p">[</span><span class="mf">1.24999969e-06</span> <span class="mf">4.99998000e-06</span> <span class="mf">5.00000000e-01</span><span class="p">]</span>
+
+<span class="n">utils</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">])</span>
+<span class="k">print</span><span class="p">(</span><span class="n">harmonic</span><span class="p">(</span><span class="n">utils</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">rerange</span><span class="o">=</span><span class="bp">False</span><span class="p">))</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="p">[</span><span class="mf">0.</span><span class="p">]</span>
+
+<span class="n">utils</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]])</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">])</span>
+<span class="k">print</span><span class="p">(</span><span class="n">harmonic</span><span class="p">(</span><span class="n">utils</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">rerange</span><span class="o">=</span><span class="bp">False</span><span class="p">))</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="p">[</span><span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">0.5</span><span class="p">]</span>
+
+<span class="n">utils</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]])</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">]])</span>
+<span class="k">print</span><span class="p">(</span><span class="n">harmonic</span><span class="p">(</span><span class="n">utils</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">rerange</span><span class="o">=</span><span class="bp">False</span><span class="p">))</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="p">[</span><span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">0.5</span><span class="p">]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="decisiorama.pda.aggregate.maximum">
+<code class="sig-prename descclassname">decisiorama.pda.aggregate.</code><code class="sig-name descname">maximum</code><span class="sig-paren">(</span><em class="sig-param">utils</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#decisiorama.pda.aggregate.maximum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maximum utility aggregation function</p>
+<p>Aggregate preferences using the maximum aggregation function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>utils</strong> (<em>ndarray</em><em> [</em><em>n</em><em>, </em><em>u</em><em>]</em>) – Two-dimensional array with the provided utilities to aggregate. The
+dimensions corresponds to the number of random samples (n) and the
+number of utilities (u)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>out</strong> – Vector with the aggregated values</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray [n]</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">utils</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+                  <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+                  <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]])</span>
+<span class="k">print</span><span class="p">(</span><span class="n">maximum</span><span class="p">(</span><span class="n">utils</span><span class="p">))</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="p">[</span><span class="mf">1.</span>  <span class="mf">1.</span>  <span class="mf">0.5</span><span class="p">]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="decisiorama.pda.aggregate.minimum">
+<code class="sig-prename descclassname">decisiorama.pda.aggregate.</code><code class="sig-name descname">minimum</code><span class="sig-paren">(</span><em class="sig-param">utils</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#decisiorama.pda.aggregate.minimum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Minimum utility aggregation function</p>
+<p>Aggregate preferences using the minimum aggregation function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>utils</strong> (<em>ndarray</em><em> [</em><em>n</em><em>, </em><em>u</em><em>]</em>) – Two-dimensional array with the provided utilities to aggregate. The
+dimensions corresponds to the number of random samples (n) and the
+number of utilities (u)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>out</strong> – Vector with the aggregated values</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray [n]</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">utils</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+                  <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+                  <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]])</span>
+<span class="k">print</span><span class="p">(</span><span class="n">minimum</span><span class="p">(</span><span class="n">utils</span><span class="p">))</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="p">[</span><span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">0.5</span><span class="p">]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="decisiorama.pda.aggregate.mix">
+<code class="sig-prename descclassname">decisiorama.pda.aggregate.</code><code class="sig-name descname">mix</code><span class="sig-paren">(</span><em class="sig-param">utils</em>, <em class="sig-param">w</em>, <em class="sig-param">methods</em>, <em class="sig-param">w_methods</em>, <em class="sig-param">mix_fun</em>, <em class="sig-param">w_norm=True</em>, <em class="sig-param">methods_args=None</em>, <em class="sig-param">mix_args=None</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#decisiorama.pda.aggregate.mix" title="Permalink to this definition">¶</a></dt>
+<dd><p>mixed utility aggregation function</p>
+<p>Aggregate preferences using a mix of aggregation functions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>utils</strong> (<em>ndarray</em><em> [</em><em>n</em><em>, </em><em>u</em><em>]</em>) – Two-dimensional array with the provided utilities to aggregate. The
+dimensions corresponds to the number of random samples (n) and the
+number of utilities (u)</p></li>
+<li><p><strong>w</strong> (<em>ndarray</em><em> [</em><em>u</em><em>]</em><em>, </em><em>[</em><em>n</em><em>, </em><em>u</em><em>]</em>) – Array with the provided weights to each of the utilities. If passed
+as a 1D-array, the same weights are used for of all the random samples.
+In case it is a 2D-array, w requires the same dimensions as <cite>utils</cite></p></li>
+<li><p><strong>methods</strong> (<em>list</em><em> [</em><em>m</em><em>]</em>) – a list of functions that will create each individual member of the
+model mixture</p></li>
+<li><p><strong>w_methods</strong> (<em>ndarray</em><em> [</em><em>m</em><em>]</em><em>, </em><em>[</em><em>n</em><em>, </em><em>m</em><em>]</em>) – An array for the weights that will be used to mix each of the methods</p></li>
+<li><p><strong>mix_fun</strong> (<em>function</em>) – Function that will be used to aggregate each of the members of the
+methods</p></li>
+<li><p><strong>w_norm</strong> (<em>Bool</em><em>, </em><em>optional</em>) – If True, the sum of the weights will be equal to 1</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>out</strong> – Vector with the aggregated values</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray [n]</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">utils</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]])</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">]])</span>
+<span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="n">cobb_douglas</span><span class="p">,</span>
+           <span class="n">additive</span><span class="p">,]</span>
+<span class="n">w_methods</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">])</span>
+<span class="n">mix_fun</span> <span class="o">=</span> <span class="n">additive</span>
+<span class="k">print</span><span class="p">(</span><span class="n">mix</span><span class="p">(</span><span class="n">utils</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">methods</span><span class="p">,</span> <span class="n">w_methods</span><span class="p">,</span> <span class="n">mix_fun</span><span class="p">))</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="p">[</span><span class="mf">0.1</span> <span class="mf">0.4</span> <span class="mf">0.5</span><span class="p">]</span>
+
+<span class="n">utils</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]])</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">]])</span>
+<span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="n">cobb_douglas</span><span class="p">,</span>
+           <span class="n">split_power</span><span class="p">,]</span>
+<span class="n">methods_args</span> <span class="o">=</span> <span class="p">[{},</span>
+                <span class="nb">dict</span><span class="p">(</span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">)]</span>
+<span class="n">w_methods</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">])</span>
+<span class="n">mix_fun</span> <span class="o">=</span> <span class="n">additive</span>
+<span class="k">print</span><span class="p">(</span><span class="n">mix</span><span class="p">(</span><span class="n">utils</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">methods</span><span class="p">,</span> <span class="n">w_methods</span><span class="p">,</span> <span class="n">mix_fun</span><span class="p">,</span>
+          <span class="n">methods_args</span><span class="o">=</span><span class="n">methods_args</span><span class="p">))</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="p">[</span><span class="mf">0.1</span> <span class="mf">0.4</span> <span class="mf">0.5</span><span class="p">]</span>
+
+<span class="n">utils</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]])</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">]])</span>
+<span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="n">cobb_douglas</span><span class="p">,</span>
+           <span class="n">additive</span><span class="p">,]</span>
+<span class="n">mix_args</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">)</span>
+<span class="n">w_methods</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">])</span>
+<span class="n">mix_fun</span> <span class="o">=</span> <span class="n">split_power</span>
+<span class="k">print</span><span class="p">(</span><span class="n">mix</span><span class="p">(</span><span class="n">utils</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">methods</span><span class="p">,</span> <span class="n">w_methods</span><span class="p">,</span> <span class="n">mix_fun</span><span class="p">,</span> <span class="n">mix_args</span><span class="o">=</span><span class="n">mix_args</span><span class="p">))</span>
+<span class="c1">#&gt;&gt;&gt; [0.1 0.4 0.5]</span>
+
+
+<span class="n">utils</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]])</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">]])</span>
+<span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="n">cobb_douglas</span><span class="p">,</span>
+           <span class="n">additive</span><span class="p">,]</span>
+<span class="n">mix_args</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">)</span>
+<span class="n">w_methods</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>
+                      <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>
+                      <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]])</span>
+<span class="n">mix_fun</span> <span class="o">=</span> <span class="n">split_power</span>
+<span class="k">print</span><span class="p">(</span><span class="n">mix</span><span class="p">(</span><span class="n">utils</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">methods</span><span class="p">,</span> <span class="n">w_methods</span><span class="p">,</span> <span class="n">mix_fun</span><span class="p">,</span> <span class="n">mix_args</span><span class="o">=</span><span class="n">mix_args</span><span class="p">))</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="p">[</span><span class="mf">0.1</span> <span class="mf">0.4</span> <span class="mf">0.5</span><span class="p">]</span>
+
+
+<span class="n">utils</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]])</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">]])</span>
+<span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="n">cobb_douglas</span><span class="p">,</span>
+           <span class="n">additive</span><span class="p">,]</span>
+<span class="n">mix_args</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">alpha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]),</span> <span class="n">s</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">)</span>
+<span class="n">w_methods</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>
+                      <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>
+                      <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]])</span>
+<span class="n">mix_fun</span> <span class="o">=</span> <span class="n">split_power</span>
+<span class="k">print</span><span class="p">(</span><span class="n">mix</span><span class="p">(</span><span class="n">utils</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">methods</span><span class="p">,</span> <span class="n">w_methods</span><span class="p">,</span> <span class="n">mix_fun</span><span class="p">,</span> <span class="n">mix_args</span><span class="o">=</span><span class="n">mix_args</span><span class="p">))</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="p">[</span><span class="mf">0.1</span> <span class="mf">0.4</span> <span class="mf">0.5</span><span class="p">]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="decisiorama.pda.aggregate.mix_linear_cobb">
+<code class="sig-prename descclassname">decisiorama.pda.aggregate.</code><code class="sig-name descname">mix_linear_cobb</code><span class="sig-paren">(</span><em class="sig-param">utils, w, pars=[0.5], w_norm=True, *args, **kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#decisiorama.pda.aggregate.mix_linear_cobb" title="Permalink to this definition">¶</a></dt>
+<dd><p>to be deprecated</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="decisiorama.pda.aggregate.multiplicative">
+<code class="sig-prename descclassname">decisiorama.pda.aggregate.</code><code class="sig-name descname">multiplicative</code><span class="sig-paren">(</span><em class="sig-param">utils</em>, <em class="sig-param">w</em>, <em class="sig-param">w_norm=True</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#decisiorama.pda.aggregate.multiplicative" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="decisiorama.pda.aggregate.power">
+<code class="sig-prename descclassname">decisiorama.pda.aggregate.</code><code class="sig-name descname">power</code><span class="sig-paren">(</span><em class="sig-param">utils</em>, <em class="sig-param">w=None</em>, <em class="sig-param">w_norm=False</em><span class="sig-paren">)</span><a class="headerlink" href="#decisiorama.pda.aggregate.power" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="decisiorama.pda.aggregate.reverse_harmonic">
+<code class="sig-prename descclassname">decisiorama.pda.aggregate.</code><code class="sig-name descname">reverse_harmonic</code><span class="sig-paren">(</span><em class="sig-param">utils</em>, <em class="sig-param">w</em>, <em class="sig-param">w_norm=True</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#decisiorama.pda.aggregate.reverse_harmonic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reverse harmonic utility aggregation function</p>
+<p>Aggregate preferences using the cobb-douglas aggregation function. This
+method is also known as the weighted geometric average</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>utils</strong> (<em>ndarray</em><em> [</em><em>n</em><em>, </em><em>u</em><em>]</em>) – Two-dimensional array with the provided utilities to aggregate. The
+dimensions corresponds to the number of random samples (n) and the
+number of utilities (u)</p></li>
+<li><p><strong>w</strong> (<em>ndarray</em><em> [</em><em>u</em><em>]</em><em>, </em><em>[</em><em>n</em><em>, </em><em>u</em><em>]</em>) – <p>Array with the provided weights to each of the utilities. If passed
+as a 1D-array, the same weights are used for of all the random samples.</p>
+<blockquote>
+<div><p>In case it is a 2D-array, w requires the same dimensions as <cite>utils</cite></p>
+</div></blockquote>
+</p></li>
+<li><p><strong>w_norm</strong> (<em>Bool</em><em>, </em><em>optional</em>) – If True, the sum of the weights will be equal to 1</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>out</strong> – Vector with the aggregated values</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray [n]</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">utils</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">])</span>
+<span class="k">print</span><span class="p">(</span><span class="n">reverse_harmonic</span><span class="p">(</span><span class="n">utils</span><span class="p">,</span> <span class="n">w</span><span class="p">))</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="p">[</span><span class="mf">1.</span><span class="p">]</span>
+
+<span class="n">utils</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]])</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">])</span>
+<span class="k">print</span><span class="p">(</span><span class="n">reverse_harmonic</span><span class="p">(</span><span class="n">utils</span><span class="p">,</span> <span class="n">w</span><span class="p">))</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="p">[</span><span class="mf">1.</span> <span class="mf">1.</span> <span class="mf">0.5</span><span class="p">]</span>
+
+<span class="n">utils</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]])</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">]])</span>
+<span class="k">print</span><span class="p">(</span><span class="n">reverse_harmonic</span><span class="p">(</span><span class="n">utils</span><span class="p">,</span> <span class="n">w</span><span class="p">))</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="p">[</span><span class="mf">1.</span> <span class="mf">1.</span> <span class="mf">0.5</span><span class="p">]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="decisiorama.pda.aggregate.reverse_power">
+<code class="sig-prename descclassname">decisiorama.pda.aggregate.</code><code class="sig-name descname">reverse_power</code><span class="sig-paren">(</span><em class="sig-param">utils</em>, <em class="sig-param">w</em>, <em class="sig-param">alpha</em>, <em class="sig-param">w_norm=True</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#decisiorama.pda.aggregate.reverse_power" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reverse power utility aggregation function</p>
+<p>Aggregate preferences using the reverse power aggregation function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>utils</strong> (<em>ndarray</em><em> [</em><em>n</em><em>, </em><em>u</em><em>]</em>) – Two-dimensional array with the provided utilities to aggregate. The
+dimensions corresponds to the number of random samples (n) and the
+number of utilities (u)</p></li>
+<li><p><strong>w</strong> (<em>ndarray</em><em> [</em><em>u</em><em>]</em><em>, </em><em>[</em><em>n</em><em>, </em><em>u</em><em>]</em>) – Array with the provided weights to each of the utilities. If passed
+as a 1D-array, the same weights are used for of all the random samples.
+In case it is a 2D-array, w requires the same dimensions as <cite>utils</cite></p></li>
+<li><p><strong>w_norm</strong> (<em>Bool</em><em>, </em><em>optional</em><em>, </em><em>default True</em>) – If True, the sum of the weights will be equal to 1</p></li>
+<li><p><strong>alpha</strong> (<em>float</em><em>, </em><em>ndarray</em><em> [</em><em>n</em><em>]</em><em>, </em><em>default 1.0</em>) – power coefficient. If passed as a float, the values will remain the
+same over the whole computation. Otherwise, it is possible to pass a
+vector with a value for each random sample</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>out</strong> – Vector with the aggregated values</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray [n]</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">utils</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">])</span>
+<span class="n">alpha</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="k">print</span><span class="p">(</span><span class="n">reverse_power</span><span class="p">(</span><span class="n">utils</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">alpha</span><span class="p">))</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="p">[</span><span class="mf">0.2</span><span class="p">]</span>
+
+<span class="n">utils</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]])</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">])</span>
+<span class="n">alpha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+<span class="k">print</span><span class="p">(</span><span class="n">reverse_power</span><span class="p">(</span><span class="n">utils</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">alpha</span><span class="p">))</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="p">[</span><span class="mf">0.2</span> <span class="mf">0.8</span> <span class="mf">0.5</span><span class="p">]</span>
+
+<span class="n">utils</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]])</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">]])</span>
+<span class="n">alpha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">])</span>
+<span class="k">print</span><span class="p">(</span><span class="n">reverse_power</span><span class="p">(</span><span class="n">utils</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">alpha</span><span class="p">))</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="p">[</span><span class="mf">0.2</span> <span class="mf">0.8</span> <span class="mf">0.5</span><span class="p">]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="decisiorama.pda.aggregate.split_power">
+<code class="sig-prename descclassname">decisiorama.pda.aggregate.</code><code class="sig-name descname">split_power</code><span class="sig-paren">(</span><em class="sig-param">utils</em>, <em class="sig-param">w</em>, <em class="sig-param">alpha</em>, <em class="sig-param">s</em>, <em class="sig-param">w_norm=True</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#decisiorama.pda.aggregate.split_power" title="Permalink to this definition">¶</a></dt>
+<dd><p>Split power utility aggregation function</p>
+<p>Aggregate preferences using the split power aggregation function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>utils</strong> (<em>ndarray</em><em> [</em><em>n</em><em>, </em><em>u</em><em>]</em>) – Two-dimensional array with the provided utilities to aggregate. The
+dimensions corresponds to the number of random samples (n) and the
+number of utilities (u)</p></li>
+<li><p><strong>w</strong> (<em>ndarray</em><em> [</em><em>u</em><em>]</em><em>, </em><em>[</em><em>n</em><em>, </em><em>u</em><em>]</em>) – Array with the provided weights to each of the utilities. If passed
+as a 1D-array, the same weights are used for of all the random samples.
+In case it is a 2D-array, w requires the same dimensions as <cite>utils</cite></p></li>
+<li><p><strong>alpha</strong> (<em>float</em><em>, </em><em>ndarray</em><em>[</em><em>n</em><em>]</em>) – Alpha parameter of the power function. In case a float value is used,
+it will be constant for all of the random samples</p></li>
+<li><p><strong>s</strong> (<em>float</em><em>, </em><em>ndarray</em><em>[</em><em>n</em><em>]</em>) – s parameter of the power function. In case a float value is used,
+it will be constant for all of the random samples</p></li>
+<li><p><strong>w_norm</strong> (<em>Bool</em><em>, </em><em>optional</em>) – If True, the sum of the weights will be equal to 1</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>out</strong> – Vector with the aggregated values</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray [n]</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">utils</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">])</span>
+<span class="n">alpha</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">s</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="k">print</span><span class="p">(</span><span class="n">split_power</span><span class="p">(</span><span class="n">utils</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">s</span><span class="p">))</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="p">[</span><span class="mf">0.2</span><span class="p">]</span>
+
+<span class="n">utils</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]])</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">])</span>
+<span class="n">alpha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+<span class="n">s</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="k">print</span><span class="p">(</span><span class="n">split_power</span><span class="p">(</span><span class="n">utils</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">s</span><span class="p">))</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="p">[</span><span class="mf">0.2</span> <span class="mf">0.8</span> <span class="mf">0.5</span><span class="p">]</span>
+
+<span class="n">utils</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]])</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">]])</span>
+<span class="n">alpha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+<span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+<span class="k">print</span><span class="p">(</span><span class="n">split_power</span><span class="p">(</span><span class="n">utils</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">s</span><span class="p">))</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="p">[</span><span class="mf">0.2</span> <span class="mf">0.8</span> <span class="mf">0.5</span><span class="p">]</span>
+
+<span class="n">utils</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]])</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
+              <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">]])</span>
+<span class="n">alpha</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+<span class="k">print</span><span class="p">(</span><span class="n">split_power</span><span class="p">(</span><span class="n">utils</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">s</span><span class="p">))</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="p">[</span><span class="mf">0.2</span> <span class="mf">0.8</span> <span class="mf">0.5</span><span class="p">]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="decisiorama.pda.aggregate.sugeno">
+<code class="sig-prename descclassname">decisiorama.pda.aggregate.</code><code class="sig-name descname">sugeno</code><span class="sig-paren">(</span><em class="sig-param">utils</em>, <em class="sig-param">w=None</em>, <em class="sig-param">w_norm=False</em><span class="sig-paren">)</span><a class="headerlink" href="#decisiorama.pda.aggregate.sugeno" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-decisiorama.pda.preference">
+<span id="decisiorama-pda-preference-module"></span><h2>decisiorama.pda.preference module<a class="headerlink" href="#module-decisiorama.pda.preference" title="Permalink to this headline">¶</a></h2>
+<p>Preference Module</p>
+<p>This module contains classes for building up hierarchical aggregation
+problems. Two main classes are present <cite>Objective</cite> and <cite>Evaluator</cite>. The
+Objective class is used to construct all of the nodes in the hierarchy
+problem, while the tree is constructed by defining the childs of each node. The
+Evaluator class creates an object that is used for the post-processing of the
+results coming from solving the hierarchical aggregation problem.</p>
+<dl class="class">
+<dt id="decisiorama.pda.preference.Evaluator">
+<em class="property">class </em><code class="sig-prename descclassname">decisiorama.pda.preference.</code><code class="sig-name descname">Evaluator</code><span class="sig-paren">(</span><em class="sig-param">portfolio</em>, <em class="sig-param">utils</em>, <em class="sig-param">labels=None</em><span class="sig-paren">)</span><a class="headerlink" href="#decisiorama.pda.preference.Evaluator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Function to post process the results of the problem</p>
+<p>The results of the aggregation (or individual utilities) will be
+post processed here. This object may contain methods to rank the solutions,
+assess the performance and do sensitivity analysis</p>
+<dl class="method">
+<dt id="decisiorama.pda.preference.Evaluator.add_function">
+<code class="sig-name descname">add_function</code><span class="sig-paren">(</span><em class="sig-param">function</em>, <em class="sig-param">minimize=True</em><span class="sig-paren">)</span><a class="headerlink" href="#decisiorama.pda.preference.Evaluator.add_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>add an objective function for evaluating the solutions</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>function</strong> (<em>func</em>) – function to process the a 2D vector containing the stochastic
+utilities for each portfolio</p></li>
+<li><p><strong>minimize</strong> (<em>Bool</em>) – Determines if the function is to be minimised. If False, it means
+the function will be maximised. Default is True.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="decisiorama.pda.preference.Evaluator.get_core_index">
+<code class="sig-name descname">get_core_index</code><span class="sig-paren">(</span><em class="sig-param">i=0</em><span class="sig-paren">)</span><a class="headerlink" href="#decisiorama.pda.preference.Evaluator.get_core_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get core index for weakly ranked solutions up to level i</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>i</strong> (<em>int</em>) – Pareto front index up to which the core index will be
+retrieved. A value of 0 indicates the core index for the formal
+pareto front.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>out</strong> – Array with the core index for each weak pareto front</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="decisiorama.pda.preference.Evaluator.get_pareto_solutions">
+<code class="sig-name descname">get_pareto_solutions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#decisiorama.pda.preference.Evaluator.get_pareto_solutions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the pareto solutions</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="decisiorama.pda.preference.Evaluator.get_weak_pareto_solutions">
+<code class="sig-name descname">get_weak_pareto_solutions</code><span class="sig-paren">(</span><em class="sig-param">i=0</em><span class="sig-paren">)</span><a class="headerlink" href="#decisiorama.pda.preference.Evaluator.get_weak_pareto_solutions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get weakly ranked solutions up to level i</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>i</strong> (<em>int</em>) – Pareto front index up to which the pareto solutions will be
+retrieved. A value of 0 indicates the formal pareto front.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>out</strong> – Array with the pareto solutions for each pareto front</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="decisiorama.pda.preference.Evaluator.remove_function">
+<code class="sig-name descname">remove_function</code><span class="sig-paren">(</span><em class="sig-param">i</em><span class="sig-paren">)</span><a class="headerlink" href="#decisiorama.pda.preference.Evaluator.remove_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to remove an objective function</p>
+<p>This method is used to remove an objective function from the objective
+function pool</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>i</strong> (<em>int</em>) – Index of the objective functions</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="decisiorama.pda.preference.Objective">
+<em class="property">class </em><code class="sig-prename descclassname">decisiorama.pda.preference.</code><code class="sig-name descname">Objective</code><span class="sig-paren">(</span><em class="sig-param">name, w, alternatives, obj_min, obj_max, n=100, utility_func=&lt;function exponential&gt;, utility_pars=0.0, aggregation_func=&lt;function additive&gt;, aggregation_pars=[0.5], maximise=True</em><span class="sig-paren">)</span><a class="headerlink" href="#decisiorama.pda.preference.Objective" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class to create a node in the hierarchy tree</p>
+<p>This is the base class for structuring each of the nodes for the
+hierarchical aggregation. In the hierarchy, all of the nodes are instances
+of the Objective class.</p>
+<dl class="method">
+<dt id="decisiorama.pda.preference.Objective.add_children">
+<code class="sig-name descname">add_children</code><span class="sig-paren">(</span><em class="sig-param">children</em><span class="sig-paren">)</span><a class="headerlink" href="#decisiorama.pda.preference.Objective.add_children" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is the method to add children nodes</p>
+<p>This method is used to create a child node in the hierarchy tree</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>children</strong> (<em>objective</em>) – An instance of the Objective node is passed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="decisiorama.pda.preference.Objective.get_value">
+<code class="sig-name descname">get_value</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#decisiorama.pda.preference.Objective.get_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the attribute utlity based on the portfolio of actions</p>
+<p>This function is used to calculate the value of the attribute
+(objective), for a given portfolio. If it is a leaf node, the values
+must be provided to the object, otherwise it is calculated from the
+hierarchical aggregation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>1D array</em>) – A binary vector that represent the portfolio of actions. 1 for
+done, and 0 for no action</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>out</strong> – Utility value of the attributes</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="decisiorama.pda.preference.hierarchy_smith">
+<code class="sig-prename descclassname">decisiorama.pda.preference.</code><code class="sig-name descname">hierarchy_smith</code><span class="sig-paren">(</span><em class="sig-param">h_map</em>, <em class="sig-param">prob</em><span class="sig-paren">)</span><a class="headerlink" href="#decisiorama.pda.preference.hierarchy_smith" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to creeate a hierarchy in the problem object</p>
+<p>This function heps in building the hierarchies, by helping in the
+definition of child nodes. This can also be done manually for each
+objective</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>h_map</strong> (<em>dict</em>) – Dictionary containing the child nodes. The key of the dictionary has
+to be the parent node. The keys in the maps have to be consistent with
+the keys used in the problem (prob) definition.</p></li>
+<li><p><strong>prob</strong> (<em>dict</em>) – Dictionary containing all of the nodes. This will be mutated as a
+result of this operation</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-decisiorama.pda.ranker">
+<span id="decisiorama-pda-ranker-module"></span><h2>decisiorama.pda.ranker module<a class="headerlink" href="#module-decisiorama.pda.ranker" title="Permalink to this headline">¶</a></h2>
+<p>Ranker Module</p>
+<p>This module contains functions to rank the results of utilities. This can be
+used as a part of the multi-criterai decision analysis, or over the results of
+the hierarchical aggregation.</p>
+<dl class="function">
+<dt id="decisiorama.pda.ranker.cov">
+<code class="sig-prename descclassname">decisiorama.pda.ranker.</code><code class="sig-name descname">cov</code><span class="sig-paren">(</span><em class="sig-param">sols</em><span class="sig-paren">)</span><a class="headerlink" href="#decisiorama.pda.ranker.cov" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the coefficient of variation of the utilities</p>
+<p>This functions calculate the coefficient of variation of the
+distributions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sols</strong> (<em>ndarray</em><em> [</em><em>p</em><em>, </em><em>n</em><em>]</em>) – 2D array containing the utility values for all of the portfolios [p],
+and all of the random samples [n]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>cov</strong> – 1D array containing all of the coefficient of variation utility
+value for each portfolio</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray [p]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="decisiorama.pda.ranker.iqr">
+<code class="sig-prename descclassname">decisiorama.pda.ranker.</code><code class="sig-name descname">iqr</code><span class="sig-paren">(</span><em class="sig-param">sols</em>, <em class="sig-param">lq=0.25</em>, <em class="sig-param">uq=0.75</em><span class="sig-paren">)</span><a class="headerlink" href="#decisiorama.pda.ranker.iqr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the interquantile range</p>
+<p>The interquantile range (iqr) is the distance between a lower and upper
+quantile. Larger iqr denote larger spread of the PDF of the vector</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sols</strong> (<em>ndarray</em><em> [</em><em>p</em><em>, </em><em>n</em><em>]</em>) – 2D array containing the utility values for all of the portfolios [p],
+and all of the random samples [n]</p></li>
+<li><p><strong>lq</strong> (<em>float</em>) – Value containing the lower end of the iqr. Cannot be smaller than 0</p></li>
+<li><p><strong>uq</strong> (<em>float</em>) – Value containing the upper end of the iqr. Cannot be larger than 1</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>iqr</strong> – 1D array containing all of the utility iqr value for each portfolio</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray [p]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="decisiorama.pda.ranker.mean">
+<code class="sig-prename descclassname">decisiorama.pda.ranker.</code><code class="sig-name descname">mean</code><span class="sig-paren">(</span><em class="sig-param">sols</em><span class="sig-paren">)</span><a class="headerlink" href="#decisiorama.pda.ranker.mean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the mean of the utilities</p>
+<p>This functions calculate the mean of the distributions. It is simply a
+np.average over the first axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sols</strong> (<em>ndarray</em><em> [</em><em>p</em><em>, </em><em>n</em><em>]</em>) – 2D array containing the utility values for all of the portfolios [p],
+and all of the random samples [n]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>mean</strong> – 1D array containing all of the mean utility value for each portfolio</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray [p]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="decisiorama.pda.ranker.std">
+<code class="sig-prename descclassname">decisiorama.pda.ranker.</code><code class="sig-name descname">std</code><span class="sig-paren">(</span><em class="sig-param">sols</em><span class="sig-paren">)</span><a class="headerlink" href="#decisiorama.pda.ranker.std" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the standard deviation of the utilities</p>
+<p>This functions calculate the standard deviation of the distributions. It
+is simply a np.std over the first axis</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sols</strong> (<em>ndarray</em><em> [</em><em>p</em><em>, </em><em>n</em><em>]</em>) – 2D array containing the utility values for all of the portfolios [p],
+and all of the random samples [n]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>std</strong> – 1D array containing all of the mean utility value for each portfolio</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray [p]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-decisiorama.pda.utility">
+<span id="decisiorama-pda-utility-module"></span><h2>decisiorama.pda.utility module<a class="headerlink" href="#module-decisiorama.pda.utility" title="Permalink to this headline">¶</a></h2>
+<p>Utility Module</p>
+<p>This module contains utility functions. Current implementation only has the
+exponential utility function.</p>
+<dl class="function">
+<dt id="decisiorama.pda.utility.exponential">
+<code class="sig-prename descclassname">decisiorama.pda.utility.</code><code class="sig-name descname">exponential</code><span class="sig-paren">(</span><em class="sig-param">v</em>, <em class="sig-param">r</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#decisiorama.pda.utility.exponential" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the exponential utility function</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>v</strong> (<em>float</em><em>, </em><em>ndarray</em>) – Array containing the normalised values</p></li>
+<li><p><strong>r</strong> (<em>float</em><em>, </em><em>ndarray</em>) – Exponent parameter</p></li>
+<li><p><strong>returns</strong> – </p></li>
+<li><p><strong>out</strong> (<em>ndarray</em>) – Utility values</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is executed as a vectorized function</p>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="module-decisiorama.pda">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-decisiorama.pda" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">decisiorama</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Juan Carlos Chacon-Hurtado.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.1.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/decisiorama.pda.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
