@@ -17,10 +17,7 @@ import glob
 sys.path.insert(0, os.path.abspath('.'))
 sys.path.insert(0, os.path.abspath('..'))
 sys.path.insert(0, os.path.abspath('..\\..'))
-#sys.path.insert(0, os.path.abspath('..\\decisiorama'))
-#sys.path.insert(0, os.path.abspath(r'H:\My Documents\GitHub\decisi-o-rama'))
-#for sm in glob.glob('..\\decisiorama\\[!__]*'):
-#    sys.path.insert(0, os.path.abspath(sm))
+
 
 # -- Project information -----------------------------------------------------
 
