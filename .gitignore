@@ -1,0 +1,5 @@
+pkgs
+.pytest_cache
+.spyproject
+__pycache__
+setup - Copy.py
