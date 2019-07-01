@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-""" Utility Module
+""" One-at-a-time sensitivity analysis
 
-This module contains utility functions. Current implementation only has the
-exponential utility function.
-
+This module contains functions to carry out a one-at-a-time sensitivity
+analysis.
 """
 
 __author__ = "Juan Carlos Chacon-Hurtado"

@@ -1,79 +1,103 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Mon Apr 29 12:42:31 2019
+""" Utils Module
 
-@author: jchaconhurtado
+In this module are stored all of the supporting functions which do not fall
+into a specific category.
+
 """
+
+__author__ = "Juan Carlos Chacon-Hurtado"
+__credits__ = ["Juan Carlos Chacon-Hurtado", "Lisa Scholten"]
+__license__ = "MIT"
+__version__ = "0.1.0"
+__maintainer__ = "Juan Carlos Chacon-Hurtado"
+__email__ = "j.chaconhurtado@tudelft.nl"
+__status__ = "Development"
+__last_update__ = "01-07-2019"
 
 import numpy as np
 
-UTILITY_THRESHOLD = 0.00001
 
 def pareto_fronts(M, minimize=True):
-    '''function to calculate the pareto fronts'''
+    '''pareto_fronts
+
+    function to calculate the pareto fronts
+
+    Parameters
+    ----------
+    M : ndarray
+        2D array containing the solution vectors
+    minimize : Bool
+        Determine if the optimal of the functions is the minimum. In case is a
+        maximisation problem, this should be set to False.
+
+    Returns
+    -------
+    fronts : list
+        List containing a list of indexes that represent each solution. The
+        "pareto-front" is located in the front 0.
+    '''
     if minimize is True:
-        i_dominates_j = np.all(M[:,None] <= M, axis=-1) & np.any(M[:,None] < M, axis=-1)
+        i_dominates_j = (np.all(M[:, None] <= M, axis=-1) &
+                         np.any(M[:, None] < M, axis=-1))
     else:
-        i_dominates_j = np.all(M[:,None] >= M, axis=-1) & np.any(M[:,None] > M, axis=-1)
+        i_dominates_j = (np.all(M[:, None] >= M, axis=-1) &
+                         np.any(M[:, None] > M, axis=-1))
     remaining = np.arange(len(M))
     fronts = np.empty(len(M), int)
     frontier_index = 0
     while remaining.size > 0:
-        dominated = np.any(i_dominates_j[remaining[:,None], remaining], axis=0)
+        dominated = np.any(i_dominates_j[remaining[:, None], remaining],
+                           axis=0)
         fronts[remaining[~dominated]] = frontier_index
-
         remaining = remaining[dominated]
         frontier_index += 1
     return fronts
 
+
 def pareto_front_i(M, minimize=True, i=0):
-    '''Function to get a specific pareto set. i=0 means optimal'''
+    '''pareto_front_i
+
+    Function to get a specific pareto set. i=0 means optimal
+
+    Parameters
+    ----------
+    M : ndarray
+        2D array containing the solution vectors
+    minimize : Bool
+        Determine if the optimal of the functions is the minimum. In case is a
+        maximisation problem, this should be set to False.
+    i : int
+        Index that determines the position of the pareto front to retrieve. by
+        default is 0, meaning the formal pareto front.
+
+    Returns
+    -------
+    front : list
+        List containing indexes that represent each solution. The
+        "pareto-front" is located in the front 0.
+    '''
     pfs = pareto_fronts(M, minimize)
     return np.where(pfs == i)[0]
 
+
 def core_index(sols_inp, pf):
-    '''calculate the core index. takes solutions and position of pareto-solutions'''
-    return np.mean(sols_inp[pf,:], axis=0)
+    '''core_index
 
-#def pref_additive(sols, w, w_norm=False):
-#    '''model preferences using additive model. takes two vectors'''
-#    if np.sum(w) != 1.0 and w_norm is False:
-#        raise ValueError('weights have to be normalised to 1')
-#    elif w_norm:
-#        w = w / np.sum(w, axis=0)
-#    
-#    out = np.zeros([sols.shape[1], sols.shape[2]])
-#    for i in range(sols.shape[1]):
-#        out[i,:] = np.sum(sols[:,i,:]*w, axis=0)
-#        
-#    return out
-#
-#def pref_cobb_douglas(sols, w, w_norm=False):
-#    '''model preferences using cobb-douglas method. takes two vectors'''
-#    # Test this function
-#    if np.sum(w) != 1.0 and w_norm is False:
-#        raise ValueError('weights have to be normalised to 1')
-#    elif w_norm:
-#        w = w / np.sum(w, axis=0)
-#    
-#    out = np.zeros([sols.shape[1], sols.shape[2]])
-#    for i in range(sols.shape[1]):
-#        out[i,:] = np.prod(sols[:,i,:]**w, axis=0)
-#        
-#    return out
-#
-#def util_exponential(v, r):
-#    '''calculate exponential utility'''
-#    if r == 0.0:
-#        out = v
-#    else:
-#        out = (1.0 - np.exp(-r*v)) / (1.0 - np.exp(-r))
-#    return out
-#
-#def agg_hierarchical(sols, w, alpha):
-#    '''makes hierarchical aggregation'''
-#    add = pref_additive(sols, w)
-#    cd = pref_cobb_douglas(sols, w)
-#    return alpha*(add) + (1.0 - alpha)*cd
+    calculate the core index. takes solutions and position of
+    pareto-solutions
 
+    Parameters
+    ----------
+    sols_inp : ndarray
+        Value of the solutions for each of the activities
+    pf : list
+        List with the solutions in the pareto front. This list is can be
+        obtained througn the `pareto_front_i` function.
 
+    Returns
+    -------
+    core_index : ndarray
+        1D array containing the values of the core index.
+    '''
+    return np.mean(sols_inp[pf, :], axis=0)
