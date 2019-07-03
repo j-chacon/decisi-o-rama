@@ -231,7 +231,7 @@ class Objective():
             elif callable(self.alternatives[0]):
                 _sols = np.array([r(self.n) for r in self.alternatives]).T
             else:  # using a pre-rendered list
-                _sols = self.alternatives.T
+                _sols = np.copy(self.alternatives.T)
 
             _sols *= x
             _sols = _sols.T
@@ -368,7 +368,7 @@ class Evaluator():
         if minimize:
             self.functions.append(function)
         else:
-            def _f(sols): return(-function(sols))
+            def _f(_sols): return(-function(_sols))
             self.functions.append(_f)
         return
 
