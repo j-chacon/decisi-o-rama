@@ -3,3 +3,18 @@ pkgs
 .spyproject
 __pycache__
 setup - Copy.py
+build/lib/decisiorama/__init__.py
+build/lib/decisiorama/pda/__init__.py
+build/lib/decisiorama/pda/aggregate.py
+build/lib/decisiorama/pda/preference.py
+build/lib/decisiorama/pda/ranker.py
+build/lib/decisiorama/pda/utility.py
+build/lib/decisiorama/sensitivity/__init__.py
+build/lib/decisiorama/sensitivity/oat.py
+build/lib/decisiorama/utils/__init__.py
+build/lib/decisiorama/utils/random_instance.py
+build/lib/decisiorama/utils/utils.py
+examples/.ipynb_checkpoints/Example_1-checkpoint.ipynb
+examples/.ipynb_checkpoints/Example_2-checkpoint.ipynb
+examples/.ipynb_checkpoints/Example_1-checkpoint.ipynb
+examples/.ipynb_checkpoints/Example_1-checkpoint.ipynb
