@@ -123,7 +123,7 @@ class Objective():
 
         if type(n) is not int:
             msg = 'n should be int, got {0}'.format(type(n))
-            raise TypeError()
+            raise TypeError(msg)
         self.n = n
 
         self.children = []
