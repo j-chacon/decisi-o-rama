@@ -232,10 +232,14 @@ class Objective():
                 _sols = np.array([r(self.n) for r in self.alternatives]).T
             else:  # using a pre-rendered list
                 _sols = np.copy(self.alternatives.T)
-
-            _sols *= x
+                
+            
+            # Here is where the model should be run
+            _sols *= x  
             _sols = _sols.T
-
+            _sols = np.sum(_sols, axis=0)  # making a sum before applying utility
+            # Here the model run ends
+            
             # rank-normalise the alternatives
             _sols = (_sols - self.obj_min) / (self.obj_max - self.obj_min)
 
@@ -243,7 +247,6 @@ class Objective():
                 _sols = 1.0 - _sols
 
             # clip the alternatives (may be unnecessary)
-            _sols = np.sum(_sols, axis=0)  # making a sum before applying utility
             _sols = np.clip(_sols, 0.0, 1.0)
 
             # apply the utility function to the actions and add up
