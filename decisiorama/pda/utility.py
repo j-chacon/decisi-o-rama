@@ -103,7 +103,7 @@ def _cpt_pow(v, s_u, s_v, a_win, a_loss):
         u = s_u
     return u
 
-def cpt_pow(v, s_u, s_v, r, r_loss=None, gl_ratio=None):
+def cpt_pow(v, s_u, s_v, r, r_loss=None, gl_ratio=None, *args, **kwargs):
     '''Calculates the CPT power utility function
 
     Parameters
@@ -187,7 +187,7 @@ def _cpt_exp(v, s_u, s_v, a_win, a_loss):
         u = s_u
     return u
 
-def cpt_exp(v, s_u, s_v, a, a_loss=None, wr_ratio=None):
+def cpt_exp(v, s_u, s_v, a, a_loss=None, wr_ratio=None, *args, **kwargs):
     '''Calculates the CPT power utility function
 
     Parameters
