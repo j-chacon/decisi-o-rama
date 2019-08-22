@@ -243,6 +243,7 @@ class Objective():
                 _sols = 1.0 - _sols
 
             # clip the alternatives (may be unnecessary)
+            _sols = np.sum(_sols, axis=0)  # making a sum before applying utility
             _sols = np.clip(_sols, 0.0, 1.0)
 
             # apply the utility function to the actions and add up
@@ -254,9 +255,9 @@ class Objective():
                 ut_pars = [ut[:](self.n) for ut in self.utility_pars]
             else:
                 ut_pars = self.utility_pars
-
+            
             value = self.utility_func(_sols, ut_pars)
-            value = np.sum(value, axis=0)
+#            value = np.sum(value, axis=0)
 
         else:
             # Calculate the utility for each children
