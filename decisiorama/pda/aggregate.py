@@ -808,3 +808,56 @@ def choquet(utils, w=None, w_norm=False):
 
 def sugeno(utils, w=None, w_norm=False):
     raise NotImplementedError('Not implemented yet')
+
+if __name__ == '__main__':
+    #%%
+    import matplotlib.pyplot as plt
+    x = np.array([np.linspace(0, 1, 10), np.linspace(0, 1, 10)]).T
+    
+    w = np.linspace(0, 1, 10)
+    w = np.array([w, 1-w]).T
+    
+    X1, X2 = np.meshgrid(x[:,0], x[:,1])
+    X = np.array([X1.flatten(), X2.flatten()]).T
+    
+    W1, W2 = np.meshgrid(w[:,0], w[:,1])
+    W = np.array([W1.flatten(), W2.flatten()]).T
+    
+    funs = [additive, cobb_douglas, harmonic, reverse_harmonic, 
+            split_power, reverse_power, maximum, minimum]
+    labs = ['Additive', 'Cobb-Douglas', 'Harmonic', 'Reverse Harmonic',
+            'Split Power', 'Reverse power', 'Maximum', 'Minimum']
+    plt.figure(figsize=[7, 9])
+    _iix = 0
+    for _i, f in enumerate(funs):
+        for _j in range(6):
+            _iix += 1 
+            _w = _j/10.0
+            res = f(X, np.array([_w, 1.0 - _w]), w_norm=False, alpha=1.0, s=1.0)
+            res = np.reshape(res, [10,10])
+            
+            plt.subplot(len(funs), 6, _iix)
+#            plt.imshow(res, interpolation='bilinear', origin='lower', extent=(0,1,0,1))
+            pl = plt.contour(X1, X2, res, colors='k')
+            plt.clabel(pl, inline=1, fontsize=3)
+            
+            if _i != 7:
+                plt.xticks(())
+            else:
+                plt.xlabel('[{0}, {1}]'.format(_w, 1.0 - _w), fontsize=8)
+                
+            if _j != 0:
+                plt.yticks(())
+            else:
+                plt.ylabel(labs[_i], fontsize=8)
+                
+#            plt.tick_params()
+#            plt.title('{0}\nw=[{1}, {2}]'.format(labs[_i], _j/10.0, 1.0 - _j/10.0), fontsize=8)
+#            plt.xlabel('X1')
+#            plt.ylabel('X2')
+    plt.tight_layout()
+    
+#    for f in funs:
+    plt.savefig(r"\\tudelft.net\staff-homes\C\jchaconhurtado\My Documents\bw_agg.png", dpi=700)
+        
+    
