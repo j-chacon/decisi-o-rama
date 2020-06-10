@@ -17,7 +17,7 @@ __status__ = "Development"
 __last_update__ = "01-07-2019"
 
 import numpy as np
-
+from scipy.stats import percentileofscore
 
 def iqr(sols, lq=0.25, uq=0.75):
     '''Calculate the interquantile range
@@ -106,3 +106,79 @@ def cov(sols):
     '''
 
     return np.std(sols, axis=1)/np.average(sols, axis=1)
+
+def maximum(sols):
+    '''Calculate the standard deviation of the utilities
+
+    This functions calculate the standard deviation of the distributions. It
+    is simply a np.std over the first axis
+
+    Parameters
+    ----------
+    sols : ndarray [p, n]
+        2D array containing the utility values for all of the portfolios [p],
+        and all of the random samples [n]
+
+    Returns
+    -------
+    maximum : ndarray [p]
+        1D array containing all of the maximum utility value for each portfolio
+    '''
+    return np.max(sols, axis=1)
+
+def minimum(sols):
+    '''Calculate the standard deviation of the utilities
+
+    This functions calculate the standard deviation of the distributions. It
+    is simply a np.std over the first axis
+
+    Parameters
+    ----------
+    sols : ndarray [p, n]
+        2D array containing the utility values for all of the portfolios [p],
+        and all of the random samples [n]
+
+    Returns
+    -------
+    minimum : ndarray [p]
+        1D array containing all of the minimum utility value for each portfolio
+    '''
+    return np.min(sols, axis=1)
+
+def p_below(sols, p):
+    '''Calculate the probability of being below the value of p
+
+    This functions calculate the standard deviation of the distributions. It
+    is simply a np.std over the first axis
+
+    Parameters
+    ----------
+    sols : ndarray [p, n]
+        2D array containing the utility values for all of the portfolios [p],
+        and all of the random samples [n]
+
+    Returns
+    -------
+    minimum : ndarray [p]
+        1D array containing all of the minimum utility value for each portfolio
+    '''
+    return np.array([percentileofscore(sol, p)/100.0 for sol in sols])
+
+def p_over(sols, p):
+    '''Calculate the probability of being above the value of p
+    
+    This functions calculate the standard deviation of the distributions. It
+    is simply a np.std over the first axis
+
+    Parameters
+    ----------
+    sols : ndarray [p, n]
+        2D array containing the utility values for all of the portfolios [p],
+        and all of the random samples [n]
+
+    Returns
+    -------
+    minimum : ndarray [p]
+        1D array containing all of the minimum utility value for each portfolio
+    '''
+    return np.array([1.0 - percentileofscore(sol, p)/100.0 for sol in sols])

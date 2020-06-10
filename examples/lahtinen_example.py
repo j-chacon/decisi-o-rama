@@ -94,8 +94,8 @@ sols = [list(t[0]) for t in temp]
 inp = np.array([list(t[1]) for t in temp])
 
 # turn all of the solutions into a maximisation problem. change the direciton of cost
-for i in range(len(sols)):
-    sols[i][-2] *= -1  # Minimise the cost
+# for i in range(len(sols)):
+#     sols[i][-2] *= -1  # Minimise the cost
 
 # plot the pareto sets
 max_sols = np.array([[np.max(i) for i in soli] for soli in sols])

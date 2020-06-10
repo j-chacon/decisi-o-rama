@@ -823,10 +823,24 @@ if __name__ == '__main__':
     W1, W2 = np.meshgrid(w[:,0], w[:,1])
     W = np.array([W1.flatten(), W2.flatten()]).T
     
-    funs = [additive, cobb_douglas, harmonic, reverse_harmonic, 
-            split_power, reverse_power, maximum, minimum]
-    labs = ['Additive', 'Cobb-Douglas', 'Harmonic', 'Reverse Harmonic',
-            'Split Power', 'Reverse power', 'Maximum', 'Minimum']
+    funs = [additive, 
+            cobb_douglas, 
+            harmonic, 
+            reverse_harmonic, 
+            split_power, 
+            reverse_power, 
+            maximum, 
+            minimum
+            ]
+    labs = ['Additive', 
+            'Geometric', 
+            'Harmonic', 
+            'Reverse Harmonic',
+            'Split Power', 
+            'Reverse power', 
+            'Maximum', 
+            'Minimum'
+            ]
     plt.figure(figsize=[7, 9])
     _iix = 0
     for _i, f in enumerate(funs):
@@ -858,6 +872,6 @@ if __name__ == '__main__':
     plt.tight_layout()
     
 #    for f in funs:
-    plt.savefig(r"\\tudelft.net\staff-homes\C\jchaconhurtado\My Documents\bw_agg.png", dpi=700)
+    # plt.savefig(r"\\tudelft.net\staff-homes\C\jchaconhurtado\My Documents\bw_agg.png", dpi=700)
         
     

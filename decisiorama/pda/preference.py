@@ -353,7 +353,7 @@ class Evaluator():
         self.labels = state['labels']
         return
 
-    def add_function(self, function, minimize=True):
+    def add_function(self, function, minimize=True, pars=None):
         '''
         add an objective function for evaluating the solutions
 
