@@ -1,7 +1,7 @@
 # decisi-o-rama
 Decisi-o-rama: An open-source Python library for multi-attribute value/utility decision analysis
 
-This package requires the following packages:
+This package requires the following dependencies:
 
 - Numpy
 - Numba
