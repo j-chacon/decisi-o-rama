@@ -6,12 +6,12 @@ This package requires the following dependencies:
 - Numpy
 - Numba
 
-You can obtain these either from Conda or PIP. By using conda you can isntall the dependencies as:
+You can obtain these either from Conda or PIP. By using conda you can install the dependencies as:
 
 - `$ conda install numpy`
 - `$ conda install numba`
 
-Alternatively, you can use pip as:
+Or by using pip as:
 
 - `$ pip install numpy`
 - `$ pip install numba`
