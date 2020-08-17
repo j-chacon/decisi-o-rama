@@ -18,4 +18,4 @@ Alternatively, you can use pip as:
 
 To install this repository you can use pip as:
 
-`pip install git+https://github.com/j-chacon/decisi-o-rama/`
+`pip install git+https://github.com/j-chacon/decisi-o-rama.git`
